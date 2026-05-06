@@ -2,3 +2,23 @@
 @import './tailwind.css';
 @import './theme.css';
 @import './skeleton.css';
+
+/* Custom Scrollbar for Sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(201,162,74,0.15);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(201,162,74,0.3);
+}
+
+/* Ensure smooth scrolling on mobile */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}

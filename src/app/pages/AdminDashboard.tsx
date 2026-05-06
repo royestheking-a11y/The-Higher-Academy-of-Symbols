@@ -440,7 +440,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="p-3 flex-1 overflow-y-auto">
+      <div className="p-3 flex-1 overflow-y-auto custom-scrollbar">
         {navGroups.map(group => (
           <div key={group.label_en} className="mb-3">
             <div className="px-3 mb-1 text-[#4A6B60] text-[9px] font-bold uppercase tracking-widest">
@@ -498,7 +498,7 @@ export default function AdminDashboard() {
               onClick={() => setSidebarOpen(false)} />
             <motion.aside initial={{ x: isRTL ? '100%' : '-100%' }} animate={{ x: 0 }} exit={{ x: isRTL ? '100%' : '-100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="fixed top-0 start-0 w-60 h-screen z-50 flex flex-col lg:hidden overflow-hidden"
+              className="fixed top-0 start-0 w-60 h-[100dvh] z-50 flex flex-col lg:hidden overflow-hidden"
               style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})` }}>
               <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
               <div className="relative z-10 flex flex-col h-full">
