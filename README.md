@@ -1,11 +1,14 @@
+# The Higher Academy of Symbols
 
-  # The Higher Academy of Symbols
+The Higher Academy of Symbols is a premium educational platform dedicated to the study of ancient wisdom, symbolic languages, and advanced philosophical structures. This platform provides a comprehensive learning environment for students to explore complex areas of study through lectures, articles, and specialized packages.
 
-  This is a code bundle for The Higher Academy of Symbols. The original project is available at https://www.figma.com/design/ANo4ud9v14o2EoNCPQ3SpW/The-Higher-Academy-of-Symbols.
+### Academy Leadership
+- **Founder:** Aurangzeb Sunny
+- **Designer:** Aurangzeb Sunny
+- **Developer:** Aurangzeb Sunny
 
-  ## Running the code
+### Platform Powered by
+- **Rizqara Tech**
 
-  Run `npm i` to install the dependencies.
-
-  Run `npm run dev` to start the development server.
-  
+---
+© 2026 The Higher Academy of Symbols. All rights reserved.

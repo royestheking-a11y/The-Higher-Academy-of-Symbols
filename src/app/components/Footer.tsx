@@ -171,8 +171,8 @@ export function Footer() {
           </p>
           <p className="text-[#4A6B60] text-xs flex items-center gap-1">
             {t('تصميم وتطوير', 'Designed & Developed by')}
-            <a href="#" className="text-[#C9A24A] hover:text-[#F0D98A] transition-colors flex items-center gap-1">
-              RizQara Tech <ExternalLink size={10} />
+            <a href="https://rizqara.tech" target="_blank" rel="noopener noreferrer" className="text-[#C9A24A] hover:text-[#F0D98A] transition-colors flex items-center gap-1 font-medium">
+              Aurangzeb Sunny (Rizqara Tech) <ExternalLink size={10} />
             </a>
           </p>
         </div>
