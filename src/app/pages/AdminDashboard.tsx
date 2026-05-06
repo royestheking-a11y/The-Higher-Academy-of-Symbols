@@ -418,8 +418,13 @@ export default function AdminDashboard() {
 
   // ── Sidebar ───────────────────────────────────────────────────────────────
   const SidebarContent = () => (
-    <>
-      <div className="p-4" style={{ borderBottom: '1px solid rgba(201,162,74,0.2)' }}>
+    <div className="flex flex-col h-full w-full relative overflow-hidden">
+      <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
+      <button onClick={() => setSidebarOpen(false)} className="lg:hidden absolute top-4 end-4 z-20 text-[#8B9D8A] hover:text-[#E8DDC7] transition-colors">
+        <X size={18} />
+      </button>
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="p-4" style={{ borderBottom: '1px solid rgba(201,162,74,0.2)' }}>
         <Link to="/" className="flex items-center gap-2.5 mb-4">
           <div className="rounded-full overflow-hidden shrink-0" style={{ width: 36, height: 36, background: '#062B24', boxShadow: '0 2px 10px rgba(201,162,74,0.35)' }}>
             <img src="/symbolacademy.png" alt="The Higher Academy of Symbols" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -440,7 +445,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="p-3 flex-1 overflow-y-auto custom-scrollbar">
+      <div className="p-3 flex-1 overflow-y-auto custom-scrollbar min-h-0">
         {navGroups.map(group => (
           <div key={group.label_en} className="mb-3">
             <div className="px-3 mb-1 text-[#4A6B60] text-[9px] font-bold uppercase tracking-widest">
@@ -472,7 +477,8 @@ export default function AdminDashboard() {
           <LogOut size={13} /> {t('تسجيل الخروج', 'Logout')}
         </button>
       </div>
-    </>
+      </div>
+    </div>
   );
 
   const currentNavItem = allNavItems.find(i => i.id === activeTab);
@@ -484,9 +490,7 @@ export default function AdminDashboard() {
       <aside className="hidden lg:flex flex-col w-56 shrink-0 h-screen sticky top-0 overflow-hidden"
         style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})`, borderInlineEnd: '1px solid rgba(201,162,74,0.2)' }}>
         <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
-        <div className="relative z-10 flex flex-col h-full">
           <SidebarContent />
-        </div>
       </aside>
 
       {/* Mobile Sidebar */}
@@ -501,10 +505,7 @@ export default function AdminDashboard() {
               className="fixed top-0 start-0 w-60 h-[100dvh] z-50 flex flex-col lg:hidden overflow-hidden"
               style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})` }}>
               <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
-              <div className="relative z-10 flex flex-col h-full">
-                <button onClick={() => setSidebarOpen(false)} className="absolute top-4 end-4 text-[#8B9D8A] hover:text-[#E8DDC7]"><X size={18} /></button>
                 <SidebarContent />
-              </div>
             </motion.aside>
           </>
         )}

@@ -97,7 +97,12 @@ export default function StudentDashboard() {
   ];
 
   const SidebarContent = () => (
-    <>
+    <div className="flex flex-col h-full w-full relative overflow-hidden">
+      <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
+      <button onClick={() => setSidebarOpen(false)} className="lg:hidden absolute top-4 end-4 z-20 text-[#8B9D8A] hover:text-[#E8DDC7] transition-colors">
+        <X size={20} />
+      </button>
+      <div className="relative z-10 flex flex-col h-full">
       {/* Logo / Academy Branding */}
       <div className="p-5" style={{ borderBottom: '1px solid rgba(201,162,74,0.2)' }}>
         <Link to="/" className="flex items-center gap-2.5 mb-5">
@@ -123,7 +128,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Nav Items */}
-      <div className="p-3 flex-1 overflow-y-auto custom-scrollbar">
+      <div className="p-3 flex-1 overflow-y-auto custom-scrollbar min-h-0">
         {navItems.map(item => {
           const IconComp = item.icon;
           return (
@@ -157,7 +162,8 @@ export default function StudentDashboard() {
           {t('تسجيل الخروج', 'Logout')}
         </button>
       </div>
-    </>
+      </div>
+    </div>
   );
 
   return (
@@ -168,10 +174,7 @@ export default function StudentDashboard() {
         className="hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 overflow-hidden"
         style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})`, borderInlineEnd: '1px solid rgba(201,162,74,0.2)' }}
       >
-        <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
-        <div className="relative z-10 flex flex-col h-full">
           <SidebarContent />
-        </div>
       </aside>
 
       {/* Mobile Sidebar Overlay */}
@@ -194,16 +197,7 @@ export default function StudentDashboard() {
               className="fixed top-0 start-0 w-72 h-[100dvh] z-50 flex flex-col lg:hidden overflow-hidden"
               style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})` }}
             >
-              <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
-              <div className="relative z-10 flex flex-col h-full">
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className="absolute top-4 end-4 text-[#8B9D8A] hover:text-[#E8DDC7]"
-                >
-                  <X size={20} />
-                </button>
                 <SidebarContent />
-              </div>
             </motion.aside>
           </>
         )}
