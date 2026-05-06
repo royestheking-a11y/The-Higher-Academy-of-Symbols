@@ -111,17 +111,22 @@ export default function ArticleDetail() {
           {/* Article Body */}
           <div className="lg:col-span-3">
 
-            {/* Article Image Placeholder */}
-            <div className="w-full h-56 sm:h-72 rounded-2xl overflow-hidden mb-8 relative" style={{ background: `linear-gradient(135deg, ${BRAND.mid}, ${BRAND.deep})`, border: '1px solid rgba(201,162,74,0.15)' }}>
-              <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
-              <div className="w-full h-full flex items-center justify-center relative z-10">
-                <svg width="100" height="100" viewBox="0 0 100 100" fill="none" opacity="0.2">
-                  <path d="M50 10C35 10 22 23 22 38c0 10 6 18 16 24l12 7 12-7c10-6 16-14 16-24 0-15-13-28-28-28z" stroke="#C9A24A" strokeWidth="2" fill="rgba(201,162,74,0.15)"/>
-                  <path d="M50 46L38 74h5l7-14 7 14h5L50 46z" stroke="#C9A24A" strokeWidth="2" fill="rgba(201,162,74,0.1)"/>
-                  <circle cx="50" cy="26" r="8" stroke="#C9A24A" strokeWidth="2" fill="rgba(201,162,74,0.2)"/>
-                </svg>
+            {article.image ? (
+              <div className="w-full h-56 sm:h-72 rounded-2xl overflow-hidden mb-8 relative" style={{ background: BRAND.deep, border: '1px solid rgba(201,162,74,0.15)' }}>
+                <img src={article.image} alt={t(article.title_ar, article.title_en)} className="w-full h-full object-contain" />
               </div>
-            </div>
+            ) : (
+              <div className="w-full h-56 sm:h-72 rounded-2xl overflow-hidden mb-8 relative" style={{ background: `linear-gradient(135deg, ${BRAND.mid}, ${BRAND.deep})`, border: '1px solid rgba(201,162,74,0.15)' }}>
+                <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
+                <div className="w-full h-full flex items-center justify-center relative z-10">
+                  <svg width="100" height="100" viewBox="0 0 100 100" fill="none" opacity="0.2">
+                    <path d="M50 10C35 10 22 23 22 38c0 10 6 18 16 24l12 7 12-7c10-6 16-14 16-24 0-15-13-28-28-28z" stroke="#C9A24A" strokeWidth="2" fill="rgba(201,162,74,0.15)"/>
+                    <path d="M50 46L38 74h5l7-14 7 14h5L50 46z" stroke="#C9A24A" strokeWidth="2" fill="rgba(201,162,74,0.1)"/>
+                    <circle cx="50" cy="26" r="8" stroke="#C9A24A" strokeWidth="2" fill="rgba(201,162,74,0.2)"/>
+                  </svg>
+                </div>
+              </div>
+            )}
 
             {/* Article Content */}
             <div
