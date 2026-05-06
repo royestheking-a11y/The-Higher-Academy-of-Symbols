@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
+import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'sonner';
 import { GeometricBackground } from '../components/GeometricBackground';
 
@@ -12,7 +13,7 @@ const BRAND = { deep: '#062B24', mid: '#0B3A31', gold: '#C9A24A', ivory: '#F8F4E
 
 export default function Register() {
   const { t, isRTL, fontFamily } = useLanguage();
-  const { register, currentUser } = useAuth();
+  const { register, loginWithGoogle, currentUser } = useAuth();
   const { addNotification } = useData();
   const navigate = useNavigate();
 
@@ -73,6 +74,21 @@ export default function Register() {
       setErrors({ email: t(result.message || 'حدث خطأ', result.message || 'An error occurred') });
     }
   };
+  
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setLoading(true);
+      const result = await loginWithGoogle(tokenResponse.access_token);
+      setLoading(false);
+      if (result.success) {
+        toast.success(t('تم التسجيل والدخول بواسطة جوجل!', 'Registered and logged in with Google!'));
+        navigate('/dashboard');
+      } else {
+        toast.error(result.message);
+      }
+    },
+    onError: () => toast.error(t('فشل التسجيل بواسطة جوجل', 'Google Registration Failed')),
+  });
 
   const countries = [
     { ar: 'الإمارات العربية المتحدة', en: 'UAE' },
@@ -199,6 +215,35 @@ export default function Register() {
                 {loading ? <div className="w-5 h-5 rounded-full border-2 border-[#062B24] border-t-transparent animate-spin" /> : <><UserPlus size={16} />{t('إنشاء الحساب', 'Create Account')}</>}
               </button>
             </form>
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
+              <div className="relative flex justify-center text-xs uppercase"><span className="bg-[#F8F4EA] px-2 text-[#8B9D8A] font-medium">{t('أو', 'Or')}</span></div>
+            </div>
+
+            <button
+              onClick={() => handleGoogleLogin()}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl text-sm font-semibold transition-all group overflow-hidden relative"
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.7)', 
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(6, 43, 36, 0.1)',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+                color: '#3A5A50'
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.9)'; (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.7)'; (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h6.5c-.3 1.5-1.1 2.8-2.4 3.6v3h3.8c2.3-2.1 3.6-5.2 3.6-8.6z" fill="#4285F4"/>
+                <path d="M12 24c3.2 0 6-1.1 8-2.9l-3.8-3c-1.1.8-2.6 1.2-4.2 1.2-3.2 0-6-2.2-7-5.2H1.1v3.2C3.1 21.3 7.3 24 12 24z" fill="#34A853"/>
+                <path d="M5 14.1c-.2-.7-.4-1.4-.4-2.1s.2-1.4.4-2.1V6.7H1.1C.4 8.1 0 9.7 0 11.4s.4 3.3 1.1 4.7l3.9-3.1v1.1z" fill="#FBBC05"/>
+                <path d="M12 4.8c1.7 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.1 15.2 0 12 0 7.3 0 3.1 2.7 1.1 6.7l3.9 3.2c1-3 3.8-5.1 7-5.1z" fill="#EA4335"/>
+              </svg>
+              {t('سجل باستخدام جوجل', 'Sign up with Google')}
+            </button>
 
             <p className="text-center text-[#5A7A70] text-xs mt-5">
               {t('لديك حساب بالفعل؟', 'Already have an account?')}

@@ -1,7 +1,10 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const router = express.Router();
 
@@ -16,6 +19,48 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    const token = signToken(user._id);
+    res.json({ token, user: user.toJSON() });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// POST /api/auth/google
+router.post('/google', async (req, res) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) return res.status(400).json({ message: 'Google credential required' });
+
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, picture, sub } = payload;
+
+    let user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      // Create new user if doesn't exist
+      user = await User.create({
+        name,
+        email: email.toLowerCase(),
+        password: Math.random().toString(36).slice(-10), // Random password for social logins
+        avatar: picture,
+        role: 'student',
+        enrolledCourses: [],
+        googleId: sub, // Storing google ID is good practice
+      });
+    } else {
+      // Update googleId if not present
+      if (!user.googleId) {
+        user.googleId = sub;
+        await user.save();
+      }
     }
 
     const token = signToken(user._id);

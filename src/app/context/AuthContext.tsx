@@ -21,6 +21,7 @@ interface AuthContextType {
   logout: () => void;
   register: (userData: any) => Promise<{ success: boolean; message: string }>;
   updateProfile: (updates: Partial<User>) => Promise<{ success: boolean; message: string }>;
+  loginWithGoogle: (credential: string) => Promise<{ success: boolean; message: string }>;
   isAdmin: boolean;
   isStudent: boolean;
   isAuthenticated: boolean;
@@ -139,10 +140,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const loginWithGoogle = useCallback(async (credential: string) => {
+    try {
+      const res = await fetch(`${API_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, message: data.message || 'Google login failed' };
+
+      localStorage.setItem('sa_token', data.token);
+      const u = normalizeUser(data.user);
+      localStorage.setItem('sa_current_user', JSON.stringify(u));
+      setCurrentUser(u);
+      return { success: true, message: '' };
+    } catch {
+      return { success: false, message: 'Google login unavailable. Please try again.' };
+    }
+  }, []);
+
   return (
     <AuthContext.Provider value={{
       currentUser,
-      login, logout, register, updateProfile,
+      login, logout, register, updateProfile, loginWithGoogle,
       isAdmin: currentUser?.role === 'admin',
       isStudent: currentUser?.role === 'student',
       isAuthenticated: !!currentUser,

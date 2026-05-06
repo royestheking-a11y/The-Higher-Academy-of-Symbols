@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   enrolledCourses:  [{ type: String }],
   avatar:           { type: String, default: '' },
   status:           { type: String, enum: ['active', 'inactive', 'banned'], default: 'active' },
+  googleId:         { type: String, unique: true, sparse: true },
 }, { timestamps: true });
 
 // Hash password before save
