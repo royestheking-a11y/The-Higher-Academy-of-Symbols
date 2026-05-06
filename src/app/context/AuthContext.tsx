@@ -33,6 +33,7 @@ const AuthContext = createContext<AuthContextType>({
   logout: () => {},
   register: async () => ({ success: false, message: '' }),
   updateProfile: async () => ({ success: false, message: '' }),
+  loginWithGoogle: async () => ({ success: false, message: '' }),
   isAdmin: false,
   isStudent: false,
   isAuthenticated: false,
