@@ -481,7 +481,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen flex" style={{ background: '#F0EDE5', fontFamily }} dir={isRTL ? 'rtl' : 'ltr'}>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-56 shrink-0 min-h-screen sticky top-0 overflow-hidden"
+      <aside className="hidden lg:flex flex-col w-56 shrink-0 h-screen sticky top-0 overflow-hidden"
         style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})`, borderInlineEnd: '1px solid rgba(201,162,74,0.2)' }}>
         <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
         <div className="relative z-10 flex flex-col h-full">
@@ -498,7 +498,7 @@ export default function AdminDashboard() {
               onClick={() => setSidebarOpen(false)} />
             <motion.aside initial={{ x: isRTL ? '100%' : '-100%' }} animate={{ x: 0 }} exit={{ x: isRTL ? '100%' : '-100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="fixed top-0 start-0 w-60 min-h-screen z-50 flex flex-col lg:hidden overflow-hidden"
+              className="fixed top-0 start-0 w-60 h-screen z-50 flex flex-col lg:hidden overflow-hidden"
               style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})` }}>
               <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
               <div className="relative z-10 flex flex-col h-full">
