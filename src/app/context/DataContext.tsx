@@ -142,25 +142,30 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // Fire all requests in parallel but update their state immediately upon resolution
-    await Promise.allSettled([
+    const publicRequests = [
       fetchAndSet('/lectures', setLecturesState),
       fetchAndSet('/articles', setArticlesState),
       fetchAndSet('/areas', setAreasState),
       fetchAndSet('/testimonials', setTestimonialsState),
       fetchAndSet('/settings', setSettingsState, true),
-      fetchAndSet('/enrollments', setEnrollmentsState),
-      fetchAndSet('/contact', setContactState),
-      fetchAndSet('/users', setUsersState),
-      fetchAndSet('/supervisors', setSupervisorsState),
-      fetchAndSet('/teachers', setTeachersState),
-      fetchAndSet('/packages', setPackagesState),
-      fetchAndSet('/subscriptions', setSubscriptionsState),
-      fetchAndSet('/notifications', setNotificationsState)
-    ]);
+      fetchAndSet('/packages', setPackagesState), // Packages usually public for viewing
+    ];
 
+    const protectedRequests = currentUser ? [
+      fetchAndSet('/notifications', setNotificationsState),
+      ...(currentUser.role === 'admin' ? [
+        fetchAndSet('/enrollments', setEnrollmentsState),
+        fetchAndSet('/contact', setContactState),
+        fetchAndSet('/users', setUsersState),
+        fetchAndSet('/supervisors', setSupervisorsState),
+        fetchAndSet('/teachers', setTeachersState),
+        fetchAndSet('/subscriptions', setSubscriptionsState),
+      ] : [])
+    ] : [];
+
+    await Promise.allSettled([...publicRequests, ...protectedRequests]);
     setLoading(false);
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     refreshData();
