@@ -6,15 +6,20 @@ import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { GeometricBackground } from '../components/GeometricBackground';
+import { Skeleton } from '../components/Skeleton';
 
 const BRAND = { deep: '#062B24', mid: '#0B3A31', gold: '#C9A24A', goldLight: '#F0D98A', ivory: '#F8F4EA' };
 
 export default function LectureDetail() {
   const { slug } = useParams();
   const { t, isRTL, fontFamily } = useLanguage();
-  const { lectures } = useData();
+  const { lectures, loading } = useData();
   const { currentUser } = useAuth();
   const [openModule, setOpenModule] = useState<number | null>(0);
+
+  if (loading) {
+    return <Skeleton.Lecture />;
+  }
 
   const lecture = (lectures as any[]).find((l: any) => l.slug === slug);
 

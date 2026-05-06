@@ -138,6 +138,54 @@ export function SkeletonArticle() {
   );
 }
 
+export function SkeletonLecture() {
+  return (
+    <div className="w-full">
+      {/* Hero Section */}
+      <div className="p-8 sm:p-16" style={{ background: BRAND.mid }}>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <SkeletonBase theme="dark" className="h-6 w-32 rounded-full mb-6 opacity-30" />
+            <SkeletonText theme="dark" lines={2} className="h-10 w-full mb-8 opacity-40" />
+            <div className="flex gap-6">
+              <SkeletonBase theme="dark" className="h-4 w-24 rounded-full opacity-30" />
+              <SkeletonBase theme="dark" className="h-4 w-24 rounded-full opacity-30" />
+              <SkeletonBase theme="dark" className="h-4 w-24 rounded-full opacity-30" />
+            </div>
+            <div className="flex gap-4 mt-8">
+              <SkeletonBase theme="dark" className="h-12 w-40 rounded-full opacity-30" />
+              <SkeletonBase theme="dark" className="h-12 w-40 rounded-full opacity-20" />
+            </div>
+          </div>
+          <SkeletonBase theme="dark" className="aspect-video w-full rounded-2xl opacity-20" />
+        </div>
+      </div>
+
+      {/* Info Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-2 space-y-12">
+            <div className="space-y-4">
+              <SkeletonBase theme="light" className="h-8 w-48 rounded-full opacity-40" />
+              <SkeletonText theme="light" lines={4} className="opacity-30" />
+            </div>
+            <div className="space-y-4">
+              <SkeletonBase theme="light" className="h-8 w-48 rounded-full opacity-40" />
+              <div className="grid grid-cols-2 gap-4">
+                <SkeletonBase theme="light" className="h-12 w-full rounded-xl opacity-20" />
+                <SkeletonBase theme="light" className="h-12 w-full rounded-xl opacity-20" />
+              </div>
+            </div>
+          </div>
+          <div className="lg:col-span-1">
+            <SkeletonBase theme="light" className="h-[400px] w-full rounded-3xl opacity-30 shadow-xl" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export const Skeleton = {
   Base: SkeletonBase,
   Text: SkeletonText,
@@ -145,4 +193,5 @@ export const Skeleton = {
   Card: SkeletonCard,
   Hero: SkeletonHero,
   Article: SkeletonArticle,
+  Lecture: SkeletonLecture,
 };
