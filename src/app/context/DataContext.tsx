@@ -118,7 +118,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     const options: any = { method, headers };
     if (body) options.body = JSON.stringify(body);
     
-    const API_URL = import.meta.env.VITE_API_URL || '';
+    let API_URL = import.meta.env.VITE_API_URL || '';
+    if (API_URL.endsWith('/api')) {
+      API_URL = API_URL.slice(0, -4);
+    }
     const res = await fetch(`${API_URL}/api${url}`, options);
     if (!res.ok) {
         if(res.status === 401 || res.status === 403) return null; // Ignore auth errors for public viewing

@@ -45,7 +45,10 @@ function getToken() {
   try { return localStorage.getItem('sa_token'); } catch { return null; }
 }
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+let API_URL = import.meta.env.VITE_API_URL || '';
+if (API_URL.endsWith('/api')) {
+  API_URL = API_URL.slice(0, -4);
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
