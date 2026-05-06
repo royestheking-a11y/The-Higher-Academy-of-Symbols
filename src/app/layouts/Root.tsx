@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router';
+import { Outlet, ScrollRestoration } from 'react-router';
 import { Toaster } from 'sonner';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
@@ -10,6 +10,7 @@ export default function Root() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ fontFamily, background: '#F8F4EA' }}>
+      <ScrollRestoration />
       {/* Fixed header wrapper — announcement bar sits above navbar */}
       <div className="fixed top-0 left-0 right-0 z-50 flex flex-col">
         <AnnouncementBar />

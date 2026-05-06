@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router';
+import { Outlet, ScrollRestoration } from 'react-router';
 import { Toaster } from 'sonner';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -11,6 +11,7 @@ export default function DashboardRoot() {
       style={{ fontFamily }}
       dir={isRTL ? 'rtl' : 'ltr'}
     >
+      <ScrollRestoration />
       <Outlet />
       <Toaster
         position="top-center"
