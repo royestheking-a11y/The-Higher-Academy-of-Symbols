@@ -1,0 +1,60 @@
+@keyframes premium-shimmer-light {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes premium-shimmer-dark {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton-base {
+  border-radius: 8px;
+  background-size: 1000px 100%;
+}
+
+.skeleton-light {
+  background: linear-gradient(
+    90deg,
+    rgba(6, 43, 36, 0.03) 0%,
+    rgba(201, 162, 74, 0.08) 50%,
+    rgba(6, 43, 36, 0.03) 100%
+  );
+  background-size: 1000px 100%;
+  animation: premium-shimmer-light 2.5s infinite linear;
+}
+
+.skeleton-dark {
+  background: linear-gradient(
+    90deg,
+    rgba(248, 244, 234, 0.05) 0%,
+    rgba(201, 162, 74, 0.15) 50%,
+    rgba(248, 244, 234, 0.05) 100%
+  );
+  background-size: 1000px 100%;
+  animation: premium-shimmer-dark 2.5s infinite linear;
+}
+
+.skeleton-card-light {
+  background: white;
+  border: 1px solid rgba(6, 43, 36, 0.1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 24px; /* typical 3xl */
+  overflow: hidden;
+}
+
+.skeleton-card-dark {
+  background: linear-gradient(145deg, #0b3a31, #123f36);
+  border: 1px solid rgba(201, 162, 74, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 24px;
+  overflow: hidden;
+}
