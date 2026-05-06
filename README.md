@@ -7,8 +7,5 @@ The Higher Academy of Symbols is a premium educational platform dedicated to the
 - **Designer:** Aurangzeb Sunny
 - **Developer:** Aurangzeb Sunny
 
-### Platform Powered by
-- **Rizqara Tech**
-
 ---
 © 2026 The Higher Academy of Symbols. All rights reserved.
