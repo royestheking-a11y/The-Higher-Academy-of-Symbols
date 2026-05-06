@@ -101,10 +101,48 @@ export function SkeletonHero() {
   );
 }
 
+export function SkeletonArticle() {
+  return (
+    <div className="w-full">
+      {/* Header Area */}
+      <div className="p-8 sm:p-12" style={{ background: BRAND.mid }}>
+        <div className="max-w-4xl mx-auto">
+          <SkeletonBase theme="dark" className="h-6 w-32 rounded-full mb-6 opacity-30" />
+          <SkeletonText theme="dark" lines={2} className="h-10 w-full mb-8 opacity-40" />
+          <div className="flex gap-4">
+            <SkeletonAvatar theme="dark" size={32} className="opacity-30" />
+            <SkeletonBase theme="dark" className="h-4 w-24 rounded-full mt-2 opacity-30" />
+            <SkeletonBase theme="dark" className="h-4 w-24 rounded-full mt-2 opacity-30" />
+          </div>
+        </div>
+      </div>
+      
+      {/* Content Area */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+          <div className="lg:col-span-3">
+            <SkeletonBase theme="light" className="h-64 sm:h-80 w-full rounded-3xl mb-10 opacity-60" />
+            <SkeletonText theme="light" lines={15} className="w-full opacity-50" />
+          </div>
+          <div className="lg:col-span-1 space-y-8">
+            <SkeletonBase theme="light" className="h-40 w-full rounded-2xl opacity-40" />
+            <div className="space-y-4">
+              <SkeletonBase theme="light" className="h-6 w-32 rounded-full opacity-30" />
+              <SkeletonBase theme="light" className="h-24 w-full rounded-xl opacity-30" />
+              <SkeletonBase theme="light" className="h-24 w-full rounded-xl opacity-30" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export const Skeleton = {
   Base: SkeletonBase,
   Text: SkeletonText,
   Avatar: SkeletonAvatar,
   Card: SkeletonCard,
   Hero: SkeletonHero,
+  Article: SkeletonArticle,
 };

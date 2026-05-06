@@ -3,16 +3,21 @@ import { Clock, Calendar, ArrowLeft, ArrowRight, Share2, Facebook, Twitter, Book
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { GeometricBackground } from '../components/GeometricBackground';
+import { Skeleton } from '../components/Skeleton';
 
 const BRAND = { deep: '#062B24', mid: '#0B3A31', gold: '#C9A24A', goldLight: '#F0D98A', ivory: '#F8F4EA' };
 
 export default function ArticleDetail() {
   const { slug } = useParams();
   const { t, isRTL, fontFamily } = useLanguage();
-  const { getPublishedArticles } = useData();
+  const { getPublishedArticles, loading } = useData();
 
   const articles = getPublishedArticles();
   const article = (articles as any[]).find((a: any) => a.slug === slug);
+
+  if (loading) {
+    return <Skeleton.Article />;
+  }
   const currentIndex = (articles as any[]).findIndex((a: any) => a.slug === slug);
   const prevArticle = currentIndex > 0 ? (articles as any[])[currentIndex - 1] : null;
   const nextArticle = currentIndex < articles.length - 1 ? (articles as any[])[currentIndex + 1] : null;
