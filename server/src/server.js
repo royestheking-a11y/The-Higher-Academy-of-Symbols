@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import https from 'https';
 import { v2 as cloudinary } from 'cloudinary';
 import { connectDB } from './db.js';
 
@@ -72,4 +73,19 @@ connectDB().then(() => {
     console.log(`📦 MongoDB: Connected`);
     console.log(`☁️  Cloudinary: ${process.env.CLOUDINARY_CLOUD_NAME}`);
   });
+
+  // Self-ping logic to keep Render awake (Render free tier sleeps after 15 mins)
+  const url = process.env.RENDER_EXTERNAL_URL;
+  if (url) {
+    console.log(`💓 Initializing self-ping for: ${url}`);
+    setInterval(() => {
+      https.get(`${url}/api/health`, (res) => {
+        if (res.statusCode === 200) {
+          console.log(`💓 Self-ping successful at ${new Date().toISOString()}`);
+        }
+      }).on('error', (err) => {
+        console.error(`💔 Self-ping failed: ${err.message}`);
+      });
+    }, 10 * 60 * 1000); // Every 10 minutes
+  }
 });
