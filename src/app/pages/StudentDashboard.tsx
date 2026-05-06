@@ -123,7 +123,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Nav Items */}
-      <div className="p-3 flex-1">
+      <div className="p-3 flex-1 overflow-y-auto">
         {navItems.map(item => {
           const IconComp = item.icon;
           return (
@@ -165,7 +165,7 @@ export default function StudentDashboard() {
 
       {/* Desktop Sidebar */}
       <aside
-        className="hidden lg:flex flex-col w-64 shrink-0 min-h-screen sticky top-0 overflow-hidden"
+        className="hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 overflow-hidden"
         style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})`, borderInlineEnd: '1px solid rgba(201,162,74,0.2)' }}
       >
         <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
@@ -191,7 +191,7 @@ export default function StudentDashboard() {
               animate={{ x: 0 }}
               exit={{ x: isRTL ? '100%' : '-100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="fixed top-0 start-0 w-72 min-h-screen z-50 flex flex-col lg:hidden overflow-hidden"
+              className="fixed top-0 start-0 w-72 h-screen z-50 flex flex-col lg:hidden overflow-hidden"
               style={{ background: `linear-gradient(175deg, ${BRAND.deep}, ${BRAND.mid})` }}
             >
               <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
