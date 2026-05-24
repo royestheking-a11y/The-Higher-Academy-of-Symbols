@@ -236,7 +236,7 @@ export default function SearchPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {(activeFilter === 'all' ? matchedLectures.slice(0, 3) : matchedLectures).map((l: any, i: number) => (
                       <motion.div key={l.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
-                        <Link to={`/lectures/${l.slug}`} className="flex items-start gap-4 p-5 rounded-2xl group transition-all hover:-translate-y-1 block" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                        <Link to={`/lectures/${l.slug}`} className="flex items-start gap-4 p-5 rounded-2xl group transition-all hover:-translate-y-1" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                           <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})` }}>
                             <BookOpen size={18} className="text-[#C9A24A]" />
                           </div>
@@ -270,7 +270,7 @@ export default function SearchPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {(activeFilter === 'all' ? matchedArticles.slice(0, 4) : matchedArticles).map((a: any, i: number) => (
                       <motion.div key={a.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
-                        <Link to={`/articles/${a.slug}`} className="flex flex-col h-full p-5 rounded-2xl group transition-all hover:-translate-y-1 block" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                        <Link to={`/articles/${a.slug}`} className="flex flex-col h-full p-5 rounded-2xl group transition-all hover:-translate-y-1" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                           <div className="flex items-center gap-2 mb-3">
                             <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(201,162,74,0.1)' }}>
                               <Newspaper size={15} className="text-[#C9A24A]" />
@@ -304,7 +304,7 @@ export default function SearchPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {matchedAreas.map((area: any, i: number) => (
                       <motion.div key={area.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
-                        <Link to={`/areas/${area.slug}`} className="flex items-start gap-4 p-5 rounded-2xl group transition-all hover:-translate-y-1 block" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                        <Link to={`/areas/${area.slug}`} className="flex items-start gap-4 p-5 rounded-2xl group transition-all hover:-translate-y-1" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                           <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(201,162,74,0.1)', border: '1px solid rgba(201,162,74,0.2)' }}>
                             <Compass size={18} className="text-[#C9A24A]" />
                           </div>

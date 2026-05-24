@@ -60,26 +60,48 @@ router.post('/', protect, async (req, res) => {
   } catch (err) { res.status(400).json({ message: err.message }); }
 });
 
-// PATCH — admin approves/rejects
-router.patch('/:id', protect, adminOnly, async (req, res) => {
+// PATCH — admin approves/rejects, or student updates progress
+router.patch('/:id', protect, async (req, res) => {
   try {
-    const enr = await Enrollment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const enr = await Enrollment.findById(req.params.id);
     if (!enr) return res.status(404).json({ message: 'Not found' });
 
-    // If approved, notify student
-    if (req.body.enrollmentStatus === 'approved') {
-      await Notification.create({
-        userId: enr.userId.toString(),
-        title_ar: 'تم تفعيل المحاضرة',
-        title_en: 'Lecture Activated',
-        message_ar: `تمت الموافقة على طلب اشتراكك في: ${enr.courseTitle}. يمكنك الآن البدء بالمشاهدة.`,
-        message_en: `Your enrollment for "${enr.courseTitle}" has been approved. You can start now.`,
-        type: 'success',
-        link: '/dashboard',
-      });
+    const isAdmin = req.user.role === 'admin';
+    const isOwner = enr.userId.toString() === req.user._id.toString();
+
+    if (!isAdmin && !isOwner) {
+      return res.status(403).json({ message: 'Forbidden' });
     }
 
-    res.json(enr);
+    if (!isAdmin) {
+      // Students can only update progress / completedLessons
+      if (req.body.completedLessons !== undefined) {
+        enr.completedLessons = req.body.completedLessons;
+      }
+      await enr.save();
+    } else {
+      // Admin can update anything
+      Object.assign(enr, req.body);
+      await enr.save();
+
+      // If approved, notify student
+      if (req.body.enrollmentStatus === 'approved') {
+        await Notification.create({
+          userId: enr.userId.toString(),
+          title_ar: 'تم تفعيل المحاضرة',
+          title_en: 'Lecture Activated',
+          message_ar: `تمت الموافقة على طلب اشتراكك في: ${enr.courseTitle}. يمكنك الآن البدء بالمشاهدة.`,
+          message_en: `Your enrollment for "${enr.courseTitle}" has been approved. You can start now.`,
+          type: 'success',
+          link: '/dashboard',
+        });
+      }
+    }
+
+    const populated = await Enrollment.findById(enr._id)
+      .populate('userId', 'name email')
+      .populate('courseId', 'title_en title_ar slug');
+    res.json(populated);
   } catch (err) { res.status(400).json({ message: err.message }); }
 });
 

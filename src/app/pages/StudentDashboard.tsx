@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import {
   LayoutDashboard, BookOpen, Award, CreditCard, MessageSquare,
   User, LogOut, Clock, CheckCircle2, Play, Star, ChevronRight,
-  Home, Bell, Search, Menu, X
+  Home, Bell, Search, Menu, X, ChevronDown, ChevronUp, Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
@@ -19,9 +19,10 @@ const BRAND = { deep: '#062B24', mid: '#0B3A31', gold: '#C9A24A', goldLight: '#F
 export default function StudentDashboard() {
   const { t, isRTL, fontFamily } = useLanguage();
   const { currentUser, logout } = useAuth();
-  const { lectures, enrollments, notifications, markNotificationAsRead, clearAllNotifications, loading } = useData();
+  const { lectures, enrollments, notifications, markNotificationAsRead, clearAllNotifications, updateEnrollment, loading } = useData();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -71,9 +72,14 @@ export default function StudentDashboard() {
     return <div className="min-h-screen" style={{ background: BRAND.ivory }} />;
   }
 
-  const myEnrollments = (enrollments as any[]).filter((e: any) => e.userId === currentUser.id);
+  const myEnrollments = (enrollments as any[]).filter((e: any) => {
+    const uid = typeof e.userId === 'object' ? (e.userId?._id || e.userId?.id) : e.userId;
+    return uid === currentUser.id || e.userLegacyId === currentUser.id;
+  });
+
   const allMyCourses = myEnrollments.map((enr: any) => {
-    const lecture = (lectures as any[]).find((l: any) => l.id === enr.courseId);
+    const courseIdStr = typeof enr.courseId === 'object' ? (enr.courseId?._id || enr.courseId?.id) : enr.courseId;
+    const lecture = (lectures as any[]).find((l: any) => l.id === courseIdStr || l._id === courseIdStr || l.id === enr.courseLegacyId);
     return { ...enr, lecture };
   }).filter((e: any) => e.lecture);
 
@@ -89,11 +95,37 @@ export default function StudentDashboard() {
     { id: 'support', icon: MessageSquare, label_ar: 'الدعم', label_en: 'Support' },
   ];
 
+  // Helper to count lessons in a lecture
+  const getLessonsCount = (lecture: any) => {
+    if (!lecture || !lecture.curriculum) return 0;
+    return lecture.curriculum.reduce((acc: number, mod: any) => acc + (mod.lessons?.length || 0), 0);
+  };
+
+  // Helper to calculate progress percentage for an enrollment
+  const getProgressPercent = (enr: any) => {
+    const lecture = enr.lecture;
+    if (!lecture) return 0;
+    const total = getLessonsCount(lecture);
+    if (total === 0) {
+      return enr.completedLessons?.includes('__course_completed__') ? 100 : 0;
+    }
+    const completed = (enr.completedLessons || []).length;
+    return Math.min(Math.round((completed / total) * 100), 100);
+  };
+
+  // Calculate completed courses (progress === 100%)
+  const completedCoursesCount = myCourses.filter((c: any) => getProgressPercent(c) === 100).length;
+
+  // Calculate average progress
+  const averageProgress = myCourses.length > 0 
+    ? Math.round(myCourses.reduce((sum: number, c: any) => sum + getProgressPercent(c), 0) / myCourses.length) 
+    : 0;
+
   const stats = [
     { icon: BookOpen, label_ar: 'محاضراتي', label_en: 'My Lectures', value: myCourses.length, color: '#C9A24A' },
-    { icon: CheckCircle2, label_ar: 'مكتملة', label_en: 'Completed', value: myEnrollments.filter((e: any) => e.enrollmentStatus === 'approved').length, color: '#4A8B7A' },
-    { icon: Award, label_ar: 'الشهادات', label_en: 'Certificates', value: myCourses.filter((c: any) => c.lecture?.certificate).length, color: '#D8B75B' },
-    { icon: Star, label_ar: 'نقاط التقدم', label_en: 'Progress Points', value: '85%', color: '#7BBFAD' },
+    { icon: CheckCircle2, label_ar: 'مكتملة', label_en: 'Completed', value: completedCoursesCount, color: '#4A8B7A' },
+    { icon: Award, label_ar: 'الشهادات', label_en: 'Certificates', value: completedCoursesCount, color: '#D8B75B' },
+    { icon: Star, label_ar: 'معدل التقدم', label_en: 'Average Progress', value: `${averageProgress}%`, color: '#7BBFAD' },
   ];
 
   const SidebarContent = () => (
@@ -391,9 +423,9 @@ export default function StudentDashboard() {
                           <div className="text-[#062B24] text-sm font-medium truncate">{t(course.lecture.title_ar, course.lecture.title_en)}</div>
                           <div className="flex items-center gap-3 mt-1.5">
                             <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(6,43,36,0.1)' }}>
-                              <div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #C9A24A, #F0D98A)', width: `${40 + i * 18}%` }} />
+                              <div className="h-full rounded-full transition-all duration-500" style={{ background: 'linear-gradient(90deg, #C9A24A, #F0D98A)', width: `${getProgressPercent(course)}%` }} />
                             </div>
-                            <span className="text-[#8B9D8A] text-xs shrink-0">{40 + i * 18}%</span>
+                            <span className="text-[#8B9D8A] text-xs font-bold shrink-0">{getProgressPercent(course)}%</span>
                           </div>
                         </div>
                         <Link to={`/lectures/${course.lecture.slug}`}>
@@ -452,36 +484,155 @@ export default function StudentDashboard() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {myCourses.map((course: any, i: number) => (
-                    <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="p-5 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                      <div className="flex items-start gap-4">
-                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0" style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})` }}>
-                          <BookOpen size={24} className="text-[#C9A24A]" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-[#062B24] font-semibold text-sm mb-1">{t(course.lecture.title_ar, course.lecture.title_en)}</h3>
-                          <div className="flex items-center gap-3 text-[#8B9D8A] text-xs mb-3">
-                            <span className="flex items-center gap-1"><Clock size={11} className="text-[#C9A24A]" />{course.lecture.duration?.split('/')[0]?.trim()}</span>
-                            <span className="flex items-center gap-1"><Play size={11} className="text-[#C9A24A]" />{course.lecture.lessonsCount} {t('درس', 'lessons')}</span>
+                  {myCourses.map((course: any, i: number) => {
+                    const progressVal = getProgressPercent(course);
+                    return (
+                      <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="p-5 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                        <div className="flex items-start gap-4">
+                          <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0" style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})` }}>
+                            <BookOpen size={24} className="text-[#C9A24A]" />
                           </div>
-                          <div className="flex items-center gap-3">
-                            <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(6,43,36,0.1)' }}>
-                              <div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #C9A24A, #F0D98A)', width: `${40 + i * 15}%` }} />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-[#062B24] font-semibold text-sm mb-1">{t(course.lecture.title_ar, course.lecture.title_en)}</h3>
+                            <div className="flex items-center gap-3 text-[#8B9D8A] text-xs mb-3">
+                              <span className="flex items-center gap-1"><Clock size={11} className="text-[#C9A24A]" />{course.lecture.duration?.split('/')[0]?.trim()}</span>
+                              <span className="flex items-center gap-1"><Play size={11} className="text-[#C9A24A]" />{getLessonsCount(course.lecture)} {t('درس', 'lessons')}</span>
                             </div>
-                            <span className="text-[#8B9D8A] text-xs">{40 + i * 15}%</span>
+                            <div className="flex items-center gap-3">
+                              <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(6,43,36,0.1)' }}>
+                                <div className="h-full rounded-full transition-all duration-500" style={{ background: 'linear-gradient(90deg, #C9A24A, #F0D98A)', width: `${progressVal}%` }} />
+                              </div>
+                              <span className="text-[#8B9D8A] text-xs font-bold">{progressVal}%</span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2 shrink-0">
+                            <span className="px-2.5 py-1 rounded-full text-xs text-center" style={{ background: 'rgba(74,139,122,0.15)', color: '#4A8B7A' }}>
+                              {t('مسجّل', 'Enrolled')}
+                            </span>
+                            <div className="flex gap-1.5">
+                              <Link to={`/lectures/${course.lecture.slug}`} className="px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1" style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 2px 0 #8B6B20' }}>
+                                <Play size={11} /> {t('مشاهدة', 'Watch')}
+                              </Link>
+                              <button 
+                                onClick={() => setExpandedCourse(expandedCourse === course.id ? null : course.id)}
+                                className="px-3 py-1.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1 transition-all border"
+                                style={{ background: 'rgba(6,43,36,0.05)', color: BRAND.deep, borderColor: 'rgba(6,43,36,0.1)' }}
+                              >
+                                {expandedCourse === course.id ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                                {expandedCourse === course.id ? t('إخفاء المنهج', 'Hide Lessons') : t('عرض المنهج', 'Show Lessons')}
+                              </button>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex flex-col gap-2 shrink-0">
-                          <span className="px-2.5 py-1 rounded-full text-xs text-center" style={{ background: 'rgba(74,139,122,0.15)', color: '#4A8B7A' }}>
-                            {t('مسجّل', 'Enrolled')}
-                          </span>
-                          <Link to={`/lectures/${course.lecture.slug}`} className="px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1" style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 2px 0 #8B6B20' }}>
-                            <Play size={11} /> {t('متابعة', 'Continue')}
-                          </Link>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+
+                        {/* Expanded Progress Dashboard */}
+                        {expandedCourse === course.id && (
+                          <div className="mt-5 pt-5 border-t border-[rgba(6,43,36,0.06)]">
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="text-[#062B24] font-semibold text-xs uppercase tracking-wider">{t('تفاصيل المنهج وإتمام الدروس', 'Curriculum & Lesson Completion')}</span>
+                              <span className="text-[#C9A24A] font-bold text-xs bg-[rgba(201,162,74,0.1)] px-2.5 py-1 rounded-full">
+                                {t('مكتمل:', 'Completed:')} {(course.completedLessons || []).length} / {getLessonsCount(course.lecture)}
+                              </span>
+                            </div>
+
+                            {/* Congrats banner if completed */}
+                            {progressVal === 100 && (
+                              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mb-4 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4" style={{ background: 'rgba(74,139,122,0.1)', border: '1px solid rgba(74,139,122,0.2)' }}>
+                                <div className="flex items-center gap-2.5">
+                                  <Award className="text-[#4A8B7A]" size={20} />
+                                  <div className="text-start">
+                                    <div className="text-[#062B24] font-bold text-xs">{t('تهانينا! لقد أكملت هذه الدورة بنجاح.', 'Congratulations! You completed this course.')}</div>
+                                    <div className="text-[#5A7A70] text-[10px]">{t('شهادتك معتمدة وجاهزة للتحميل الآن.', 'Your certificate is ready for download.')}</div>
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    setSelectedCert({ 
+                                      courseName: t(course.lecture.title_ar, course.lecture.title_en),
+                                      date: new Date(course.createdAt).toLocaleDateString(isRTL ? 'ar-SA' : 'en-US')
+                                    });
+                                    setIsCertModalOpen(true);
+                                  }}
+                                  className="px-3.5 py-1.5 rounded-xl text-xs font-semibold shrink-0"
+                                  style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 2px 0 #8B6B20' }}
+                                >
+                                  {t('تحميل الشهادة', 'Get Certificate')}
+                                </button>
+                              </motion.div>
+                            )}
+
+                            {/* Curriculum list or manual complete */}
+                            {getLessonsCount(course.lecture) === 0 ? (
+                              <div className="p-6 text-center rounded-xl bg-[rgba(6,43,36,0.02)] border border-dashed border-[rgba(6,43,36,0.1)]">
+                                <p className="text-[#5A7A70] text-xs mb-3">{t('لا يوجد منهج رقمي مضاف لهذه المحاضرة بعد. يمكنك تحديد المحاضرة كأكملتها يدوياً لتأهيل شهادتك.', 'No curriculum lessons added yet. You can mark this course as completed manually.')}</p>
+                                <button
+                                  onClick={async () => {
+                                    const isComp = course.completedLessons?.includes('__course_completed__');
+                                    const nextLessons = isComp ? [] : ['__course_completed__'];
+                                    await updateEnrollment(course.id, { completedLessons: nextLessons });
+                                    toast.success(isComp ? t('تم إلغاء إتمام الدورة', 'Course marked as incomplete') : t('تهانينا! تم إتمام الدورة بنجاح', 'Congratulations! Course marked as completed'));
+                                  }}
+                                  className="px-4 py-2 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 text-start"
+                                  style={course.completedLessons?.includes('__course_completed__') 
+                                    ? { background: 'rgba(212,24,61,0.1)', color: '#D4183D', border: '1px solid rgba(212,24,61,0.2)' }
+                                    : { background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 2px 0 #8B6B20' }
+                                  }
+                                >
+                                  <CheckCircle2 size={13} />
+                                  {course.completedLessons?.includes('__course_completed__') ? t('إلغاء الإتمام', 'Mark as Incomplete') : t('إكمال المحاضرة الآن', 'Complete Course Now')}
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="space-y-4">
+                                {course.lecture.curriculum.map((module: any, mi: number) => (
+                                  <div key={mi} className="rounded-xl overflow-hidden border border-[rgba(6,43,36,0.06)]" style={{ background: '#FAF9F5' }}>
+                                    <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(6,43,36,0.03)' }}>
+                                      <span className="text-[#062B24] font-medium text-xs">{t(module.module_ar, module.module_en)}</span>
+                                    </div>
+                                    <div className="divide-y divide-[rgba(6,43,36,0.04)]">
+                                      {module.lessons?.map((lesson: any, li: number) => {
+                                        const lessonId = `${course.lecture.id}-${mi}-${li}`;
+                                        const isCompleted = (course.completedLessons || []).includes(lessonId);
+                                        return (
+                                          <div key={li} className="px-4 py-3 flex items-center justify-between gap-4">
+                                            <div className="flex items-center gap-2.5">
+                                              <button
+                                                onClick={async () => {
+                                                  const prevCompleted = course.completedLessons || [];
+                                                  const nextCompleted = isCompleted 
+                                                    ? prevCompleted.filter((id: string) => id !== lessonId)
+                                                    : [...prevCompleted, lessonId];
+                                                  await updateEnrollment(course.id, { completedLessons: nextCompleted });
+                                                  if (!isCompleted && nextCompleted.length === getLessonsCount(course.lecture)) {
+                                                    toast.success(t('تهانينا! لقد أكملت كافة الدروس بنجاح.', 'Congratulations! You have completed all lessons.'));
+                                                  }
+                                                }}
+                                                className="w-5 h-5 rounded-full flex items-center justify-center border transition-all"
+                                                style={isCompleted 
+                                                  ? { background: BRAND.gold, borderColor: BRAND.gold, color: 'white' } 
+                                                  : { borderColor: 'rgba(6,43,36,0.2)', background: 'white' }
+                                                }
+                                              >
+                                                {isCompleted && <Check size={11} strokeWidth={3} />}
+                                              </button>
+                                              <span className={`text-xs ${isCompleted ? 'text-[#8B9D8A] line-through' : 'text-[#3A5A50]'}`}>
+                                                {t(lesson.title_ar, lesson.title_en)}
+                                              </span>
+                                            </div>
+                                            <span className="text-[#8B9D8A] text-[10px]">{lesson.duration}</span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </motion.div>
+                    );
+                  })}
                 </div>
               )}
             </motion.div>
@@ -496,13 +647,13 @@ export default function StudentDashboard() {
                   Array.from({ length: 2 }).map((_, i) => (
                     <Skeleton.Base key={i} theme="light" className="h-44 w-full rounded-2xl" />
                   ))
-                ) : myCourses.filter((c: any) => c.lecture?.certificate).length === 0 ? (
+                ) : myCourses.filter((c: any) => getProgressPercent(c) === 100).length === 0 ? (
                   <div className="col-span-2 text-center py-16 rounded-2xl" style={{ background: 'white' }}>
                     <Award size={48} className="text-[#C9A24A] mx-auto mb-4 opacity-40" />
-                    <p className="text-[#5A7A70]">{t('لا توجد شهادات بعد.', 'No certificates yet.')}</p>
+                    <p className="text-[#5A7A70]">{t('لا توجد شهادات صادرة بعد. أكمل محاضرة بنسبة 100% للحصول على شهادتك.', 'No certificates issued yet. Complete a lecture to 100% to get your certificate.')}</p>
                   </div>
                 ) : (
-                  myCourses.filter((c: any) => c.lecture?.certificate).map((course: any, i: number) => (
+                  myCourses.filter((c: any) => getProgressPercent(c) === 100).map((course: any, i: number) => (
                     <div key={i} className="p-6 rounded-2xl relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})`, border: '1px solid rgba(201,162,74,0.3)' }}>
                       <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.6} tileSize={50} />
                       <div className="relative z-10">

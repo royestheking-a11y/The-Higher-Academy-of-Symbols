@@ -571,7 +571,7 @@ function StudyAreasSection() {
                 >
                   <Link
                     to={`/areas/${area.slug}`}
-                    className="flex flex-col gap-4 p-5 rounded-2xl h-full group transition-all duration-300 block"
+                    className="flex flex-col gap-4 p-5 rounded-2xl h-full group transition-all duration-300"
                     style={{
                       background: BRAND.ivory,
                       border: '1px solid rgba(6,43,36,0.1)',
@@ -872,7 +872,7 @@ function ArticlesSection() {
             >
               <Link
                 to={`/articles/${article.slug}`}
-                className="flex flex-col h-full rounded-2xl overflow-hidden group transition-all duration-300 block"
+                className="flex flex-col h-full rounded-2xl overflow-hidden group transition-all duration-300"
                 style={{ background: BRAND.ivory, border: '1px solid rgba(6,43,36,0.1)', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)';

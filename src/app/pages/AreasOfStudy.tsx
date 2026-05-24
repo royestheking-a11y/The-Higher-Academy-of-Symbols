@@ -22,7 +22,7 @@ function AreaCard({ area, index }: { area: any; index: number }) {
     >
       <Link
         to={`/areas/${area.slug}`}
-        className="flex flex-col gap-5 p-6 rounded-2xl h-full group transition-all duration-300 block"
+        className="flex flex-col gap-5 p-6 rounded-2xl h-full group transition-all duration-300"
         style={{ background: BRAND.ivory, border: '1px solid rgba(6,43,36,0.1)', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}
         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.border = '1px solid rgba(201,162,74,0.4)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 30px rgba(6,43,36,0.12)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.border = '1px solid rgba(6,43,36,0.1)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}

@@ -34,13 +34,33 @@ router.post('/google', async (req, res) => {
     const { credential } = req.body;
     if (!credential) return res.status(400).json({ message: 'Google credential required' });
 
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+    let email, name, picture, sub;
 
-    const payload = ticket.getPayload();
-    const { email, name, picture, sub } = payload;
+    // Check if the credential is a JWT (contains dots) or an OAuth access token
+    if (typeof credential === 'string' && credential.includes('.')) {
+      const ticket = await client.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
+      email = payload.email;
+      name = payload.name;
+      picture = payload.picture;
+      sub = payload.sub;
+    } else {
+      // Fetch user info from Google's userinfo endpoint using the access token
+      const userInfoRes = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${credential}`);
+      if (!userInfoRes.ok) {
+        return res.status(400).json({ message: 'Invalid or expired Google access token' });
+      }
+      const payload = await userInfoRes.json();
+      email = payload.email;
+      name = payload.name;
+      picture = payload.picture;
+      sub = payload.sub;
+    }
+
+    if (!email) return res.status(400).json({ message: 'Google account is missing email address' });
 
     let user = await User.findOne({ email: email.toLowerCase() });
 

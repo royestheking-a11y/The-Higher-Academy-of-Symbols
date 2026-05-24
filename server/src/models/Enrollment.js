@@ -14,6 +14,7 @@ const enrollmentSchema = new mongoose.Schema({
   enrollmentStatus: { type: String, enum: ['pending', 'approved', 'rejected', 'cancelled'], default: 'pending' },
   transactionId:    { type: String, default: '' },
   notes:            { type: String, default: '' },
+  completedLessons: { type: [String], default: [] },
 }, { timestamps: true });
 
 export default mongoose.model('Enrollment', enrollmentSchema);

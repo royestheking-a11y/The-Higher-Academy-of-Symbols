@@ -121,7 +121,7 @@ export default function Articles() {
             <div className="text-[#C9A24A] text-xs uppercase tracking-widest mb-4">{t('مقالة مميزة', 'Featured Article')}</div>
             <Link
               to={`/articles/${featured.slug}`}
-              className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-3xl overflow-hidden group transition-all block"
+              className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-3xl overflow-hidden group transition-all"
               style={{ background: 'white', border: '1px solid rgba(6,43,36,0.12)', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(6,43,36,0.15)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
@@ -177,7 +177,7 @@ export default function Articles() {
             >
               <Link
                 to={`/articles/${article.slug}`}
-                className="flex flex-col h-full rounded-2xl overflow-hidden group transition-all block"
+                className="flex flex-col h-full rounded-2xl overflow-hidden group transition-all"
                 style={{ background: 'white', border: '1px solid rgba(6,43,36,0.1)', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 30px rgba(6,43,36,0.12)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}

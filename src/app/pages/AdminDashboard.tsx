@@ -1320,15 +1320,66 @@ export default function AdminDashboard() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <h2 className="text-[#062B24] font-bold text-lg mb-6">{t('إدارة التسجيلات', 'Enrollment Management')}</h2>
               <TableWrap>
-                <THead cols={[t('المستخدم', 'User'), t('المحاضرة', 'Lecture'), t('المبلغ', 'Amount'), t('طريقة الدفع', 'Payment'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
+                <THead cols={[t('المستخدم', 'User'), t('المحاضرة', 'Lecture'), t('التقدم', 'Progress'), t('المبلغ', 'Amount'), t('طريقة الدفع', 'Payment'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                 <tbody>
                   {(enrollments as any[]).map((enr: any, i: number) => {
-                    const u = (users as any[]).find((us: any) => us.id === enr.userId);
-                    const lec = (lectures as any[]).find((l: any) => l.id === enr.courseId);
+                    const userIdStr = typeof enr.userId === 'object' ? (enr.userId?._id || enr.userId?.id) : enr.userId;
+                    const courseIdStr = typeof enr.courseId === 'object' ? (enr.courseId?._id || enr.courseId?.id) : enr.courseId;
+                    const u = (users as any[]).find((us: any) => us.id === userIdStr || us._id === userIdStr);
+                    const lec = (lectures as any[]).find((l: any) => l.id === courseIdStr || l._id === courseIdStr);
+
+                    // Helpers
+                    const getLessonsCount = (lecture: any) => {
+                      if (!lecture || !lecture.curriculum) return 0;
+                      return lecture.curriculum.reduce((acc: number, mod: any) => acc + (mod.lessons?.length || 0), 0);
+                    };
+
+                    const getProgressPercent = (enrollment: any, lecture: any) => {
+                      if (!lecture) return 0;
+                      const total = getLessonsCount(lecture);
+                      if (total === 0) {
+                        return enrollment.completedLessons?.includes('__course_completed__') ? 100 : 0;
+                      }
+                      const completed = (enrollment.completedLessons || []).length;
+                      return Math.min(Math.round((completed / total) * 100), 100);
+                    };
+
+                    const progressVal = getProgressPercent(enr, lec);
+
+                    const forceCompleteEnrollment = async () => {
+                      if (!lec) return;
+                      const totalLessons = getLessonsCount(lec);
+                      let nextCompleted: string[] = [];
+                      if (totalLessons === 0) {
+                        nextCompleted = ['__course_completed__'];
+                      } else {
+                        lec.curriculum.forEach((mod: any, mi: number) => {
+                          mod.lessons?.forEach((les: any, li: number) => {
+                            nextCompleted.push(`${lec.id}-${mi}-${li}`);
+                          });
+                        });
+                      }
+                      await updateEnrollment(enr.id, { completedLessons: nextCompleted });
+                      toast.success(t('تم تفعيل إكمال الدورة بنجاح', 'Course successfully marked as completed'));
+                    };
+
+                    const forceIncompleteEnrollment = async () => {
+                      await updateEnrollment(enr.id, { completedLessons: [] });
+                      toast.success(t('تم إلغاء إكمال الدورة وإعادة تعيين التقدم', 'Course completion reset'));
+                    };
+
                     return (
                       <tr key={i} style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                         <td className={`${tdCls} text-[#062B24] font-medium`}>{enr.userName || u?.name || '-'}</td>
                         <td className={`${tdCls} text-[#5A7A70] max-w-[150px]`}><div className="truncate">{enr.courseTitle || (lec ? t(lec.title_ar, lec.title_en) : '-')}</div></td>
+                        <td className={`${tdCls} text-xs text-[#5A7A70]`}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-12 h-1.5 rounded-full overflow-hidden bg-gray-100 shrink-0">
+                              <div className="h-full bg-[#4A8B7A] transition-all" style={{ width: `${progressVal}%` }} />
+                            </div>
+                            <span className="font-bold text-[#062B24]">{progressVal}%</span>
+                          </div>
+                        </td>
                         <td className={`${tdCls} text-[#C9A24A] font-bold`}>${enr.amount}</td>
                         <td className={`${tdCls} text-[#5A7A70] text-xs`}>
                           <div className="flex items-center gap-1">
@@ -1361,12 +1412,28 @@ export default function AdminDashboard() {
                               />
                             )}
                             {enr.enrollmentStatus !== 'rejected' && <ActionBtn icon={X} color="#D4183D" onClick={() => { updateEnrollment(enr.id, { enrollmentStatus: 'rejected' }); toast.success(t('تم الرفض', 'Rejected')); }} />}
+                            
+                            {/* Force Complete Toggle */}
+                            {enr.enrollmentStatus === 'approved' && (
+                              <ActionBtn 
+                                icon={Award} 
+                                color={progressVal === 100 ? '#C9A24A' : '#8B9D8A'} 
+                                onClick={() => {
+                                  if (progressVal === 100) {
+                                    forceIncompleteEnrollment();
+                                  } else {
+                                    forceCompleteEnrollment();
+                                  }
+                                }} 
+                                title={progressVal === 100 ? t('إلغاء التميز يدوياً', 'Reset Course Completion') : t('إكمال الدورة يدوياً', 'Force Complete Course')}
+                              />
+                            )}
                           </div>
                         </td>
                       </tr>
                     );
                   })}
-                  {enrollments.length === 0 && <tr><td colSpan={5} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد تسجيلات.', 'No enrollments.')}</td></tr>}
+                  {enrollments.length === 0 && <tr><td colSpan={7} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد تسجيلات.', 'No enrollments.')}</td></tr>}
                 </tbody>
               </TableWrap>
             </motion.div>

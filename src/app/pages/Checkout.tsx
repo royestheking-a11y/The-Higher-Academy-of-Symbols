@@ -268,7 +268,7 @@ export default function Checkout() {
 
           {/* Summary Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-[#062B24] rounded-3xl p-6 border border-[rgba(201,162,74,0.3)] shadow-2xl sticky top-28 relative overflow-hidden">
+            <div className="bg-[#062B24] rounded-3xl p-6 border border-[rgba(201,162,74,0.3)] shadow-2xl sticky top-28 overflow-hidden">
                <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.6} tileSize={50} />
               <h3 className="text-[#F0D98A] font-bold mb-6 relative z-10">{t('ملخص الدفع', 'Payment Summary')}</h3>
               

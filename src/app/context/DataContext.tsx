@@ -160,7 +160,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         fetchAndSet('/supervisors', setSupervisorsState),
         fetchAndSet('/teachers', setTeachersState),
         fetchAndSet('/subscriptions', setSubscriptionsState),
-      ] : [])
+      ] : [
+        fetchAndSet('/enrollments/my', setEnrollmentsState)
+      ])
     ] : [];
 
     await Promise.allSettled([...publicRequests, ...protectedRequests]);
