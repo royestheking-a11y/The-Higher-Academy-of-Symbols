@@ -44,7 +44,7 @@ export default function About() {
   };
 
   const timeline = [
-    { year: '2023', title_ar: 'فكرة التأسيس', title_en: 'Founding Idea', desc_ar: 'ولدت فكرة الأكاديمية العليا للرموز من رحم البحث العلمي في الدراسات الرمزية.', desc_en: 'The idea of The Higher Academy of Symbols was born from scientific research in symbolic studies.' },
+    { year: '2023', title_ar: 'فكرة التأسيس', title_en: 'Founding Idea', desc_ar: 'ولدت فكرة الأكاديمية العليا للرمز والشيفرة من رحم البحث العلمي في الدراسات الرمزية.', desc_en: 'The idea of The Higher Academy of Symbol and Cipher was born from scientific research in symbolic studies.' },
     { year: '2024', title_ar: 'التأسيس الرسمي', title_en: 'Official Founding', desc_ar: 'انطلقت الأكاديمية رسمياً وبدأت بتقديم أولى محاضراتها الأكاديمية.', desc_en: 'The Academy officially launched and began offering its first academic lectures.' },
     { year: '2025', title_ar: 'أولى النشرات البحثية', title_en: 'First Research Publications', desc_ar: 'صدرت أولى المقالات البحثية للأكاديمية في مجال الرمزية والسيميائيات.', desc_en: 'The Academy published its first research articles in symbolism and semiotics.' },
     { year: '2026+', title_ar: 'التوسع المستقبلي', title_en: 'Future Expansion', desc_ar: 'خطط طموحة للتوسع والتعاون مع الجامعات العربية والدولية.', desc_en: 'Ambitious plans for expansion and collaboration with Arab and international universities.' },
@@ -63,7 +63,7 @@ export default function About() {
             {t('عن الأكاديمية', 'About the Academy')}
           </div>
           <h1 className="text-[#F0D98A] mb-3" style={{ fontFamily: isRTL ? 'Amiri, Tajawal, sans-serif' : 'Cormorant Garamond, Inter, sans-serif', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: '700' }}>
-            {t('الأكاديمية العليا للرموز', 'The Higher Academy of Symbols')}
+            {t('الأكاديمية العليا للرمز والشيفرة', 'The Higher Academy of Symbol and Cipher')}
           </h1>
           <p className="text-[#A0B9B0] text-base max-w-2xl leading-relaxed">{t(settings?.aboutText_ar ?? '', settings?.aboutText_en ?? '')}</p>
         </div>
@@ -80,7 +80,7 @@ export default function About() {
                 <div className="absolute inset-x-0 top-0 flex items-center justify-center p-8" style={{ height: '62%' }}>
                   <img
                     src="/symbolacademy.png"
-                    alt="The Higher Academy of Symbols"
+                    alt="The Higher Academy of Symbol and Cipher"
                     style={{ width: '54%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 0 22px rgba(201,162,74,0.5))' }}
                   />
                 </div>
@@ -103,7 +103,7 @@ export default function About() {
               </h2>
               <p className="text-[#3A5A50] text-sm leading-relaxed mb-4">{t(settings?.aboutText_ar ?? '', settings?.aboutText_en ?? '')}</p>
               <p className="text-[#3A5A50] text-sm leading-relaxed mb-6">
-                {t('تأسست الأكاديمية العليا للرموز برؤية واضحة: أن تكون المرجع الأول في العالم العربي لدراسة الرمز والسيميائيات والتفير، مع الحفاظ على المنهج العلمي المحايد والرصين.', 'The Higher Academy of Symbols was founded with a clear vision: to be the primary reference in the Arab world for the study of symbolism, semiotics, and cryptography, while maintaining a neutral and rigorous scientific approach.')}
+                {t('تأسست الأكاديمية العليا للرمز والشيفرة برؤية واضحة: أن تكون المرجع الأول في العالم العربي لدراسة الرمز والسيميائيات والتفير، مع الحفاظ على المنهج العلمي المحايد والرصين.', 'The Higher Academy of Symbol and Cipher was founded with a clear vision: to be the primary reference in the Arab world for the study of symbolism, semiotics, and cryptography, while maintaining a neutral and rigorous scientific approach.')}
               </p>
               <div className="space-y-2">
                 {['منهج علمي محايد ورصين', 'بيئة بحثية داعمة ومحفزة', 'خبراء متخصصون في حقل الرمزية', 'اعتماد اللغة العربية معرفياً وأكاديمياً'].map((b, i) => (
@@ -244,7 +244,7 @@ export default function About() {
               </h2>
               <p className="text-[#3A5A50] text-sm leading-relaxed mb-4">{t(settings?.founderBio_ar ?? '', settings?.founderBio_en ?? '')}</p>
               <p className="text-[#3A5A50] text-sm leading-relaxed italic" style={{ fontFamily: isRTL ? 'Amiri, serif' : 'Cormorant Garamond, serif' }}>
-                {t('"الأكاديمية العليا للرموز ليست مجرد مؤسسة تعليمية، بل هي مشروع حضاري يهدف إلى إعادة الاعتبار للتراث العلمي العربي في مجال الرمزية والتشفير."', '"The Higher Academy of Symbols is not just an educational institution, but a civilizational project aimed at restoring recognition of the Arab scientific heritage in the field of symbolism and cryptography."')}
+                {t('"الأكاديمية العليا للرمز والشيفرة ليست مجرد مؤسسة تعليمية، بل هي مشروع حضاري يهدف إلى إعادة الاعتبار للتراث العلمي العربي في مجال الرمزية والتشفير."', '"The Higher Academy of Symbol and Cipher is not just an educational institution, but a civilizational project aimed at restoring recognition of the Arab scientific heritage in the field of symbolism and cryptography."')}
               </p>
             </motion.div>
           </div>

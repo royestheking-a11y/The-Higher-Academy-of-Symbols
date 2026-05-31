@@ -54,7 +54,7 @@ console.log('✅ Lectures:', lectures.length);
 const articles = await Article.insertMany([
   { title_ar:'المنهج الرمزي في القرآن الكريم وقواعده', title_en:'The Symbolic Approach in the Holy Quran and Its Rules', slug:'symbolic-approach-quran', excerpt_ar:'دراسة تحليلية لأنماط الرمزية في القرآن الكريم.', excerpt_en:'An analytical study of symbolic patterns in the Holy Quran.', content_ar:'<p>يُعدّ القرآن الكريم من أبرز النصوص التي اعتمدت على الأسلوب الرمزي...</p>', content_en:'<p>The Holy Quran is one of the most prominent texts that employed symbolic style...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'الدراسات الرمزية', category_en:'Symbolic Studies', tags:['symbolism','quran','semiotics'], date:'2025-03-15', readTime:8, featured:true, status:'published', image:null },
   { title_ar:'الذكاء الاصطناعي ودوره في خدمة المنهجية الرمزية', title_en:'Artificial Intelligence and Its Role in Serving the Quranic Symbolic Methodology', slug:'ai-quranic-symbolic-methodology', excerpt_ar:'كيف يمكن توظيف الذكاء الاصطناعي لخدمة البحث في الرمزية؟', excerpt_en:'How can AI be employed to serve symbolism research?', content_ar:'<p>يفتح الذكاء الاصطناعي آفاقاً جديدة أمام الدراسات الرمزية...</p>', content_en:'<p>AI opens new horizons for symbolic studies...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'تقنية وبحث', category_en:'Technology & Research', tags:['AI','symbolism','research'], date:'2025-02-20', readTime:6, featured:true, status:'published', image:null },
-  { title_ar:'كلمة المؤسِّسة', title_en:'Opening Remarks by the Founder', slug:'founders-opening-remarks', excerpt_ar:'رسالة المؤسِّسة في افتتاح الأكاديمية.', excerpt_en:"Founder's message at the academy opening.", content_ar:'<p>بسم الله الرحمن الرحيم، وبعد... يسرني أن أرحب بكم في الأكاديمية العليا للرموز...</p>', content_en:'<p>In the name of God... It is my pleasure to welcome you to the Higher Academy of Symbols...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'من المؤسِّسة', category_en:'From the Founder', tags:['founder','academy','vision'], date:'2024-09-01', readTime:5, featured:false, status:'published', image:null },
+  { title_ar:'كلمة المؤسِّسة', title_en:'Opening Remarks by the Founder', slug:'founders-opening-remarks', excerpt_ar:'رسالة المؤسِّسة في افتتاح الأكاديمية.', excerpt_en:"Founder's message at the academy opening.", content_ar:'<p>بسم الله الرحمن الرحيم، وبعد... يسرني أن أرحب بكم في الأكاديمية العليا للرمز والشيفرة...</p>', content_en:'<p>In the name of God... It is my pleasure to welcome you to the Higher Academy of Symbols...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'من المؤسِّسة', category_en:'From the Founder', tags:['founder','academy','vision'], date:'2024-09-01', readTime:5, featured:false, status:'published', image:null },
   { title_ar:'أنا الفينيق', title_en:'I Am the Phoenix', slug:'i-am-the-phoenix', excerpt_ar:'مقال أدبي يستعرض رمزية الفينيق في الثقافة العربية.', excerpt_en:"A literary article exploring the phoenix's symbolism.", content_ar:'<p>الفينيق... ذلك الطائر الأسطوري الذي يولد من رماده...</p>', content_en:'<p>The Phoenix... that legendary bird born from its ashes...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'أدب وفكر', category_en:'Literature & Thought', tags:['phoenix','symbolism','identity'], date:'2024-11-10', readTime:7, featured:false, status:'published', image:'/symbolacademy.png' },
 ]);
 console.log('✅ Articles:', articles.length);
@@ -123,12 +123,12 @@ console.log('✅ Packages seeded');
 
 // Settings
 await Settings.create({
-  siteName_ar:'الأكاديمية العليا للرموز', siteName_en:'The Higher Academy of Symbols',
+  siteName_ar:'الأكاديمية العليا للرمز والشيفرة', siteName_en:'The Higher Academy of Symbol and Cipher',
   tagline_ar:'حيث تتحول العلامات إلى معرفة', tagline_en:'Where symbols become structured knowledge',
-  heroTitle_ar:'الأكاديمية العليا للرموز', heroTitle_en:'The Higher Academy of Symbols',
+  heroTitle_ar:'الأكاديمية العليا للرمز والشيفرة', heroTitle_en:'The Higher Academy of Symbol and Cipher',
   heroSubtitle_ar:'نحو فهم أعمق للرموز والمعاني من حولنا', heroSubtitle_en:'Toward a Deeper Understanding of Symbols and Meanings',
   heroDescription_ar:'منصة تعليمية وبحثية متخصصة في دراسة الرموز والتأويل والسيميائيات.', heroDescription_en:'A specialized educational and research academy dedicated to symbolism, interpretation, and semiotics.',
-  aboutText_ar:'الأكاديمية العليا للرموز مؤسسة تعليمية ذكية تُعنى بالبحث العلمي والتعليم المبتكر.', aboutText_en:'The Higher Academy of Symbols is a smart educational institution focused on rigorous scientific research.',
+  aboutText_ar:'الأكاديمية العليا للرمز والشيفرة مؤسسة تعليمية ذكية تُعنى بالبحث العلمي والتعليم المبتكر.', aboutText_en:'The Higher Academy of Symbol and Cipher is a smart educational institution focused on rigorous scientific research.',
   vision_ar:'مؤسسة تعليمية ذكية تُعنى بالبحث الرفيع والأثر الإيجابي.', vision_en:'A smart educational institution concerned with high-level research.',
   mission_ar:'إعداد باحثين في الرموز والشيفرات والتشفير.', mission_en:'Preparing researchers in symbols, codes, and cryptography.',
   phone1:'+971567199176', phone2:'+963967115779', email:'info@symbolsacademy.com',
@@ -136,7 +136,7 @@ await Settings.create({
   announcement_ar:'التسجيل مفتوح الآن في محاضرة التشفير والمرموز عند العرب', announcement_en:'Registration is now open for Cryptography and the Cryptogram among the Arabs',
   announcementLink:'/lectures/cryptography-arabs', announcementEnabled:true,
   founderName_ar:'د. فاطمة فاضل العيساوي', founderName_en:'Dr. Fatima Fadel Al-Issawi',
-  founderTitle_ar:'مؤسِّسة الأكاديمية العليا للرموز', founderTitle_en:'Founder of The Higher Academy of Symbols',
+  founderTitle_ar:'مؤسِّسة الأكاديمية العليا للرمز والشيفرة', founderTitle_en:'Founder of The Higher Academy of Symbol and Cipher',
   founderBio_ar:'أكاديمية وباحثة متخصصة في الدراسات الرمزية والسيميائيات.', founderBio_en:'Academic and researcher specializing in symbolic studies and semiotics.',
   logoUrl:'https://res.cloudinary.com/dtzearvwx/image/upload/symbols_academy/logo/symbolacademy',
 });

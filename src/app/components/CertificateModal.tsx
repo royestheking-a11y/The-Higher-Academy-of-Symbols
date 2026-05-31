@@ -134,15 +134,15 @@ export default function CertificateModal({ isOpen, onClose, userName, courseName
                   <img src="/symbolacademy.png" alt="Logo" className="w-20 h-20 mx-auto mb-2" />
                   {isRTL ? (
                     <>
-                      <div className="text-[#062B24] text-lg font-bold">الأكاديمية العليا للرموز</div>
-                      <div className="text-[#C9A24A] tracking-[0.2em] text-[10px] font-bold uppercase mt-1">The Higher Academy of Symbols</div>
+                      <div className="text-[#062B24] text-lg font-bold">الأكاديمية العليا للرمز والشيفرة</div>
+                      <div className="text-[#C9A24A] tracking-[0.2em] text-[10px] font-bold uppercase mt-1">The Higher Academy of Symbol and Cipher</div>
                     </>
                   ) : (
                     <>
                       <div className="text-[#062B24] tracking-[0.3em] text-[12px] font-bold uppercase">
-                        The Higher Academy of Symbols
+                        The Higher Academy of Symbol and Cipher
                       </div>
-                      <div className="text-[#C9A24A] text-[10px] font-bold mt-1">الأكاديمية العليا للرموز</div>
+                      <div className="text-[#C9A24A] text-[10px] font-bold mt-1">الأكاديمية العليا للرمز والشيفرة</div>
                     </>
                   )}
                 </div>

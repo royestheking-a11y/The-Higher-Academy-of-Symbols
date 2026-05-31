@@ -79,11 +79,11 @@ export function Navbar() {
               className="shrink-0 rounded-full overflow-hidden"
               style={{ width: 42, height: 42, boxShadow: '0 2px 14px rgba(201,162,74,0.4)', background: '#062B24' }}
             >
-              <img src="/symbolacademy.png" alt="The Higher Academy of Symbols Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <img src="/symbolacademy.png" alt="The Higher Academy of Symbol and Cipher Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             </div>
             <div className="leading-tight max-w-[150px]">
               <div className="text-[#F0D98A] font-bold tracking-wide leading-tight" style={{ fontFamily: isRTL ? 'Tajawal, sans-serif' : 'Inter, sans-serif', fontSize: isRTL ? '12px' : '10.5px' }}>
-                {t('الأكاديمية العليا للرموز', 'The Higher Academy of Symbols')}
+                {t('الأكاديمية العليا للرمز والشيفرة', 'The Higher Academy of Symbol and Cipher')}
               </div>
             </div>
           </Link>
