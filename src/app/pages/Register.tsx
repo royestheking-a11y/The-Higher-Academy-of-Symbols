@@ -133,7 +133,7 @@ export default function Register() {
             <h1 className="text-[#F0D98A] font-bold text-xl" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
               {t('إنشاء حساب جديد', 'Create New Account')}
             </h1>
-            <p className="text-[#8B9D8A] text-xs mt-1">{t('انضم إلى الأكاديمية العليا للرمز والشيفرة', 'Join The Higher Academy of Symbol and Cipher')}</p>
+            <p className="text-[#8B9D8A] text-xs mt-1">{t('انضم إلى الأكاديمية العليا للرموز والشفرات', 'Join The Higher Academy of Symbols and Codes')}</p>
           </div>
 
           <div className="p-7">

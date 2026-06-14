@@ -142,7 +142,7 @@ export default function StudentDashboard() {
             <img src="/symbolacademy.png" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <div>
-            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرمز والشيفرة', 'The Higher Academy of Symbol and Cipher')}</div>
+            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}</div>
             <div className="text-[#6B8B80] text-[10px]">{t('لوحة الطالب', 'Student Panel')}</div>
           </div>
         </Link>

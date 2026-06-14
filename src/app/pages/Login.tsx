@@ -108,7 +108,7 @@ export default function Login() {
             <h1 className="text-[#F0D98A] font-bold text-xl" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
               {t('تسجيل الدخول', 'Log In')}
             </h1>
-            <p className="text-[#8B9D8A] text-xs mt-1">{t('الأكاديمية العليا للرمز والشيفرة', 'The Higher Academy of Symbol and Cipher')}</p>
+            <p className="text-[#8B9D8A] text-xs mt-1">{t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}</p>
           </div>
 
           {/* Form */}

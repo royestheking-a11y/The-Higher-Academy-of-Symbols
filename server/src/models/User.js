@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   avatar:           { type: String, default: '' },
   status:           { type: String, enum: ['active', 'inactive', 'banned'], default: 'active' },
   googleId:         { type: String, unique: true, sparse: true },
+  hasLibraryAccess: { type: Boolean, default: false },
 }, { timestamps: true });
 
 // Hash password before save

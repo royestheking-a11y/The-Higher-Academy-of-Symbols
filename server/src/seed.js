@@ -15,6 +15,8 @@ import Package from './models/Package.js';
 import Subscription from './models/Subscription.js';
 import Notification from './models/Notification.js';
 import Settings from './models/Settings.js';
+import Book from './models/Book.js';
+import LibraryResource from './models/LibraryResource.js';
 
 await connectDB();
 
@@ -26,7 +28,7 @@ await Promise.all([
   AreaOfStudy.deleteMany(), Testimonial.deleteMany(), Enrollment.deleteMany(),
   ContactMessage.deleteMany(), Supervisor.deleteMany(), Teacher.deleteMany(),
   Package.deleteMany(), Subscription.deleteMany(), Notification.deleteMany(),
-  Settings.deleteMany(),
+  Settings.deleteMany(), Book.deleteMany(), LibraryResource.deleteMany(),
 ]);
 console.log('🗑️  Cleared all collections');
 
@@ -54,7 +56,7 @@ console.log('✅ Lectures:', lectures.length);
 const articles = await Article.insertMany([
   { title_ar:'المنهج الرمزي في القرآن الكريم وقواعده', title_en:'The Symbolic Approach in the Holy Quran and Its Rules', slug:'symbolic-approach-quran', excerpt_ar:'دراسة تحليلية لأنماط الرمزية في القرآن الكريم.', excerpt_en:'An analytical study of symbolic patterns in the Holy Quran.', content_ar:'<p>يُعدّ القرآن الكريم من أبرز النصوص التي اعتمدت على الأسلوب الرمزي...</p>', content_en:'<p>The Holy Quran is one of the most prominent texts that employed symbolic style...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'الدراسات الرمزية', category_en:'Symbolic Studies', tags:['symbolism','quran','semiotics'], date:'2025-03-15', readTime:8, featured:true, status:'published', image:null },
   { title_ar:'الذكاء الاصطناعي ودوره في خدمة المنهجية الرمزية', title_en:'Artificial Intelligence and Its Role in Serving the Quranic Symbolic Methodology', slug:'ai-quranic-symbolic-methodology', excerpt_ar:'كيف يمكن توظيف الذكاء الاصطناعي لخدمة البحث في الرمزية؟', excerpt_en:'How can AI be employed to serve symbolism research?', content_ar:'<p>يفتح الذكاء الاصطناعي آفاقاً جديدة أمام الدراسات الرمزية...</p>', content_en:'<p>AI opens new horizons for symbolic studies...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'تقنية وبحث', category_en:'Technology & Research', tags:['AI','symbolism','research'], date:'2025-02-20', readTime:6, featured:true, status:'published', image:null },
-  { title_ar:'كلمة المؤسِّسة', title_en:'Opening Remarks by the Founder', slug:'founders-opening-remarks', excerpt_ar:'رسالة المؤسِّسة في افتتاح الأكاديمية.', excerpt_en:"Founder's message at the academy opening.", content_ar:'<p>بسم الله الرحمن الرحيم، وبعد... يسرني أن أرحب بكم في الأكاديمية العليا للرمز والشيفرة...</p>', content_en:'<p>In the name of God... It is my pleasure to welcome you to the Higher Academy of Symbols...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'من المؤسِّسة', category_en:'From the Founder', tags:['founder','academy','vision'], date:'2024-09-01', readTime:5, featured:false, status:'published', image:null },
+  { title_ar:'كلمة المؤسِّسة', title_en:'Opening Remarks by the Founder', slug:'founders-opening-remarks', excerpt_ar:'رسالة المؤسِّسة في افتتاح الأكاديمية.', excerpt_en:"Founder's message at the academy opening.", content_ar:'<p>بسم الله الرحمن الرحيم، وبعد... يسرني أن أرحب بكم في الأكاديمية العليا للرموز والشفرات...</p>', content_en:'<p>In the name of God... It is my pleasure to welcome you to The Higher Academy of Symbols and Codes...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'من المؤسِّسة', category_en:'From the Founder', tags:['founder','academy','vision'], date:'2024-09-01', readTime:5, featured:false, status:'published', image:null },
   { title_ar:'أنا الفينيق', title_en:'I Am the Phoenix', slug:'i-am-the-phoenix', excerpt_ar:'مقال أدبي يستعرض رمزية الفينيق في الثقافة العربية.', excerpt_en:"A literary article exploring the phoenix's symbolism.", content_ar:'<p>الفينيق... ذلك الطائر الأسطوري الذي يولد من رماده...</p>', content_en:'<p>The Phoenix... that legendary bird born from its ashes...</p>', author_ar:'د. فاطمة فاضل العيساوي', author_en:'Dr. Fatima Fadel Al-Issawi', category_ar:'أدب وفكر', category_en:'Literature & Thought', tags:['phoenix','symbolism','identity'], date:'2024-11-10', readTime:7, featured:false, status:'published', image:'/symbolacademy.png' },
 ]);
 console.log('✅ Articles:', articles.length);
@@ -121,14 +123,34 @@ await Package.insertMany([
 ]);
 console.log('✅ Packages seeded');
 
+// Books
+await Book.insertMany([
+  { title_ar:'هندسة الرموز', title_en:'The Geometry of Symbols', slug:'geometry-symbols', author:'Astrid Vance', description_ar:'دراسة عميقة في الأشكال الهندسية ورموزها في مختلف الحضارات.', description_en:'A deep study of geometric shapes and their symbols across civilizations.', price:45, coverImage:'/images/books/book_geometry_symbols.png', category:'Symbolism', language:'both', isFeatured:true, stock:50 },
+  { title_ar:'سيميائيات القدماء', title_en:'Semiotics of the Ancients', slug:'semiotics-ancients', author:'Evelyn Vance', description_ar:'تحليل معمق للغة العلامات عند الشعوب القديمة.', description_en:'An in-depth analysis of the sign language of ancient peoples.', price:55, coverImage:'/images/books/book_semiotics_ancients.png', category:'Semiotics', language:'en', isFeatured:false, stock:30 },
+  { title_ar:'التشفير والروح', title_en:'Cryptography and the Soul', slug:'cryptography-soul', author:'Anonymous', description_ar:'كيفية تأثير التشفير على الروح والعقل.', description_en:'How cryptography affects the soul and mind.', price:65, coverImage:'/images/books/book_cryptography_soul.png', category:'Cryptography', language:'both', isFeatured:true, stock:20 },
+  { title_ar:'لغة النجوم', title_en:'The Language of Stars', slug:'language-stars', author:'Evelyn Vance', description_ar:'فهم الرموز السماوية والتنجيم.', description_en:'Understanding celestial symbols and astrology.', price:50, coverImage:'/images/books/book_language_stars.png', category:'Philosophy', language:'en', isFeatured:false, stock:40 },
+  { title_ar:'مفاتيح العقل', title_en:'Keys of the Mind', slug:'keys-mind', author:'Aurora Vance', description_ar:'اكتشاف الرموز التي تفتح آفاق العقل البشري.', description_en:'Discovering the symbols that unlock the horizons of the human mind.', price:60, coverImage:'/images/books/book_keys_mind.png', category:'Symbolism', language:'en', isFeatured:true, stock:10 },
+]);
+console.log('✅ Books seeded');
+
+// Library Resources
+await LibraryResource.insertMany([
+  { title_ar:'مخطوطة الخيمياء المفقودة', title_en:'The Lost Alchemy Manuscript', slug:'lost-alchemy-manuscript', description_ar:'دراسة تحليلية لمخطوطة نادرة في الخيمياء.', description_en:'An analytical study of a rare alchemy manuscript.', category:'Manuscripts', author:'Dr. Fatima', fileUrl:'/pdfs/alchemy.pdf', thumbnail:'/images/books/book_keys_mind.png', isDownloadable:true, isFeatured:true, status:'published', downloadSize:'4.5 MB' },
+  { title_ar:'شفرات دافنشي: دراسة حديثة', title_en:'Da Vinci Codes: A Modern Study', slug:'da-vinci-codes', description_ar:'مقال بحثي حول الرموز الخفية في أعمال دافنشي.', description_en:'A research paper on the hidden symbols in Da Vinci\'s works.', category:'Cryptography', author:'Evelyn Vance', fileUrl:'/pdfs/davinci.pdf', thumbnail:'/images/books/book_cryptography_soul.png', isDownloadable:true, isFeatured:false, status:'published', downloadSize:'2.1 MB' },
+  { title_ar:'العمارة المقدسة', title_en:'Sacred Architecture', slug:'sacred-architecture', description_ar:'تحليل الأبعاد الروحية في العمارة الكلاسيكية.', description_en:'Analysis of spiritual dimensions in classical architecture.', category:'Symbolism', author:'Astrid Vance', fileUrl:'/pdfs/architecture.pdf', thumbnail:'/images/books/book_geometry_symbols.png', isDownloadable:false, isFeatured:true, status:'published', downloadSize:'5.8 MB' },
+  { title_ar:'دليل السيميائيات للمبتدئين', title_en:'Beginners Guide to Semiotics', slug:'semiotics-guide', description_ar:'مقدمة شاملة في علم السيميائيات.', description_en:'A comprehensive introduction to semiotics.', category:'Semiotics', author:'Dr. Fatima', fileUrl:'/pdfs/semiotics.pdf', thumbnail:'/images/books/book_semiotics_ancients.png', isDownloadable:true, isFeatured:false, status:'published', downloadSize:'3.2 MB' },
+  { title_ar:'خرائط النجوم القديمة', title_en:'Ancient Star Maps', slug:'ancient-star-maps', description_ar:'دراسة للخرائط الفلكية التي استخدمتها الحضارات القديمة.', description_en:'A study of astronomical maps used by ancient civilizations.', category:'Philosophy', author:'Aurora Vance', fileUrl:'/pdfs/starmaps.pdf', thumbnail:'/images/books/book_language_stars.png', isDownloadable:true, isFeatured:true, status:'published', downloadSize:'7.0 MB' },
+]);
+console.log('✅ Library resources seeded');
+
 // Settings
 await Settings.create({
-  siteName_ar:'الأكاديمية العليا للرمز والشيفرة', siteName_en:'The Higher Academy of Symbol and Cipher',
+  siteName_ar:'الأكاديمية العليا للرموز والشفرات', siteName_en:'The Higher Academy of Symbols and Codes',
   tagline_ar:'حيث تتحول العلامات إلى معرفة', tagline_en:'Where symbols become structured knowledge',
-  heroTitle_ar:'الأكاديمية العليا للرمز والشيفرة', heroTitle_en:'The Higher Academy of Symbol and Cipher',
+  heroTitle_ar:'الأكاديمية العليا للرموز والشفرات', heroTitle_en:'The Higher Academy of Symbols and Codes',
   heroSubtitle_ar:'نحو فهم أعمق للرموز والمعاني من حولنا', heroSubtitle_en:'Toward a Deeper Understanding of Symbols and Meanings',
   heroDescription_ar:'منصة تعليمية وبحثية متخصصة في دراسة الرموز والتأويل والسيميائيات.', heroDescription_en:'A specialized educational and research academy dedicated to symbolism, interpretation, and semiotics.',
-  aboutText_ar:'الأكاديمية العليا للرمز والشيفرة مؤسسة تعليمية ذكية تُعنى بالبحث العلمي والتعليم المبتكر.', aboutText_en:'The Higher Academy of Symbol and Cipher is a smart educational institution focused on rigorous scientific research.',
+  aboutText_ar:'الأكاديمية العليا للرموز والشفرات مؤسسة تعليمية ذكية تُعنى بالبحث العلمي والتعليم المبتكر.', aboutText_en:'The Higher Academy of Symbols and Codes is a smart educational institution focused on rigorous scientific research.',
   vision_ar:'مؤسسة تعليمية ذكية تُعنى بالبحث الرفيع والأثر الإيجابي.', vision_en:'A smart educational institution concerned with high-level research.',
   mission_ar:'إعداد باحثين في الرموز والشيفرات والتشفير.', mission_en:'Preparing researchers in symbols, codes, and cryptography.',
   phone1:'+971567199176', phone2:'+963967115779', email:'info@symbolsacademy.com',
@@ -136,7 +158,7 @@ await Settings.create({
   announcement_ar:'التسجيل مفتوح الآن في محاضرة التشفير والمرموز عند العرب', announcement_en:'Registration is now open for Cryptography and the Cryptogram among the Arabs',
   announcementLink:'/lectures/cryptography-arabs', announcementEnabled:true,
   founderName_ar:'د. فاطمة فاضل العيساوي', founderName_en:'Dr. Fatima Fadel Al-Issawi',
-  founderTitle_ar:'مؤسِّسة الأكاديمية العليا للرمز والشيفرة', founderTitle_en:'Founder of The Higher Academy of Symbol and Cipher',
+  founderTitle_ar:'مؤسِّسة الأكاديمية العليا للرموز والشفرات', founderTitle_en:'Founder of The Higher Academy of Symbols and Codes',
   founderBio_ar:'أكاديمية وباحثة متخصصة في الدراسات الرمزية والسيميائيات.', founderBio_en:'Academic and researcher specializing in symbolic studies and semiotics.',
   logoUrl:'https://res.cloudinary.com/dtzearvwx/image/upload/symbols_academy/logo/symbolacademy',
 });

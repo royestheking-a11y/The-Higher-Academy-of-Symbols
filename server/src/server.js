@@ -21,6 +21,9 @@ import notificationRoutes from './routes/notifications.js';
 import settingsRoutes     from './routes/settings.js';
 import contactRoutes      from './routes/contact.js';
 import uploadRoutes       from './routes/upload.js';
+import libraryRoutes      from './routes/library.js';
+import bookRoutes         from './routes/books.js';
+import storeOrderRoutes   from './routes/storeOrders.js';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -34,7 +37,7 @@ const app = express();
 const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'];
 app.use(cors({ 
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || origin.includes('vercel.app') || origin === process.env.FRONTEND_URL) {
+    if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:') || origin.includes('vercel.app') || origin === process.env.FRONTEND_URL) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -61,6 +64,9 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/settings',      settingsRoutes);
 app.use('/api/contact',       contactRoutes);
 app.use('/api/upload',        uploadRoutes);
+app.use('/api/library',       libraryRoutes);
+app.use('/api/books',         bookRoutes);
+app.use('/api/orders',        storeOrderRoutes);
 
 // Health check
 app.get('/api/health', (_, res) => res.json({ status: 'ok', time: new Date().toISOString() }));

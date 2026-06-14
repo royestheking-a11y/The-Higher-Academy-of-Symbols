@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router';
+import { useNavigate } from 'react-router';
 import { 
-  CreditCard, Banknote, Landmark, ShieldCheck, ChevronLeft, 
+  CreditCard, Landmark, ShieldCheck, ChevronLeft, 
   ChevronRight, Info, AlertCircle, CheckCircle2, Lock, 
-  ArrowRight, CreditCard as CardIcon, Building2
+  Building2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
@@ -14,18 +14,23 @@ import { GeometricBackground } from '../components/GeometricBackground';
 
 const BRAND = { deep: '#062B24', mid: '#0B3A31', gold: '#C9A24A', goldLight: '#F0D98A', ivory: '#F8F4EA' };
 
-export default function Checkout() {
-  const { slug } = useParams();
+export default function LibraryCheckout() {
   const navigate = useNavigate();
   const { t, isRTL, fontFamily } = useLanguage();
   const { currentUser } = useAuth();
-  const { lectures, addEnrollment } = useData();
+  const { addEnrollment } = useData();
   
   const [step, setStep] = useState(1); // 1: Details, 2: Payment, 3: Processing
   const [method, setMethod] = useState<'card' | 'ibanking' | 'bank_transfer'>('card');
   const [loading, setLoading] = useState(false);
   
-  const lecture = (lectures as any[]).find((l: any) => l.slug === slug);
+  const membershipDetails = {
+    price: 499,
+    title_en: 'Library Membership',
+    title_ar: 'عضوية المكتبة',
+    desc_en: 'Continuous access to all resources including PDFs, research papers, and notes.',
+    desc_ar: 'وصول دائم ومستمر لجميع الموارد بما في ذلك الكتب بصيغة PDF، والبحوث، والملاحظات.'
+  };
 
   useEffect(() => {
     if (!currentUser) {
@@ -33,8 +38,6 @@ export default function Checkout() {
       navigate('/login');
     }
   }, [currentUser, navigate, t]);
-
-  if (!lecture) return null;
 
   const handlePayment = async () => {
     setStep(3);
@@ -46,9 +49,9 @@ export default function Checkout() {
     const enrollmentData = {
       userId: currentUser?.id,
       userName: currentUser?.name,
-      courseId: lecture.id,
-      courseTitle: lecture.title_en,
-      amount: lecture.price,
+      courseId: 'library_membership',
+      courseTitle: 'Library Membership',
+      amount: membershipDetails.price,
       paymentMethod: method,
       paymentStatus: 'pending_approval',
       enrollmentStatus: 'pending',
@@ -65,7 +68,7 @@ export default function Checkout() {
   };
 
   const methods = [
-    { id: 'card', icon: CardIcon, title_ar: 'البطاقة البنكية', title_en: 'Credit/Debit Card', desc_ar: 'فيزا، ماستركارد، مدى', desc_en: 'Visa, Mastercard, Mada' },
+    { id: 'card', icon: CreditCard, title_ar: 'البطاقة البنكية', title_en: 'Credit/Debit Card', desc_ar: 'فيزا، ماستركارد، مدى', desc_en: 'Visa, Mastercard, Mada' },
     { id: 'ibanking', icon: Building2, title_ar: 'الخدمات المصرفية الإلكترونية', title_en: 'iBanking / Online', desc_ar: 'دفع مباشر عبر البنك', desc_en: 'Direct bank payment' },
     { id: 'bank_transfer', icon: Landmark, title_ar: 'تحويل بنكي', title_en: 'Bank Transfer', desc_ar: 'تحويل يدوي للحساب', desc_en: 'Manual transfer' },
   ];
@@ -77,12 +80,12 @@ export default function Checkout() {
         <div className="flex items-center justify-between mb-8">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#3A5A50] hover:text-[#C9A24A] transition-colors text-sm font-medium">
             {isRTL ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-            {t('العودة للمحاضرة', 'Back to Lecture')}
+            {t('العودة للمكتبة', 'Back to Library')}
           </button>
           <div className="flex items-center gap-4">
             {[1, 2].map((s) => (
               <div key={s} className="flex items-center gap-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step >= s ? 'bg-[#C9A24A] text-[#062B24]' : 'bg-white border-2 border-rgba(6,43,36,0.1) text-[#8B9D8A]'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step >= s ? 'bg-[#C9A24A] text-[#062B24]' : 'bg-white border-2 border-[rgba(6,43,36,0.1)] text-[#8B9D8A]'}`}>
                   {step > s ? <CheckCircle2 size={16} /> : s}
                 </div>
                 {s === 1 && <div className={`w-8 h-0.5 rounded ${step > 1 ? 'bg-[#C9A24A]' : 'bg-[rgba(6,43,36,0.1)]'}`} />}
@@ -109,17 +112,17 @@ export default function Checkout() {
                   <div className="space-y-6 relative z-10">
                     <div className="flex gap-4 p-4 rounded-2xl bg-[rgba(201,162,74,0.05)] border border-[rgba(201,162,74,0.15)]">
                       <div className="w-20 h-20 rounded-xl bg-[#062B24] flex items-center justify-center shrink-0">
-                        <img src="/symbolacademy.png" alt="Logo" className="w-12 h-12 object-contain" />
+                        <ShieldCheck size={32} className="text-[#C9A24A]" />
                       </div>
-                      <div>
-                        <div className="text-[#C9A24A] text-xs font-semibold mb-1 uppercase tracking-wider">{t(lecture.category_ar, lecture.category_en)}</div>
-                        <h3 className="text-[#062B24] font-bold text-lg leading-tight">{t(lecture.title_ar, lecture.title_en)}</h3>
-                        <p className="text-[#8B9D8A] text-xs mt-1">{t(lecture.lecturer_ar, lecture.lecturer_en)}</p>
+                      <div className="flex flex-col justify-center">
+                        <div className="text-[#C9A24A] text-xs font-semibold mb-1 uppercase tracking-wider">{t('اشتراك مدى الحياة', 'Lifetime Access')}</div>
+                        <h3 className="text-[#062B24] font-bold text-lg leading-tight">{t(membershipDetails.title_ar, membershipDetails.title_en)}</h3>
+                        <p className="text-[#8B9D8A] text-xs mt-1">{t(membershipDetails.desc_ar, membershipDetails.desc_en)}</p>
                       </div>
                     </div>
 
                     <div className="space-y-4">
-                      <h4 className="text-sm font-bold text-[#3A5A50] uppercase tracking-widest">{t('معلومات الطالب', 'Student Information')}</h4>
+                      <h4 className="text-sm font-bold text-[#3A5A50] uppercase tracking-widest">{t('معلومات المشترك', 'Subscriber Information')}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
                           <div className="text-[10px] text-[#8B9D8A] uppercase font-bold mb-1">{t('الاسم', 'Name')}</div>
@@ -135,7 +138,7 @@ export default function Checkout() {
                     <div className="p-4 rounded-2xl bg-[#FFF9F0] border border-[#F0D98A] flex gap-3">
                       <Info className="text-[#C9A24A] shrink-0" size={20} />
                       <p className="text-[#8B6B20] text-xs leading-relaxed">
-                        {t('سيتم مراجعة طلب اشتراكك من قبل الإدارة بعد إتمام عملية الدفع. ستحصل على وصول كامل للمحاضرة بمجرد الموافقة.', 'Your enrollment will be reviewed by admin after payment. You will get full access once approved.')}
+                        {t('بمجرد إتمام الدفع ومراجعته، سيتم منح حسابك وصولاً كاملاً لجميع موارد المكتبة الرقمية.', 'Once payment is complete and reviewed, your account will be granted full access to all digital library resources.')}
                       </p>
                     </div>
 
@@ -274,16 +277,16 @@ export default function Checkout() {
               
               <div className="space-y-4 relative z-10">
                 <div className="flex justify-between items-center py-3 border-b border-[rgba(201,162,74,0.15)]">
-                  <span className="text-[#8B9D8A] text-xs">{t('سعر المحاضرة', 'Lecture Price')}</span>
-                  <span className="text-[#F8F4EA] font-bold text-sm">${lecture.price}</span>
+                  <span className="text-[#8B9D8A] text-xs">{t('سعر الاشتراك', 'Membership Price')}</span>
+                  <span className="text-[#F8F4EA] font-bold text-sm">AED {membershipDetails.price}</span>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-[rgba(201,162,74,0.15)]">
                   <span className="text-[#8B9D8A] text-xs">{t('الضريبة (0%)', 'VAT (0%)')}</span>
-                  <span className="text-[#F8F4EA] font-bold text-sm">$0.00</span>
+                  <span className="text-[#F8F4EA] font-bold text-sm">AED 0.00</span>
                 </div>
                 <div className="flex justify-between items-center py-6">
                   <span className="text-[#F0D98A] font-bold">{t('الإجمالي', 'Total Amount')}</span>
-                  <span className="text-[#F0D98A] text-2xl font-bold">${lecture.price}</span>
+                  <span className="text-[#F0D98A] text-2xl font-bold">AED {membershipDetails.price}</span>
                 </div>
               </div>
 
@@ -293,7 +296,7 @@ export default function Checkout() {
                   <span className="text-[10px] font-bold uppercase tracking-widest">{t('ضمان الأكاديمية', 'Academy Guarantee')}</span>
                 </div>
                 <p className="text-[#8B9D8A] text-[10px] leading-relaxed">
-                  {t('جميع عمليات الدفع محمية بسياسة الخصوصية الخاصة بنا. يتم تنشيط الكورسات بعد مراجعة الإدارة للعملية.', 'All payments are protected by our privacy policy. Courses are activated after admin review.')}
+                  {t('جميع عمليات الدفع محمية بسياسة الخصوصية الخاصة بنا. يتم تنشيط الاشتراك بعد المراجعة.', 'All payments are protected by our privacy policy. Membership is activated after review.')}
                 </p>
               </div>
             </div>

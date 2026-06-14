@@ -18,6 +18,13 @@ import SearchPage from './pages/Search';
 import Checkout from './pages/Checkout';
 import NotFound from './pages/NotFound';
 
+import LibraryHome from './pages/LibraryHome';
+import LibraryCheckout from './pages/LibraryCheckout';
+import LibraryDetail from './pages/LibraryDetail';
+import StoreHome from './pages/StoreHome';
+import BookDetail from './pages/BookDetail';
+import StoreCheckout from './pages/StoreCheckout';
+
 export const router = createBrowserRouter([
   // ── Main website (with Navbar + Footer) ──────────────────────────────────
   {
@@ -37,6 +44,15 @@ export const router = createBrowserRouter([
       { path: 'login', Component: Login },
       { path: 'register', Component: Register },
       { path: 'search', Component: SearchPage },
+      
+      { path: 'library', Component: LibraryHome },
+      { path: 'library/checkout', Component: LibraryCheckout },
+      { path: 'library/:slug', Component: LibraryDetail },
+      
+      { path: 'store', Component: StoreHome },
+      { path: 'store/checkout', Component: StoreCheckout },
+      { path: 'store/:slug', Component: BookDetail },
+
       { path: '*', Component: NotFound },
     ],
   },

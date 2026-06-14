@@ -13,6 +13,7 @@ export interface User {
   enrolledCourses: string[];
   createdAt: string;
   avatar?: string;
+  hasLibraryAccess?: boolean;
 }
 
 interface AuthContextType {
@@ -25,6 +26,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isStudent: boolean;
   isAuthenticated: boolean;
+  token: string | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -37,6 +39,7 @@ const AuthContext = createContext<AuthContextType>({
   isAdmin: false,
   isStudent: false,
   isAuthenticated: false,
+  token: null,
 });
 
 function normalizeUser(u: any): User {
@@ -168,6 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isAdmin: currentUser?.role === 'admin',
       isStudent: currentUser?.role === 'student',
       isAuthenticated: !!currentUser,
+      token: getToken(),
     }}>
       {children}
     </AuthContext.Provider>

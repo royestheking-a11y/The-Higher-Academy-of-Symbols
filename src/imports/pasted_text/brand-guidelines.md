@@ -182,7 +182,7 @@ Dark emerald gradient + subtle symbol pattern + gold phoenix watermark.
 Hero Content
 Arabic version:
 
-الأكاديمية العليا للرمز والشيفرة
+الأكاديمية العليا للرموز والشفرات
 فهم أعمق للرموز من حولنا
 أول أكاديمية عربية متخصصة في دراسة الرموز، التأويل، السيميائيات، الاختزال، والتشفير بمنهج علمي محايد.
 
@@ -193,7 +193,7 @@ Buttons:
 
 English version:
 
-The Higher Academy of Symbol and Cipher
+The Higher Academy of Symbols and Codes
 A Deeper Understanding of the Symbols Around Us
 The first Arab academy dedicated to the scientific study of symbols, semiotics, interpretation, shorthand, and cryptography.
 
@@ -240,7 +240,7 @@ About the Academy
 
 Content summary from old site:
 
-The Higher Academy of Symbol and Cipher is a smart educational institution focused on rigorous scientific research, innovative learning, and preparing specialized researchers in symbolism, codes, and cryptography.
+The Higher Academy of Symbols and Codes is a smart educational institution focused on rigorous scientific research, innovative learning, and preparing specialized researchers in symbolism, codes, and cryptography.
 
 Layout:
 
@@ -348,7 +348,7 @@ Meet the Founder
 Content:
 
 Dr. Fatima Fadel Al-Issawi
-Founder of The Higher Academy of Symbol and Cipher
+Founder of The Higher Academy of Symbols and Codes
 
 Design:
 
@@ -424,7 +424,7 @@ Contact Us
 
  Best Premium Copywriting for Hero
 Arabic
-الأكاديمية العليا للرمز والشيفرة
+الأكاديمية العليا للرموز والشفرات
 نحو فهم أعمق للرموز والمعاني من حولنا
 منصة تعليمية وبحثية متخصصة في دراسة الرموز، التأويل، السيميائيات، الاختزال، والتشفير بمنهج علمي محايد ورؤية معرفية معاصرة.
 
@@ -434,7 +434,7 @@ Buttons:
 تعرّف على الأكاديمية
 
 English
-The Higher Academy of Symbol and Cipher
+The Higher Academy of Symbols and Codes
 Toward a Deeper Understanding of Symbols and Meanings
 A specialized educational and research academy dedicated to symbolism, interpretation, semiotics, shorthand, and cryptography through a neutral academic approach.
 
@@ -469,7 +469,7 @@ Subscribe button
 
 Bottom bar:
 
-© 2026 The Higher Academy of Symbol and Cipher. All rights reserved.
+© 2026 The Higher Academy of Symbols and Codes. All rights reserved.
 Designed & Developed by RizQara Tech / Owlio depending client requirement.
 
 
@@ -1063,7 +1063,7 @@ Founder message shortcut
 Example hero micro-content:
 
 Arabic:
-الأكاديمية العليا للرمز والشيفرة — حيث تتحول العلامات إلى معرفة.
+الأكاديمية العليا للرموز والشفرات — حيث تتحول العلامات إلى معرفة.
 
 English:
 Where symbols become structured knowledge.

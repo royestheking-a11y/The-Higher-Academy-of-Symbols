@@ -55,6 +55,8 @@ export function Navbar() {
     { label_ar: 'عن الأكاديمية', label_en: 'About', to: '/about' },
     { label_ar: 'المحاضرات', label_en: 'Lectures', to: '/lectures' },
     { label_ar: 'المقالات', label_en: 'Articles', to: '/articles' },
+    { label_ar: 'المكتبة', label_en: 'Library', to: '/library' },
+    { label_ar: 'المتجر', label_en: 'Store', to: '/store' },
     { label_ar: 'التواصل', label_en: 'Contact', to: '/contact' },
   ];
 
@@ -79,11 +81,11 @@ export function Navbar() {
               className="shrink-0 rounded-full overflow-hidden"
               style={{ width: 42, height: 42, boxShadow: '0 2px 14px rgba(201,162,74,0.4)', background: '#062B24' }}
             >
-              <img src="/symbolacademy.png" alt="The Higher Academy of Symbol and Cipher Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <img src="/symbolacademy.png" alt="The Higher Academy of Symbols and Codes Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             </div>
             <div className="leading-tight max-w-[150px]">
               <div className="text-[#F0D98A] font-bold tracking-wide leading-tight" style={{ fontFamily: isRTL ? 'Tajawal, sans-serif' : 'Inter, sans-serif', fontSize: isRTL ? '12px' : '10.5px' }}>
-                {t('الأكاديمية العليا للرمز والشيفرة', 'The Higher Academy of Symbol and Cipher')}
+                {t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}
               </div>
             </div>
           </Link>

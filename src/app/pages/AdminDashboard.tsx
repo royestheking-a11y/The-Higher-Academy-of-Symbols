@@ -8,11 +8,16 @@ import {
   Bold, Italic, Underline, Strikethrough, List, ListOrdered, AlignLeft,
   AlignCenter, AlignRight, Quote, Minus, Link2, RotateCcw, RotateCw,
   Compass, Save, ArrowLeft, ArrowRight, Tag, Clock, Building2, Landmark,
+  Library, Store, ShoppingCart
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
+
+import AdminLibrary from './admin/AdminLibrary';
+import AdminBooks from './admin/AdminBooks';
+import AdminOrders from './admin/AdminOrders';
 import { toast } from 'sonner';
 import { GeometricBackground } from '../components/GeometricBackground';
 import { Skeleton } from '../components/Skeleton';
@@ -253,6 +258,14 @@ export default function AdminDashboard() {
       ],
     },
     {
+      label_ar: 'المكتبة والمتجر', label_en: 'Library & Store',
+      items: [
+        { id: 'library',       icon: Library,      label_ar: 'المكتبة الرقمية',  label_en: 'Digital Library' },
+        { id: 'books',         icon: Store,        label_ar: 'إصدارات المتجر',  label_en: 'Store Books' },
+        { id: 'storeOrders',   icon: ShoppingCart, label_ar: 'طلبات المتجر',  label_en: 'Store Orders' },
+      ],
+    },
+    {
       label_ar: 'المجتمع', label_en: 'Community',
       items: [
         { id: 'users',        icon: Users,        label_ar: 'المستخدمون',  label_en: 'Users' },
@@ -427,10 +440,10 @@ export default function AdminDashboard() {
         <div className="p-4" style={{ borderBottom: '1px solid rgba(201,162,74,0.2)' }}>
         <Link to="/" className="flex items-center gap-2.5 mb-4">
           <div className="rounded-full overflow-hidden shrink-0" style={{ width: 36, height: 36, background: '#062B24', boxShadow: '0 2px 10px rgba(201,162,74,0.35)' }}>
-            <img src="/symbolacademy.png" alt="The Higher Academy of Symbol and Cipher" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <img src="/symbolacademy.png" alt="The Higher Academy of Symbols and Codes" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
           <div>
-            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرمز والشيفرة', 'The Higher Academy of Symbol and Cipher')}</div>
+            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}</div>
             <div className="text-[#6B8B80] text-[10px]">{t('لوحة الإدارة', 'Admin Panel')}</div>
           </div>
         </Link>
@@ -618,7 +631,7 @@ export default function AdminDashboard() {
                 <h1 className="text-[#062B24] font-bold" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif', fontSize: 'clamp(1.4rem,3vw,1.8rem)' }}>
                   {t('لوحة التحكم الرئيسية', 'Main Dashboard')}
                 </h1>
-                <p className="text-[#5A7A70] text-sm mt-1">{t('مرحباً بك في لوحة إدارة الأكاديمية العليا للرمز والشيفرة', 'Welcome to The Higher Academy of Symbol and Cipher admin panel')}</p>
+                <p className="text-[#5A7A70] text-sm mt-1">{t('مرحباً بك في لوحة إدارة الأكاديمية العليا للرموز والشفرات', 'Welcome to The Higher Academy of Symbols and Codes admin panel')}</p>
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                 {loading ? (
@@ -1471,6 +1484,15 @@ export default function AdminDashboard() {
                         style={{ background: 'rgba(6,43,36,0.06)', color: BRAND.deep, border: '1px solid rgba(6,43,36,0.12)' }}>
                         {t('الرد بالبريد', 'Reply via Email')}
                       </a>
+                      {msg.phone && (
+                        <a href={`https://wa.me/${msg.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent((t('مرحباً ', 'Hello ') + msg.name + t('، بخصوص رسالتك:\n"', ', regarding your message:\n"') + t(msg.message_ar, msg.message_en) + '"\n\n'))}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
+                          style={{ background: 'rgba(37,211,102,0.1)', color: '#25D366', border: '1px solid rgba(37,211,102,0.3)' }}>
+                          {t('الرد عبر واتساب', 'Reply via WhatsApp')}
+                        </a>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1483,6 +1505,10 @@ export default function AdminDashboard() {
               </div>
             </motion.div>
           )}
+
+          {activeTab === 'library' && <AdminLibrary />}
+          {activeTab === 'books' && <AdminBooks />}
+          {activeTab === 'storeOrders' && <AdminOrders />}
 
           {/* ── TESTIMONIALS ─────────────────────────────────────────────── */}
           {activeTab === 'testimonials' && (

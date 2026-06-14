@@ -1,9 +1,9 @@
-# The Higher Academy of Symbol and Cipher
+# The Higher Academy of Symbols and Codes
 
-The Higher Academy of Symbol and Cipher is a smart educational institution focused on rigorous scientific research, dedicated to being the primary reference in the Arab world for the study of symbolism, semiotics, and cryptography.
+The Higher Academy of Symbols and Codes is a smart educational institution focused on rigorous scientific research, dedicated to being the primary reference in the Arab world for the study of symbolism, semiotics, and cryptography.
 
 ## About the Academy
-The Higher Academy of Symbol and Cipher was founded with a clear vision: to bridge the gap in symbolic studies while maintaining a neutral and rigorous scientific approach. We prioritize Arabic as a core academic identity and foster a supportive research environment.
+The Higher Academy of Symbols and Codes was founded with a clear vision: to bridge the gap in symbolic studies while maintaining a neutral and rigorous scientific approach. We prioritize Arabic as a core academic identity and foster a supportive research environment.
 
 ### Our Approach
 - **Scientific & Neutral:** A rigorous educational methodology.
@@ -37,5 +37,5 @@ The Higher Academy of Symbol and Cipher was founded with a clear vision: to brid
 6. **Collecting and translating** Arabic symbolic studies.
 
 ---
-© 2026 The Higher Academy of Symbol and Cipher. All rights reserved.
+© 2026 The Higher Academy of Symbols and Codes. All rights reserved.
 Designed & Developed by **Aurangzeb Sunny**.
