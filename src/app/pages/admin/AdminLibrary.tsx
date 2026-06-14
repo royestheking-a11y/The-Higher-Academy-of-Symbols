@@ -7,7 +7,8 @@ export default function AdminLibrary() {
   const [resources, setResources] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/library` : '/api/library')
+    const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+    fetch(baseUrl ? `${baseUrl}/api/library` : '/api/library')
       .then(r => r.ok ? r.json() : [])
       .then(data => setResources(data))
       .catch(err => console.error(err));

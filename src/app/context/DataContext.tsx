@@ -119,6 +119,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     if (body) options.body = JSON.stringify(body);
     
     let API_URL = import.meta.env.VITE_API_URL || '';
+    if (API_URL.endsWith('/api')) API_URL = API_URL.slice(0, -4);
+    if (API_URL.endsWith('/')) API_URL = API_URL.slice(0, -1);
     if (API_URL.endsWith('/api')) {
       API_URL = API_URL.slice(0, -4);
     }

@@ -16,7 +16,8 @@ export default function LibraryDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/library/${slug}` : `/api/library/${slug}`)
+    const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+    fetch(baseUrl ? `${baseUrl}/api/library/${slug}` : `/api/library/${slug}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => { setResource(data); setLoading(false); })
       .catch(() => setLoading(false));

@@ -17,7 +17,8 @@ export default function BookDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/books/${slug}` : `/api/books/${slug}`)
+    const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+    fetch(baseUrl ? `${baseUrl}/api/books/${slug}` : `/api/books/${slug}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => { setBook(data); setLoading(false); })
       .catch(() => setLoading(false));

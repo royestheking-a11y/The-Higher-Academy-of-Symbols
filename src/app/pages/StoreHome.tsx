@@ -38,7 +38,8 @@ export default function StoreHome() {
   ];
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/books` : '/api/books')
+    const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+    fetch(baseUrl ? `${baseUrl}/api/books` : '/api/books')
       .then(r => r.ok ? r.json() : [])
       .then(data => { setBooks(data); setLoading(false); })
       .catch(() => { setBooks([]); setLoading(false); });

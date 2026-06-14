@@ -7,7 +7,8 @@ export default function AdminBooks() {
   const [books, setBooks] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/books` : '/api/books')
+    const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+    fetch(baseUrl ? `${baseUrl}/api/books` : '/api/books')
       .then(r => r.ok ? r.json() : [])
       .then(data => setBooks(data))
       .catch(err => console.error(err));

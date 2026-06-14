@@ -38,7 +38,8 @@ export default function LibraryHome() {
 
   useEffect(() => {
     // Fetch resources
-    fetch(import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/library` : '/api/library')
+    const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+    fetch(baseUrl ? `${baseUrl}/api/library` : '/api/library')
       .then(r => r.ok ? r.json() : [])
       .then(data => { setResources(data); setLoading(false); })
       .catch(() => { setResources([]); setLoading(false); });

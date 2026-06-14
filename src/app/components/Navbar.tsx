@@ -96,7 +96,7 @@ export function Navbar() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`px-4 py-2 text-sm transition-all duration-200 relative group ${
+                className={`px-2 lg:px-3 xl:px-4 py-2 text-sm whitespace-nowrap transition-all duration-200 relative group ${
                   isActive(link.to) ? 'text-[#F0D98A]' : 'text-[#E8DDC7] hover:text-[#F0D98A]'
                 }`}
               >
@@ -114,7 +114,7 @@ export function Navbar() {
             <div ref={areasRef} className="relative">
               <button
                 onClick={() => setAreasOpen(!areasOpen)}
-                className={`flex items-center gap-1 px-4 py-2 text-sm transition-all duration-200 ${areasOpen ? 'text-[#F0D98A]' : 'text-[#E8DDC7] hover:text-[#F0D98A]'}`}
+                className={`flex items-center gap-1 px-2 lg:px-3 xl:px-4 py-2 text-sm whitespace-nowrap transition-all duration-200 ${areasOpen ? 'text-[#F0D98A]' : 'text-[#E8DDC7] hover:text-[#F0D98A]'}`}
               >
                 {t('مجالات الدراسة', 'Areas of Study')}
                 <ChevronDown size={14} className={`transition-transform ${areasOpen ? 'rotate-180' : ''}`} />
@@ -245,14 +245,14 @@ export function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="px-4 py-1.5 rounded-full text-sm border transition-all hover:bg-[rgba(201,162,74,0.1)]"
+                  className="px-3 xl:px-4 py-1.5 rounded-full text-sm border transition-all hover:bg-[rgba(201,162,74,0.1)] whitespace-nowrap"
                   style={{ borderColor: 'rgba(201,162,74,0.4)', color: '#E8DDC7' }}
                 >
                   {t('تسجيل الدخول', 'Log In')}
                 </Link>
                 <Link to="/register">
                   <button
-                    className="px-4 py-1.5 rounded-full text-sm font-semibold transition-all"
+                    className="px-3 xl:px-4 py-1.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap"
                     style={{
                       background: 'linear-gradient(135deg, #C9A24A, #D8B75B)',
                       color: '#062B24',
