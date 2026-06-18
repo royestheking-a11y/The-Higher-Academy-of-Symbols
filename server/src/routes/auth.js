@@ -36,8 +36,8 @@ router.post('/google', async (req, res) => {
 
     let email, name, picture, sub;
 
-    // Check if the credential is a JWT (contains dots) or an OAuth access token
-    if (typeof credential === 'string' && credential.includes('.')) {
+    // Check if the credential is a JWT (starts with eyJ) or an OAuth access token
+    if (typeof credential === 'string' && credential.startsWith('eyJ')) {
       const ticket = await client.verifyIdToken({
         idToken: credential,
         audience: process.env.GOOGLE_CLIENT_ID,
