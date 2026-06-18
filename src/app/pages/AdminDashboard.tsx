@@ -8,7 +8,7 @@ import {
   Bold, Italic, Underline, Strikethrough, List, ListOrdered, AlignLeft,
   AlignCenter, AlignRight, Quote, Minus, Link2, RotateCcw, RotateCw,
   Compass, Save, ArrowLeft, ArrowRight, Tag, Clock, Building2, Landmark,
-  Library, Store, ShoppingCart
+  Library, Store, ShoppingCart, Archive, ArchiveRestore
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
@@ -138,6 +138,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab]       = useState('overview');
   const [sidebarOpen, setSidebarOpen]   = useState(false);
   const [notifOpen, setNotifOpen]       = useState(false);
+  const [messageFilter, setMessageFilter] = useState('all');
   const [editingSettings, setEditingSettings] = useState(false);
   const [settingsForm, setSettingsForm] = useState({ ...settings });
 
@@ -444,7 +445,7 @@ export default function AdminDashboard() {
           </div>
           <div>
             <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}</div>
-            <div className="text-[#6B8B80] text-[10px]">{t('لوحة الإدارة', 'Admin Panel')}</div>
+            <div className="text-white/80 text-[10px]">{t('لوحة الإدارة', 'Admin Panel')}</div>
           </div>
         </Link>
         <div className="flex items-center gap-3 p-3 rounded-2xl" style={{ background: 'rgba(201,162,74,0.08)', border: '1px solid rgba(201,162,74,0.2)' }}>
@@ -453,7 +454,7 @@ export default function AdminDashboard() {
           </div>
           <div className="min-w-0">
             <div className="text-[#F0D98A] text-xs font-semibold">{t('المشرف العام', 'Super Admin')}</div>
-            <div className="text-[#6B8B80] text-[10px] truncate">{currentUser.email}</div>
+            <div className="text-white/80 text-[10px] truncate">{currentUser.email}</div>
           </div>
         </div>
       </div>
@@ -461,7 +462,7 @@ export default function AdminDashboard() {
       <div className="p-3 flex-1 overflow-y-auto custom-scrollbar min-h-0">
         {navGroups.map(group => (
           <div key={group.label_en} className="mb-3">
-            <div className="px-3 mb-1 text-[#4A6B60] text-[9px] font-bold uppercase tracking-widest">
+            <div className="px-3 mb-1 text-white/50 text-[9px] font-bold uppercase tracking-widest">
               {t(group.label_ar, group.label_en)}
             </div>
             {group.items.map(item => {
@@ -470,7 +471,7 @@ export default function AdminDashboard() {
               const isActive = activeTab === item.id;
               return (
                 <button key={item.id} onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs mb-0.5 transition-all text-start ${isActive ? 'text-[#F0D98A]' : 'text-[#8B9D8A] hover:text-[#E8DDC7]'}`}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs mb-0.5 transition-all text-start ${isActive ? 'text-[#F0D98A] font-bold' : 'text-white/80 hover:text-white'}`}
                   style={{ background: isActive ? 'rgba(201,162,74,0.15)' : 'transparent' }}>
                   <IconComp size={13} className={isActive ? 'text-[#C9A24A]' : ''} />
                   <span className="flex-1">{t(item.label_ar, item.label_en)}</span>
@@ -483,10 +484,10 @@ export default function AdminDashboard() {
       </div>
 
       <div className="p-3" style={{ borderTop: '1px solid rgba(201,162,74,0.15)' }}>
-        <Link to="/" className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-[#8B9D8A] hover:text-[#E8DDC7] transition-all">
+        <Link to="/" className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-white/80 hover:text-white transition-all">
           <Home size={13} /> {t('العودة للموقع', 'Back to Site')}
         </Link>
-        <button onClick={handleLogout} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-[#8B9D8A] hover:text-[#E8DDC7] transition-all text-start">
+        <button onClick={handleLogout} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-white/80 hover:text-white transition-all text-start">
           <LogOut size={13} /> {t('تسجيل الخروج', 'Logout')}
         </button>
       </div>
@@ -1276,8 +1277,10 @@ export default function AdminDashboard() {
                 <THead cols={['#', t('المستخدم', 'User'), t('المحاضرة', 'Course'), t('المبلغ', 'Amount'), t('المعاملة', 'Transaction'), t('التاريخ', 'Date'), t('الحالة', 'Status')]} />
                 <tbody>
                   {(enrollments as any[]).map((enr: any, i: number) => {
-                    const u = (users as any[]).find((us: any) => us.id === enr.userId);
-                    const lec = (lectures as any[]).find((l: any) => l.id === enr.courseId);
+                    const userIdStr = typeof enr.userId === 'object' ? (enr.userId?._id || enr.userId?.id) : enr.userId;
+                    const courseIdStr = typeof enr.courseId === 'object' ? (enr.courseId?._id || enr.courseId?.id) : enr.courseId;
+                    const u = typeof enr.userId === 'object' && enr.userId?.name ? enr.userId : (users as any[]).find((us: any) => us.id === userIdStr || us._id === userIdStr);
+                    const lec = typeof enr.courseId === 'object' && (enr.courseId?.title_ar || enr.courseId?.title_en) ? enr.courseId : (lectures as any[]).find((l: any) => l.id === courseIdStr || l._id === courseIdStr);
                     return (
                       <tr key={i} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                         <td className={`${tdCls} text-[#8B9D8A]`}>{i + 1}</td>
@@ -1455,9 +1458,30 @@ export default function AdminDashboard() {
           {/* ── MESSAGES ─────────────────────────────────────────────────── */}
           {activeTab === 'messages' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <h2 className="text-[#062B24] font-bold text-lg mb-6">{t('رسائل التواصل', 'Contact Messages')}</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <h2 className="text-[#062B24] font-bold text-lg">{t('رسائل التواصل', 'Contact Messages')}</h2>
+                <div className="flex items-center gap-2 p-1 rounded-xl bg-white border border-gray-100 shadow-sm overflow-x-auto">
+                  {[
+                    { id: 'all', label: t('الكل', 'All') },
+                    { id: 'new', label: t('جديدة', 'New') },
+                    { id: 'read', label: t('مقروءة', 'Seen') },
+                    { id: 'replied', label: t('تم الرد', 'Replied') },
+                    { id: 'archived', label: t('مؤرشفة', 'Archived') }
+                  ].map(filter => (
+                    <button 
+                      key={filter.id}
+                      onClick={() => setMessageFilter(filter.id)}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${messageFilter === filter.id ? 'bg-[#062B24] text-white' : 'text-[#8B9D8A] hover:bg-gray-50'}`}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="space-y-4">
-                {(contactMessages as any[]).map((msg: any, i: number) => (
+                {(contactMessages as any[])
+                  .filter(msg => messageFilter === 'all' || msg.status === messageFilter)
+                  .map((msg: any, i: number) => (
                   <div key={i} className="p-5 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>
@@ -1471,12 +1495,33 @@ export default function AdminDashboard() {
                     </div>
                     <div className="text-[#3A5A50] font-medium text-sm mb-2">{t(msg.subject_ar, msg.subject_en)}</div>
                     <p className="text-[#5A7A70] text-xs leading-relaxed mb-4">{t(msg.message_ar, msg.message_en)}</p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       {msg.status === 'new' && (
+                        <button onClick={() => { updateContactMessage(msg.id, { status: 'read' }); toast.success(t('تم التحديد كمقروءة', 'Marked as Seen')); }}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
+                          style={{ background: 'rgba(74,139,122,0.1)', color: '#4A8B7A', border: '1px solid rgba(74,139,122,0.3)' }}>
+                          <Eye size={12} /> {t('تحديد كمقروءة', 'Mark as Seen')}
+                        </button>
+                      )}
+                      {(msg.status === 'new' || msg.status === 'read') && (
                         <button onClick={() => { updateContactMessage(msg.id, { status: 'replied' }); toast.success(t('تم تحديث الحالة', 'Status updated')); }}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
                           style={{ background: 'rgba(201,162,74,0.12)', color: BRAND.gold, border: '1px solid rgba(201,162,74,0.3)' }}>
                           <Check size={12} /> {t('تحديد كمُرَد عليه', 'Mark as Replied')}
+                        </button>
+                      )}
+                      {msg.status !== 'archived' && (
+                        <button onClick={() => { updateContactMessage(msg.id, { status: 'archived' }); toast.success(t('تمت الأرشفة', 'Archived')); }}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
+                          style={{ background: 'rgba(139,157,138,0.1)', color: '#5A7A70', border: '1px solid rgba(139,157,138,0.3)' }}>
+                          <Archive size={12} /> {t('أرشفة', 'Archive')}
+                        </button>
+                      )}
+                      {msg.status === 'archived' && (
+                        <button onClick={() => { updateContactMessage(msg.id, { status: 'read' }); toast.success(t('تمت الاستعادة', 'Restored')); }}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
+                          style={{ background: 'rgba(74,139,122,0.1)', color: '#4A8B7A', border: '1px solid rgba(74,139,122,0.3)' }}>
+                          <ArchiveRestore size={12} /> {t('استعادة', 'Restore')}
                         </button>
                       )}
                       <a href={`mailto:${msg.email}`}
@@ -1496,7 +1541,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
-                {contactMessages.length === 0 && (
+                {(contactMessages as any[]).filter(msg => messageFilter === 'all' || msg.status === messageFilter).length === 0 && (
                   <div className="text-center py-16 rounded-2xl" style={{ background: 'white' }}>
                     <MessageSquare size={40} className="text-[#C9A24A] mx-auto mb-3 opacity-40" />
                     <p className="text-[#5A7A70]">{t('لا توجد رسائل.', 'No messages.')}</p>
