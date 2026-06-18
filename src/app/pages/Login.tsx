@@ -95,24 +95,40 @@ export default function Login() {
         initial={{ opacity: 0, y: 30, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md"
+        className="relative w-full max-w-5xl"
       >
-        <div className="rounded-3xl overflow-hidden relative" style={{ background: BRAND.ivory, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
-          <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.06} strokeWidth={0.6} tileSize={60} />
-          {/* Header */}
-          <div className="p-8 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})` }}>
-            <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.7} tileSize={50} />
-            <div className="w-32 h-32 rounded-full mx-auto mb-4 flex items-center justify-center p-1 relative z-10" style={{ background: 'linear-gradient(135deg, #C9A24A, #F0D98A)', boxShadow: '0 3px 15px rgba(201,162,74,0.4)' }}>
-              <img src="/symbolacademy.png" alt="Logo" className="w-full h-full object-contain" />
-            </div>
-            <h1 className="text-[#F0D98A] font-bold text-xl" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
-              {t('تسجيل الدخول', 'Log In')}
-            </h1>
-            <p className="text-[#8B9D8A] text-xs mt-1">{t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}</p>
+        <div className="rounded-3xl overflow-hidden relative flex flex-col md:flex-row" style={{ background: BRAND.ivory, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+          <div className="absolute inset-0 pointer-events-none z-0">
+            <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.06} strokeWidth={0.6} tileSize={60} />
           </div>
 
-          {/* Form */}
-          <div className="p-8">
+          {/* Branding Side */}
+          <div className={`md:w-1/2 p-10 md:p-12 text-center relative overflow-hidden flex flex-col items-center justify-center ${isRTL ? 'md:order-last' : ''}`} style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})` }}>
+            <div className="absolute inset-0 pointer-events-none z-0">
+              <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.7} tileSize={50} />
+            </div>
+            <div className="w-36 h-36 md:w-52 md:h-52 rounded-full mx-auto mb-8 flex items-center justify-center p-1.5 relative z-10" style={{ background: 'linear-gradient(135deg, #C9A24A, #F0D98A)', boxShadow: '0 4px 25px rgba(201,162,74,0.5)' }}>
+              <img src="/symbolacademy.png" alt="Logo" className="w-full h-full object-contain rounded-full" />
+            </div>
+            <h1 className="text-[#F0D98A] font-bold text-2xl md:text-4xl relative z-10 mb-3" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
+              {t('مرحباً بعودتك', 'Welcome Back')}
+            </h1>
+            <p className="text-[#8B9D8A] text-sm md:text-base relative z-10 max-w-xs mx-auto">
+              {t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}
+            </p>
+          </div>
+
+          {/* Form Side */}
+          <div className="md:w-1/2 p-8 md:p-16 lg:p-20 relative z-10 flex flex-col justify-center">
+            <div className="mb-8 text-center md:text-start">
+              <h2 className="text-[#062B24] font-bold text-2xl md:text-3xl mb-2" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
+                {t('تسجيل الدخول', 'Log In')}
+              </h2>
+              <p className="text-[#5A7A70] text-sm">
+                {t('يرجى إدخال بيانات حسابك للمتابعة', 'Please enter your account details to continue')}
+              </p>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-[#3A5A50] text-xs font-semibold mb-2 uppercase tracking-wide">{t('البريد الإلكتروني', 'Email')}</label>
@@ -188,7 +204,14 @@ export default function Login() {
                 onMouseEnter={e => !loading && ((e.currentTarget as HTMLButtonElement).style.transform = 'translateY(2px)')}
                 onMouseLeave={e => !loading && ((e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)')}
               >
-                {loading ? <div className="w-5 h-5 rounded-full border-2 border-[#062B24] border-t-transparent animate-spin" /> : <><LogIn size={16} />{t('تسجيل الدخول', 'Log In')}</>}
+                {loading ? (
+                  <div className="w-5 h-5 rounded-full border-2 border-[#062B24] border-t-transparent animate-spin" />
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <LogIn size={16} />
+                    <span>{t('تسجيل الدخول', 'Log In')}</span>
+                  </span>
+                )}
               </button>
             </form>
 

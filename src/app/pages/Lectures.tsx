@@ -4,6 +4,7 @@ import { Search, Filter, BookOpen, Clock, Users, Star, Award, Play, SlidersHoriz
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
+import { useAuth } from '../context/AuthContext';
 import { GeometricBackground } from '../components/GeometricBackground';
 import { Skeleton } from '../components/Skeleton';
 
@@ -22,6 +23,7 @@ function PhoenixIcon() {
 export default function Lectures() {
   const { t, isRTL, fontFamily } = useLanguage();
   const { lectures, loading } = useData();
+  const { currentUser } = useAuth();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
@@ -223,8 +225,8 @@ export default function Lectures() {
                     <Link to={`/lectures/${lecture.slug}`} className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-center border transition-all hover:bg-[rgba(6,43,36,0.05)]" style={{ borderColor: 'rgba(6,43,36,0.2)', color: BRAND.deep }}>
                       {t('التفاصيل', 'Details')}
                     </Link>
-                    <Link to="/register" className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-center" style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 2px 0 #8B6B20' }}>
-                      {t('سجّل الآن', 'Register')}
+                    <Link to={currentUser ? `/checkout/${lecture.slug}` : '/login'} className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-center" style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 2px 0 #8B6B20' }}>
+                      {t('انضم الآن', 'Enroll')}
                     </Link>
                   </div>
                 </div>

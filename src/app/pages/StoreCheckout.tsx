@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 import { ArrowRight, ArrowLeft, CheckCircle, MapPin, CreditCard, User, ShoppingBag } from 'lucide-react';
 
 const BRAND = { deep: '#062B24', primary: '#1B4D42', secondary: '#3A5A50', accent: '#7BBFAD', gold: '#C9A24A', light: '#F8F4EA' };
+const SHIPPING_CHARGE = 20;
 
 export default function StoreCheckout() {
   const { t, isRTL } = useLanguage();
@@ -15,7 +16,7 @@ export default function StoreCheckout() {
   const navigate = useNavigate();
   
   const [step, setStep] = useState(currentUser ? 2 : 1);
-  const [address, setAddress] = useState({ name: currentUser?.name || '', email: currentUser?.email || '', phone: currentUser?.phone || '', country: currentUser?.country || '', city: '', address: '', postalCode: '' });
+  const [address, setAddress] = useState({ name: currentUser?.name || '', email: currentUser?.email || '', phone: currentUser?.phone || '', country: 'United Arab Emirates', city: 'Dubai', address: '', postalCode: '' });
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
 
@@ -41,7 +42,7 @@ export default function StoreCheckout() {
           userId: currentUser?.id,
           customerDetails: address,
           items: cartItems.map(item => ({ bookId: item.bookId, quantity: item.quantity, price: item.price })),
-          totalAmount: cartTotal
+          totalAmount: cartTotal + SHIPPING_CHARGE
         })
       });
       if (res.ok) {
@@ -121,9 +122,9 @@ export default function StoreCheckout() {
                     <input type="text" placeholder={t('الاسم الكامل', 'Full Name')} value={address.name} onChange={e => setAddress({...address, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none focus:border-[#C9A24A]" />
                     <input type="email" placeholder={t('البريد الإلكتروني', 'Email')} value={address.email} onChange={e => setAddress({...address, email: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none focus:border-[#C9A24A]" />
                     <input type="tel" placeholder={t('رقم الهاتف', 'Phone')} value={address.phone} onChange={e => setAddress({...address, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none focus:border-[#C9A24A]" />
-                    <input type="text" placeholder={t('الدولة', 'Country')} value={address.country} onChange={e => setAddress({...address, country: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none focus:border-[#C9A24A]" />
-                    <input type="text" placeholder={t('المدينة', 'City')} value={address.city} onChange={e => setAddress({...address, city: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none focus:border-[#C9A24A]" />
-                    <input type="text" placeholder={t('الرمز البريدي', 'Postal Code')} value={address.postalCode} onChange={e => setAddress({...address, postalCode: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none focus:border-[#C9A24A]" />
+                    <input type="text" placeholder={t('الدولة', 'Country')} value={address.country} readOnly className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none bg-gray-50 text-gray-500 cursor-not-allowed" />
+                    <input type="text" placeholder={t('المدينة', 'City')} value={address.city} readOnly className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none bg-gray-50 text-gray-500 cursor-not-allowed" />
+                    <input type="text" placeholder={t('الرمز البريدي (اختياري)', 'Postal Code (Optional)')} value={address.postalCode} onChange={e => setAddress({...address, postalCode: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none focus:border-[#C9A24A]" />
                   </div>
                   <input type="text" placeholder={t('العنوان التفصيلي', 'Detailed Address')} value={address.address} onChange={e => setAddress({...address, address: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[rgba(6,43,36,0.1)] outline-none focus:border-[#C9A24A]" />
                   
@@ -167,7 +168,7 @@ export default function StoreCheckout() {
                   <div className="w-20 h-20 bg-[rgba(37,211,102,0.1)] rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle size={40} className="text-[#25D366]" />
                   </div>
-                  <h2 className="text-2xl font-black text-[#062B24] mb-3">{t('تم استلام طلبك بنجاح!', 'Order Received Successfully!')}</h2>
+                  <h2 className="text-2xl font-black text-[#062B24] mb-3">{t('تم تأكيد طلبك بنجاح!', 'Order Confirmed Successfully!')}</h2>
                   <p className="text-[#5A7A70] mb-8">{t('سنتواصل معك قريباً لتأكيد وتجهيز شحنتك.', 'We will contact you shortly to confirm and prepare your shipment.')}</p>
                   <button onClick={() => navigate('/store')} className="px-8 py-3 rounded-xl bg-[#062B24] text-white font-bold">
                     {t('العودة للمتجر', 'Return to Store')}
@@ -205,12 +206,12 @@ export default function StoreCheckout() {
                     <span>AED {cartTotal}</span>
                   </div>
                   <div className="flex justify-between text-sm text-[#5A7A70]">
-                    <span>{t('الشحن', 'Shipping')}</span>
-                    <span>{t('يحدد لاحقاً', 'Calculated Later')}</span>
+                    <span>{t('الشحن (دبي)', 'Shipping (Dubai)')}</span>
+                    <span>AED {SHIPPING_CHARGE}</span>
                   </div>
                   <div className="flex justify-between text-lg font-black text-[#062B24] pt-2 border-t border-[rgba(6,43,36,0.08)]">
                     <span>{t('الإجمالي', 'Total')}</span>
-                    <span className="text-[#C9A24A]">AED {cartTotal}</span>
+                    <span className="text-[#C9A24A]">AED {cartTotal + SHIPPING_CHARGE}</span>
                   </div>
                 </div>
               </div>

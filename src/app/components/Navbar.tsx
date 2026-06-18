@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router';
 import {
   Menu, X, ChevronDown, Search, User, LogOut, LayoutDashboard,
   ShieldCheck, BookOpen, Newspaper, GraduationCap, Phone, Star, Eye,
-  Lock, ScrollText, FileText, Compass, PenLine, MessageSquare, Pen
+  Lock, ScrollText, FileText, Compass, PenLine, MessageSquare, Pen, ShoppingBag
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +18,7 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [areasOpen, setAreasOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -27,6 +28,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const areasRef = useRef<HTMLDivElement>(null);
+  const libraryRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,26 +40,25 @@ export function Navbar() {
   useEffect(() => {
     setMobileOpen(false);
     setAreasOpen(false);
+    setLibraryOpen(false);
     setUserMenuOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (areasRef.current && !areasRef.current.contains(e.target as Node)) setAreasOpen(false);
+      if (libraryRef.current && !libraryRef.current.contains(e.target as Node)) setLibraryOpen(false);
       if (userRef.current && !userRef.current.contains(e.target as Node)) setUserMenuOpen(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const navLinks = [
+  const mainLinks = [
     { label_ar: 'الرئيسية', label_en: 'Home', to: '/' },
     { label_ar: 'عن الأكاديمية', label_en: 'About', to: '/about' },
     { label_ar: 'المحاضرات', label_en: 'Lectures', to: '/lectures' },
     { label_ar: 'المقالات', label_en: 'Articles', to: '/articles' },
-    { label_ar: 'المكتبة', label_en: 'Library', to: '/library' },
-    { label_ar: 'المتجر', label_en: 'Store', to: '/store' },
-    { label_ar: 'التواصل', label_en: 'Contact', to: '/contact' },
   ];
 
   const isActive = (to: string) => to === '/' ? location.pathname === '/' : location.pathname.startsWith(to);
@@ -81,18 +82,18 @@ export function Navbar() {
               className="shrink-0 rounded-full overflow-hidden"
               style={{ width: 42, height: 42, boxShadow: '0 2px 14px rgba(201,162,74,0.4)', background: '#062B24' }}
             >
-              <img src="/symbolacademy.png" alt="The Higher Academy of Symbols and Codes Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <img src="/symbolacademy.png" alt="The Higher Academy of Symbols and Code Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             </div>
             <div className="leading-tight max-w-[150px]">
               <div className="text-[#F0D98A] font-bold tracking-wide leading-tight" style={{ fontFamily: isRTL ? 'Tajawal, sans-serif' : 'Inter, sans-serif', fontSize: isRTL ? '12px' : '10.5px' }}>
-                {t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}
+                {t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}
               </div>
             </div>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map(link => (
+            {mainLinks.map(link => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -109,6 +110,66 @@ export function Navbar() {
                 />
               </Link>
             ))}
+
+            {/* Library & Store Dropdown */}
+            <div ref={libraryRef} className="relative">
+              <button
+                onClick={() => setLibraryOpen(!libraryOpen)}
+                className={`flex items-center gap-1 px-2 lg:px-3 xl:px-4 py-2 text-sm whitespace-nowrap transition-all duration-200 ${(isActive('/library') || isActive('/store') || libraryOpen) ? 'text-[#F0D98A]' : 'text-[#E8DDC7] hover:text-[#F0D98A]'}`}
+              >
+                {t('المكتبة والمتجر', 'Library & Store')}
+                <ChevronDown size={14} className={`transition-transform ${libraryOpen ? 'rotate-180' : ''}`} />
+                <span
+                  className={`absolute bottom-0 start-0 end-0 h-0.5 transition-all duration-200 ${
+                    (isActive('/library') || isActive('/store')) ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  style={{ background: 'linear-gradient(90deg, #C9A24A, #F0D98A)' }}
+                />
+              </button>
+
+              <AnimatePresence>
+                {libraryOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full mt-2 rounded-xl shadow-2xl overflow-hidden z-50 min-w-[200px]"
+                    style={{
+                      background: '#062B24',
+                      border: '1px solid rgba(201,162,74,0.3)',
+                      insetInlineStart: isRTL ? 'auto' : '0',
+                      insetInlineEnd: isRTL ? '0' : 'auto',
+                    }}
+                  >
+                    <div className="p-2 flex flex-col gap-1">
+                      <Link
+                        to="/library"
+                        className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#0B3A31] transition-all group"
+                      >
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(201,162,74,0.15)' }}>
+                          <BookOpen size={16} className="text-[#C9A24A]" />
+                        </div>
+                        <div className="text-[#F8F4EA] text-sm font-medium group-hover:text-[#F0D98A] transition-colors">
+                          {t('المكتبة', 'Library')}
+                        </div>
+                      </Link>
+                      <Link
+                        to="/store"
+                        className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#0B3A31] transition-all group"
+                      >
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(201,162,74,0.15)' }}>
+                          <ShoppingBag size={16} className="text-[#C9A24A]" />
+                        </div>
+                        <div className="text-[#F8F4EA] text-sm font-medium group-hover:text-[#F0D98A] transition-colors">
+                          {t('المتجر', 'Store')}
+                        </div>
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Areas Mega Menu */}
             <div ref={areasRef} className="relative">
@@ -175,6 +236,22 @@ export function Navbar() {
                 )}
               </AnimatePresence>
             </div>
+
+            {/* Contact Link */}
+            <Link
+              to="/contact"
+              className={`px-2 lg:px-3 xl:px-4 py-2 text-sm whitespace-nowrap transition-all duration-200 relative group ${
+                isActive('/contact') ? 'text-[#F0D98A]' : 'text-[#E8DDC7] hover:text-[#F0D98A]'
+              }`}
+            >
+              {t('التواصل', 'Contact')}
+              <span
+                className={`absolute bottom-0 start-0 end-0 h-0.5 transition-all duration-200 ${
+                  isActive('/contact') ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}
+                style={{ background: 'linear-gradient(90deg, #C9A24A, #F0D98A)' }}
+              />
+            </Link>
           </div>
 
           {/* Right Controls */}
@@ -336,7 +413,7 @@ export function Navbar() {
             style={{ background: '#062B24', borderTop: '1px solid rgba(201,162,74,0.2)' }}
           >
             <div className="px-4 py-4 space-y-1" style={{ fontFamily }}>
-              {navLinks.map(link => (
+              {mainLinks.map(link => (
                 <Link
                   key={link.to}
                   to={link.to}
@@ -349,6 +426,36 @@ export function Navbar() {
                   {t(link.label_ar, link.label_en)}
                 </Link>
               ))}
+              <Link
+                to="/library"
+                className={`flex items-center px-4 py-3 rounded-xl text-sm transition-all ${
+                  isActive('/library')
+                    ? 'text-[#F0D98A] bg-[rgba(201,162,74,0.15)]'
+                    : 'text-[#E8DDC7] hover:bg-[rgba(201,162,74,0.1)] hover:text-[#F0D98A]'
+                }`}
+              >
+                {t('المكتبة', 'Library')}
+              </Link>
+              <Link
+                to="/store"
+                className={`flex items-center px-4 py-3 rounded-xl text-sm transition-all ${
+                  isActive('/store')
+                    ? 'text-[#F0D98A] bg-[rgba(201,162,74,0.15)]'
+                    : 'text-[#E8DDC7] hover:bg-[rgba(201,162,74,0.1)] hover:text-[#F0D98A]'
+                }`}
+              >
+                {t('المتجر', 'Store')}
+              </Link>
+              <Link
+                to="/contact"
+                className={`flex items-center px-4 py-3 rounded-xl text-sm transition-all ${
+                  isActive('/contact')
+                    ? 'text-[#F0D98A] bg-[rgba(201,162,74,0.15)]'
+                    : 'text-[#E8DDC7] hover:bg-[rgba(201,162,74,0.1)] hover:text-[#F0D98A]'
+                }`}
+              >
+                {t('التواصل', 'Contact')}
+              </Link>
               <Link
                 to="/areas-of-study"
                 className="flex items-center px-4 py-3 rounded-xl text-sm text-[#E8DDC7] hover:bg-[rgba(201,162,74,0.1)] hover:text-[#F0D98A] transition-all"

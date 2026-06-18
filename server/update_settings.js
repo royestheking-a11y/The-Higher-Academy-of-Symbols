@@ -9,15 +9,15 @@ async function updateDB() {
   
   const result = await Settings.updateMany({}, {
     $set: {
-      siteName_ar: 'الأكاديمية العليا للرموز والشفرات',
-      siteName_en: 'The Higher Academy of Symbols and Codes',
-      heroTitle_ar: 'الأكاديمية العليا للرموز والشفرات',
-      heroTitle_en: 'The Higher Academy of Symbols and Codes',
+      siteName_ar: 'الأكاديمية العليا للرموز والشفرة',
+      siteName_en: 'The Higher Academy of Symbols and Code',
+      heroTitle_ar: 'الأكاديمية العليا للرموز والشفرة',
+      heroTitle_en: 'The Higher Academy of Symbols and Code',
       heroDescription_en: 'A specialized educational and research academy dedicated to symbolism, interpretation, and semiotics.',
-      aboutText_ar: 'الأكاديمية العليا للرموز والشفرات مؤسسة تعليمية ذكية تُعنى بالبحث العلمي والتعليم المبتكر.',
-      aboutText_en: 'The Higher Academy of Symbols and Codes is a smart educational institution focused on rigorous scientific research.',
-      founderTitle_ar: 'مؤسِّسة الأكاديمية العليا للرموز والشفرات',
-      founderTitle_en: 'Founder of The Higher Academy of Symbols and Codes'
+      aboutText_ar: 'الأكاديمية العليا للرموز والشفرة مؤسسة تعليمية ذكية تُعنى بالبحث العلمي والتعليم المبتكر.',
+      aboutText_en: 'The Higher Academy of Symbols and Code is a smart educational institution focused on rigorous scientific research.',
+      founderTitle_ar: 'مؤسِّسة الأكاديمية العليا للرموز والشفرة',
+      founderTitle_en: 'Founder of The Higher Academy of Symbols and Code'
     }
   });
 

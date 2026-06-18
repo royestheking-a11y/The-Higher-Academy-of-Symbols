@@ -15,6 +15,9 @@ const libraryResourceSchema = new mongoose.Schema({
   status: { type: String, enum: ['published', 'draft', 'archived'], default: 'published' },
   downloadSize: { type: String }, // e.g., '2.5 MB'
   fileType: { type: String, default: 'PDF' },
+  views: { type: Number, default: () => Math.floor(Math.random() * 500) + 1000 },
+  reviewsCount: { type: Number, default: () => Math.floor(Math.random() * 50) + 100 },
+  rating: { type: Number, default: () => parseFloat((Math.random() * 0.4 + 4.5).toFixed(1)) },
 }, { timestamps: true });
 
 // Virtuals for frontend ease

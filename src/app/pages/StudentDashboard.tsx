@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import {
   LayoutDashboard, BookOpen, Award, CreditCard, MessageSquare,
   User, LogOut, Clock, CheckCircle2, Play, Star, ChevronRight,
-  Home, Bell, Search, Menu, X, ChevronDown, ChevronUp, Check
+  Home, Bell, Search, Menu, X, ChevronDown, ChevronUp, Check,
+  ShoppingBag, Package, Truck, Box
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
@@ -26,6 +27,37 @@ export default function StudentDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  
+  // Store Orders State
+  const [storeOrders, setStoreOrders] = useState<any[]>([]);
+  const [loadingStoreOrders, setLoadingStoreOrders] = useState(false);
+
+  useEffect(() => {
+    if (currentUser && activeTab === 'store_orders') {
+      const fetchStoreOrders = async () => {
+        setLoadingStoreOrders(true);
+        try {
+          const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+          const token = localStorage.getItem('sa_token');
+          const res = await fetch(baseUrl ? `${baseUrl}/api/orders/myorders` : `/api/orders/myorders`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setStoreOrders(data);
+          }
+        } catch (error) {
+          console.error("Failed to fetch store orders", error);
+        } finally {
+          setLoadingStoreOrders(false);
+        }
+      };
+      fetchStoreOrders();
+    }
+  }, [currentUser, activeTab]);
+
   const [profileForm, setProfileForm] = useState({
     name: currentUser?.name || '',
     nameAr: currentUser?.name_ar || '',
@@ -90,6 +122,7 @@ export default function StudentDashboard() {
     { id: 'overview', icon: LayoutDashboard, label_ar: 'نظرة عامة', label_en: 'Overview' },
     { id: 'courses', icon: BookOpen, label_ar: 'محاضراتي', label_en: 'My Lectures' },
     { id: 'certificates', icon: Award, label_ar: 'الشهادات', label_en: 'Certificates' },
+    { id: 'store_orders', icon: ShoppingBag, label_ar: 'طلبات المتجر', label_en: 'Store Orders' },
     { id: 'payments', icon: CreditCard, label_ar: 'المدفوعات', label_en: 'Payments' },
     { id: 'profile', icon: User, label_ar: 'الملف الشخصي', label_en: 'Profile' },
     { id: 'support', icon: MessageSquare, label_ar: 'الدعم', label_en: 'Support' },
@@ -142,7 +175,7 @@ export default function StudentDashboard() {
             <img src="/symbolacademy.png" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <div>
-            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}</div>
+            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}</div>
             <div className="text-[#6B8B80] text-[10px]">{t('لوحة الطالب', 'Student Panel')}</div>
           </div>
         </Link>
@@ -684,6 +717,104 @@ export default function StudentDashboard() {
                   ))
                 )}
               </div>
+            </motion.div>
+          )}
+
+          {/* Store Orders */}
+          {activeTab === 'store_orders' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <h2 className="text-[#062B24] font-bold text-lg mb-6">{t('طلبات المتجر', 'Store Orders')}</h2>
+              
+              {loadingStoreOrders ? (
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton.Base key={i} theme="light" className="h-32 w-full rounded-2xl" />
+                  ))}
+                </div>
+              ) : storeOrders.length === 0 ? (
+                <div className="text-center py-20 p-8 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)' }}>
+                  <ShoppingBag size={48} className="text-[#C9A24A] mx-auto mb-4 opacity-40" />
+                  <p className="text-[#5A7A70] mb-4">{t('لا توجد طلبات سابقة.', 'No past orders.')}</p>
+                  <Link to="/store" className="px-5 py-2.5 rounded-xl text-sm font-semibold inline-block" style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 3px 0 #8B6B20' }}>
+                    {t('تصفح المتجر', 'Browse Store')}
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {storeOrders.map((order: any, i: number) => (
+                    <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="p-6 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4" style={{ borderBottom: '1px dashed rgba(6,43,36,0.1)' }}>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-[#062B24] font-bold text-sm">{order.orderNumber}</span>
+                            <span className="text-[#8B9D8A] text-xs">· {new Date(order.createdAt).toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                          </div>
+                          <div className="text-[#5A7A70] text-xs">
+                            {order.items.length} {t('عناصر', 'items')} · <span className="font-bold text-[#C9A24A]">AED {order.totalAmount}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-wrap items-center gap-2">
+                          {/* Payment Status Pill */}
+                          <div className="px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5"
+                               style={{ 
+                                 background: order.paymentStatus === 'completed' ? 'rgba(37,211,102,0.1)' : 'rgba(201,162,74,0.1)', 
+                                 color: order.paymentStatus === 'completed' ? '#25D366' : '#C9A24A',
+                                 border: `1px solid ${order.paymentStatus === 'completed' ? 'rgba(37,211,102,0.2)' : 'rgba(201,162,74,0.2)'}`
+                               }}>
+                            <CreditCard size={12} />
+                            {order.paymentStatus === 'completed' ? t('تم الدفع', 'Paid') : t('قيد الانتظار', 'Pending Payment')}
+                          </div>
+                          
+                          {/* Shipping Status Pill */}
+                          <div className="px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5"
+                               style={{ 
+                                 background: 
+                                   order.shippingStatus === 'delivered' ? 'rgba(37,211,102,0.1)' : 
+                                   order.shippingStatus === 'shipped' ? 'rgba(6,43,36,0.1)' : 
+                                   'rgba(201,162,74,0.1)', 
+                                 color: 
+                                   order.shippingStatus === 'delivered' ? '#25D366' : 
+                                   order.shippingStatus === 'shipped' ? '#062B24' : 
+                                   '#C9A24A',
+                                 border: `1px solid ${
+                                   order.shippingStatus === 'delivered' ? 'rgba(37,211,102,0.2)' : 
+                                   order.shippingStatus === 'shipped' ? 'rgba(6,43,36,0.2)' : 
+                                   'rgba(201,162,74,0.2)'
+                                 }`
+                               }}>
+                            {order.shippingStatus === 'delivered' ? <Package size={12} /> : order.shippingStatus === 'shipped' ? <Truck size={12} /> : <Box size={12} />}
+                            {order.shippingStatus === 'delivered' ? t('تم التوصيل', 'Delivered') : 
+                             order.shippingStatus === 'shipped' ? t('تم الشحن', 'Shipped') : 
+                             order.shippingStatus === 'processing' ? t('جاري التجهيز', 'Processing') : 
+                             t('قيد الانتظار', 'Pending')}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        {order.items.map((item: any, idx: number) => (
+                          <div key={idx} className="flex items-center justify-between text-sm py-1">
+                            <span className="text-[#5A7A70] flex items-center gap-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#C9A24A]" />
+                              {item.title_en || item.bookId?.title_en || t('كتاب', 'Book')} <span className="text-[#8B9D8A] text-xs">(x{item.quantity})</span>
+                            </span>
+                            <span className="text-[#062B24] font-medium">AED {item.price * item.quantity}</span>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {order.trackingNumber && (
+                        <div className="mt-4 p-3 rounded-lg flex items-center gap-2" style={{ background: 'rgba(6,43,36,0.03)', border: '1px solid rgba(6,43,36,0.06)' }}>
+                          <Truck size={14} className="text-[#C9A24A]" />
+                          <span className="text-[#5A7A70] text-xs font-medium">{t('رقم التتبع:', 'Tracking No:')}</span>
+                          <span className="text-[#062B24] text-xs font-bold">{order.trackingNumber}</span>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
 

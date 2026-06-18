@@ -265,7 +265,7 @@ function HeroSection() {
             >
               <img
                 src={logoImg}
-                alt="The Higher Academy of Symbols and Codes — Phoenix Emblem"
+                alt="The Higher Academy of Symbols and Code — Phoenix Emblem"
                 style={{ width: 'min(260px, 72vw)', height: 'min(260px, 72vw)', objectFit: 'contain' }}
               />
             </motion.div>
@@ -396,7 +396,7 @@ function AboutPreview() {
               <div className="absolute inset-x-0 top-0 bottom-[72px] flex items-center justify-center z-10">
                 <img
                   src={logoImg}
-                  alt="The Higher Academy of Symbols and Codes"
+                  alt="The Higher Academy of Symbols and Code"
                   style={{ width: '52%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 0 24px rgba(201,162,74,0.35))' }}
                 />
               </div>
@@ -428,7 +428,7 @@ function AboutPreview() {
               {t('من نحن', 'About Us')}
             </div>
             <h2 className="text-[#062B24] mb-4" style={{ fontFamily: isRTL ? 'Amiri, Tajawal, sans-serif' : 'Cormorant Garamond, Inter, sans-serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: '700', lineHeight: '1.25' }}>
-              {t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}
+              {t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}
             </h2>
             <p className="text-[#3A5A50] text-base leading-relaxed mb-6">
               {t(settings?.aboutText_ar ?? '', settings?.aboutText_en ?? '')}
@@ -819,8 +819,8 @@ function FounderSection() {
               <Quote size={28} className="text-[#C9A24A] mb-3 opacity-60" />
               <p className="text-[#3A5A50] text-base leading-relaxed italic" style={{ fontFamily: isRTL ? 'Amiri, serif' : 'Cormorant Garamond, serif' }}>
                 {t(
-                  'الأكاديمية العليا للرموز والشفرات — حيث تتحول العلامات إلى معرفة منهجية راسخة.',
-                  'The Higher Academy of Symbols and Codes — where signs become structured, enduring knowledge.'
+                  'الأكاديمية العليا للرموز والشفرة — حيث تتحول العلامات إلى معرفة منهجية راسخة.',
+                  'The Higher Academy of Symbols and Code — where signs become structured, enduring knowledge.'
                 )}
               </p>
             </div>

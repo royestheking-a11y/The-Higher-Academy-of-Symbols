@@ -120,23 +120,40 @@ export default function Register() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative w-full max-w-lg"
+        className="relative w-full max-w-6xl"
       >
-        <div className="rounded-3xl overflow-hidden relative" style={{ background: BRAND.ivory, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
-          <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.06} strokeWidth={0.6} tileSize={60} />
-          {/* Header */}
-          <div className="p-7 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})` }}>
-            <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.7} tileSize={50} />
-            <div className="w-28 h-28 rounded-full mx-auto mb-3 flex items-center justify-center p-1 relative z-10" style={{ background: 'linear-gradient(135deg, #C9A24A, #F0D98A)', boxShadow: '0 3px 15px rgba(201,162,74,0.4)' }}>
-              <img src="/symbolacademy.png" alt="Logo" className="w-full h-full object-contain" />
-            </div>
-            <h1 className="text-[#F0D98A] font-bold text-xl" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
-              {t('إنشاء حساب جديد', 'Create New Account')}
-            </h1>
-            <p className="text-[#8B9D8A] text-xs mt-1">{t('انضم إلى الأكاديمية العليا للرموز والشفرات', 'Join The Higher Academy of Symbols and Codes')}</p>
+        <div className="rounded-3xl overflow-hidden relative flex flex-col md:flex-row" style={{ background: BRAND.ivory, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+          <div className="absolute inset-0 pointer-events-none z-0">
+            <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.06} strokeWidth={0.6} tileSize={60} />
           </div>
 
-          <div className="p-7">
+          {/* Branding Side */}
+          <div className={`md:w-[40%] lg:w-[45%] p-10 md:p-12 text-center relative overflow-hidden flex flex-col items-center justify-center ${isRTL ? 'md:order-last' : ''}`} style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})` }}>
+            <div className="absolute inset-0 pointer-events-none z-0">
+              <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.7} tileSize={50} />
+            </div>
+            <div className="w-36 h-36 md:w-52 md:h-52 rounded-full mx-auto mb-8 flex items-center justify-center p-1.5 relative z-10" style={{ background: 'linear-gradient(135deg, #C9A24A, #F0D98A)', boxShadow: '0 4px 25px rgba(201,162,74,0.5)' }}>
+              <img src="/symbolacademy.png" alt="Logo" className="w-full h-full object-contain rounded-full" />
+            </div>
+            <h1 className="text-[#F0D98A] font-bold text-2xl md:text-4xl relative z-10 mb-3" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
+              {t('مرحباً بك', 'Welcome')}
+            </h1>
+            <p className="text-[#8B9D8A] text-sm md:text-base relative z-10 max-w-xs mx-auto">
+              {t('انضم إلى الأكاديمية العليا للرموز والشفرة', 'Join The Higher Academy of Symbols and Code')}
+            </p>
+          </div>
+
+          {/* Form Side */}
+          <div className="md:w-[60%] lg:w-[55%] p-8 md:p-12 lg:p-16 relative z-10 flex flex-col justify-center">
+            <div className="mb-8 text-center md:text-start">
+              <h2 className="text-[#062B24] font-bold text-2xl md:text-3xl mb-2" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
+                {t('إنشاء حساب جديد', 'Create New Account')}
+              </h2>
+              <p className="text-[#5A7A70] text-sm">
+                {t('يرجى إدخال بياناتك لإنشاء الحساب', 'Please enter your details to create an account')}
+              </p>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -212,7 +229,14 @@ export default function Register() {
                 onMouseEnter={e => !loading && ((e.currentTarget as HTMLButtonElement).style.transform = 'translateY(2px)')}
                 onMouseLeave={e => !loading && ((e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)')}
               >
-                {loading ? <div className="w-5 h-5 rounded-full border-2 border-[#062B24] border-t-transparent animate-spin" /> : <><UserPlus size={16} />{t('إنشاء الحساب', 'Create Account')}</>}
+                {loading ? (
+                  <div className="w-5 h-5 rounded-full border-2 border-[#062B24] border-t-transparent animate-spin" />
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <UserPlus size={16} />
+                    <span>{t('إنشاء الحساب', 'Create Account')}</span>
+                  </span>
+                )}
               </button>
             </form>
 

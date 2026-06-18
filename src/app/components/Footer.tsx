@@ -44,11 +44,11 @@ export function Footer() {
                 className="rounded-full overflow-hidden shrink-0"
                 style={{ width: 52, height: 52, boxShadow: '0 3px 16px rgba(201,162,74,0.4)', background: '#062B24' }}
               >
-                <img src="/symbolacademy.png" alt="The Higher Academy of Symbols and Codes" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <img src="/symbolacademy.png" alt="The Higher Academy of Symbols and Code" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
               </div>
               <div>
                 <div className="text-[#F0D98A] text-base font-bold leading-tight">
-                  {t('الأكاديمية العليا للرموز والشفرات', 'The Higher Academy of Symbols and Codes')}
+                  {t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}
                 </div>
               </div>
             </div>
@@ -167,8 +167,8 @@ export function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[#4A6B60] text-xs text-center">
             {t(
-              `© 2026 الأكاديمية العليا للرموز والشفرات. جميع الحقوق محفوظة.`,
-              `© 2026 The Higher Academy of Symbols and Codes. All rights reserved.`
+              `© 2026 الأكاديمية العليا للرموز والشفرة. جميع الحقوق محفوظة.`,
+              `© 2026 The Higher Academy of Symbols and Code. All rights reserved.`
             )}
           </p>
           <p className="text-[#4A6B60] text-xs flex items-center gap-1">

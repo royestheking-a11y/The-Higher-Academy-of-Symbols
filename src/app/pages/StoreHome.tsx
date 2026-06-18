@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Search, Filter, Star, ShoppingCart, ArrowRight, BookMarked, BookOpen } from 'lucide-react';
+import { ShoppingBag, Search, Filter, Star, ShoppingCart, ArrowRight, BookMarked, BookOpen, CreditCard } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { GeometricBackground } from '../components/GeometricBackground';
@@ -22,6 +23,7 @@ function PhoenixIcon() {
 export default function StoreHome() {
   const { t, isRTL } = useLanguage();
   const { addToCart } = useCart();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [books, setBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,10 +56,15 @@ export default function StoreHome() {
 
   const featuredBooks = books.filter(b => b.isFeatured).slice(0, 3);
 
-  const handleAddToCart = (e: React.MouseEvent, book: any) => {
+  const handleBuyNow = (e: React.MouseEvent, book: any) => {
     e.stopPropagation();
     addToCart(book);
-    toast.success(t('تمت الإضافة للسلة', 'Added to cart'));
+    if (!currentUser) {
+      toast.info(t('الرجاء تسجيل الدخول لإتمام الشراء', 'Please login to checkout'));
+      navigate('/login');
+    } else {
+      navigate('/store/checkout');
+    }
   };
 
   return (
@@ -162,20 +169,18 @@ export default function StoreHome() {
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-white rounded-3xl border border-[rgba(6,43,36,0.08)] overflow-hidden flex flex-col">
-                    <div className="aspect-[4/5] w-full relative overflow-hidden bg-gray-200 animate-pulse">
-                    </div>
-                    <div className="p-6 flex-1 flex flex-col">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="bg-white rounded-3xl border border-[rgba(6,43,36,0.08)] overflow-hidden flex flex-col sm:flex-row min-h-[250px]">
+                    <div className="w-full sm:w-[45%] bg-gray-200 animate-pulse"></div>
+                    <div className="p-6 sm:p-8 flex-1 flex flex-col justify-center">
                       <div className="h-3 w-1/3 bg-gray-200 rounded animate-pulse mb-3"></div>
-                      <div className="h-5 w-3/4 bg-gray-200 rounded animate-pulse mb-3"></div>
+                      <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse mb-4"></div>
                       <div className="h-4 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
                       <div className="h-4 w-5/6 bg-gray-200 rounded animate-pulse mb-6"></div>
-                      
                       <div className="mt-auto pt-4 border-t border-[rgba(6,43,36,0.06)] flex items-center justify-between">
-                        <div className="h-8 w-24 bg-gray-200 rounded animate-pulse"></div>
-                        <div className="h-10 w-10 bg-[#F8F4EA] rounded-xl animate-pulse"></div>
+                        <div className="h-6 w-24 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
                       </div>
                     </div>
                   </div>
@@ -188,56 +193,90 @@ export default function StoreHome() {
                 <p className="text-[#5A7A70]">{t('جاري إضافة كتب جديدة للمتجر.', 'New books are being added to the store.')}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
                 {filteredBooks.map((book: any, i: number) => (
-                    <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                      onClick={() => navigate(`/store/${book.slug}`)}
-                      className="bg-white rounded-3xl border border-[rgba(6,43,36,0.08)] overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col group">
-                      
-                      {/* Header Image Area */}
-                      <div className="aspect-[4/5] w-full relative overflow-hidden bg-[#062B24] group-hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-all">
+                    <motion.div key={i} initial={{ opacity: 0, x: isRTL ? 20 : -20 }} animate={{ opacity: 1, x: 0 }}
+                    onClick={() => navigate(`/store/${book.slug}`)}
+                    className="relative bg-white rounded-3xl overflow-hidden flex flex-col sm:flex-row group transition-all duration-500 cursor-pointer"
+                    style={{ border: '1px solid rgba(201,162,74,0.15)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 20px 50px rgba(201,162,74,0.15)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.borderColor = 'rgba(201,162,74,0.4)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(201,162,74,0.15)'; }}
+                  >
+                    {/* Header Image Area with "3D Floating Book" look */}
+                    <div className={`relative w-full sm:w-[45%] lg:w-[42%] p-3 sm:p-5 bg-gradient-to-br from-[#F8F4EA] to-white flex items-center justify-center shrink-0 border-b sm:border-b-0 ${isRTL ? 'sm:border-l' : 'sm:border-r'} border-[rgba(201,162,74,0.15)]`}>
+                      {/* Decorative inner glow */}
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-[#C9A24A] opacity-0 group-hover:opacity-15 blur-3xl transition-opacity duration-700 pointer-events-none" />
+
+                      <div className="w-[85%] sm:w-[95%] aspect-[4/5] relative rounded-r-xl rounded-l-md overflow-hidden shadow-[-8px_12px_25px_rgba(6,43,36,0.25)] group-hover:shadow-[-12px_20px_35px_rgba(201,162,74,0.35)] transition-all duration-500 group-hover:scale-[1.03] group-hover:-rotate-1 group-hover:-translate-y-1">
+                        {/* Book Spine Overlay */}
+                        <div className={`absolute top-0 bottom-0 ${isRTL ? 'right-0 bg-gradient-to-l' : 'left-0 bg-gradient-to-r'} from-black/60 to-transparent w-6 z-20 pointer-events-none`} />
+                        <div className={`absolute top-0 bottom-0 ${isRTL ? 'right-[2px]' : 'left-[2px]'} bg-white/20 w-px z-20 pointer-events-none mix-blend-overlay`} />
+
                         {book.coverImage ? (
-                          <img src={book.coverImage} alt={isRTL ? book.title_ar : book.title_en} className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105" />
+                          <img src={book.coverImage} alt={isRTL ? book.title_ar : book.title_en} className="absolute inset-0 w-full h-full object-cover z-10" />
                         ) : (
-                          <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center relative">
+                          <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-3 text-center bg-[#062B24] z-10">
                             <GeometricBackground strokeOpacity={0.1} />
-                            <BookOpen size={48} className="text-[#C9A24A] mb-4" />
-                            <div className="text-[#C9A24A] text-xs font-bold uppercase tracking-wider line-clamp-3">
+                            <BookOpen size={40} className="text-[#C9A24A] mb-3 relative z-10" />
+                            <div className="text-[#C9A24A] text-[11px] font-bold uppercase tracking-wider line-clamp-3 relative z-10 leading-relaxed">
                               {isRTL ? book.title_ar : book.title_en}
                             </div>
                           </div>
                         )}
+                        {/* Lighting effect */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/20 opacity-70 group-hover:opacity-40 transition-opacity duration-500 z-20 pointer-events-none" />
                         
-                        {/* Premium Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 opacity-80 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
-
+                        {/* Badges */}
                         {book.stock === 0 && (
                           <div className="absolute inset-0 bg-white/10 backdrop-blur-[4px] flex items-center justify-center z-30">
                             <span className="bg-[#D4183D] text-white font-bold px-4 py-1.5 rounded-full text-sm shadow-lg">{t('نفذت الكمية', 'Out of Stock')}</span>
                           </div>
                         )}
                       </div>
-                      <div className="p-5 flex-1 flex flex-col">
-                      <div className="text-[10px] font-bold text-[#8B9D8A] uppercase tracking-wider mb-2">{book.author}</div>
-                      <h3 className="text-[#062B24] font-bold text-sm leading-snug mb-4 line-clamp-2 group-hover:text-[#C9A24A] transition-colors">
+                    </div>
+
+                    <div className="p-6 sm:p-8 flex-1 flex flex-col relative z-10 bg-white justify-center min-w-0">
+                      <div className={`flex items-center gap-3 mb-4 opacity-80 ${isRTL ? 'justify-start' : 'justify-start'}`}>
+                        <span className="text-[9px] font-black text-[#C9A24A] uppercase tracking-[0.25em]">{book.category}</span>
+                        <div className={`h-[1px] flex-1 ${isRTL ? 'bg-gradient-to-l' : 'bg-gradient-to-r'} from-[#C9A24A]/40 to-transparent`} />
+                      </div>
+                      
+                      <h3 className={`text-[#062B24] font-bold text-xl md:text-2xl leading-snug mb-3 group-hover:text-[#C9A24A] transition-colors truncate text-${isRTL ? 'right' : 'left'}`}
+                          style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
                         {isRTL ? book.title_ar : book.title_en}
                       </h3>
                       
-                      <div className="mt-auto flex items-center justify-between">
-                        <div>
+                      <p className={`text-[#5A7A70] text-xs leading-relaxed line-clamp-3 mb-6 text-${isRTL ? 'right' : 'left'}`}>
+                        {isRTL ? book.description_ar : book.description_en}
+                      </p>
+                      
+                      <div className="mt-auto pt-4 flex flex-col gap-4 border-t border-[rgba(201,162,74,0.15)]">
+                        <div className="flex flex-col gap-1.5">
+                          <span className="text-[#8B9D8A] uppercase tracking-wider truncate text-[10px]">{book.author}</span>
                           {book.salePrice && book.salePrice < book.price ? (
-                            <div className="flex items-center gap-2">
-                              <span className="text-[#C9A24A] font-black text-lg">AED {book.salePrice}</span>
-                              <span className="text-[#8B9D8A] text-xs line-through">AED {book.price}</span>
-                            </div>
+                            <>
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-[#C9A24A] font-black text-2xl leading-none whitespace-nowrap">AED {book.salePrice}</span>
+                                <span className="text-[#8B9D8A] text-sm line-through whitespace-nowrap">AED {book.price}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="bg-[#FFEFEF] text-[#D4183D] text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+                                  {t('توفير', 'Save')} AED {book.price - book.salePrice}
+                                </span>
+                                <span className="text-[#5A7A70] text-[10px] whitespace-nowrap">
+                                  ({Math.round(((book.price - book.salePrice) / book.price) * 100)}% {t('خصم', 'off')})
+                                </span>
+                              </div>
+                            </>
                           ) : (
-                            <span className="text-[#062B24] font-black text-lg">AED {book.price}</span>
+                            <span className="text-[#062B24] font-black text-2xl leading-none whitespace-nowrap">AED {book.price}</span>
                           )}
                         </div>
-                        <button onClick={(e) => handleAddToCart(e, book)} disabled={book.stock === 0}
-                          className="w-10 h-10 rounded-full flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                          style={{ background: book.stock > 0 ? 'linear-gradient(135deg, #C9A24A, #D8B75B)' : '#E5E7EB', color: book.stock > 0 ? BRAND.deep : '#8B9D8A' }}>
-                          <ShoppingCart size={18} />
+                        
+                        <button onClick={(e) => handleBuyNow(e, book)} disabled={book.stock === 0}
+                          className="w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-1"
+                          style={{ background: book.stock > 0 ? 'linear-gradient(135deg, #C9A24A, #D8B75B)' : '#E5E7EB', color: book.stock > 0 ? BRAND.deep : '#8B9D8A', boxShadow: '0 8px 15px rgba(201,162,74,0.2)' }}>
+                          <CreditCard size={18} /> {t('شراء الآن', 'Buy Now')}
                         </button>
                       </div>
                     </div>

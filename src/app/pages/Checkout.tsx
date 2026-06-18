@@ -225,7 +225,7 @@ export default function Checkout() {
                           <div className="space-y-2">
                             <div className="flex justify-between text-xs"><span className="text-[#8B9D8A]">{t('اسم البنك', 'Bank Name')}</span><span className="font-bold text-[#3A5A50]">Academy International Bank</span></div>
                             <div className="flex justify-between text-xs"><span className="text-[#8B9D8A]">IBAN</span><span className="font-bold text-[#3A5A50]">SA00 0000 0000 0000 0000 0000</span></div>
-                            <div className="flex justify-between text-xs"><span className="text-[#8B9D8A]">{t('اسم المستفيد', 'Beneficiary')}</span><span className="font-bold text-[#3A5A50]">The Higher Academy of Symbols and Codes</span></div>
+                            <div className="flex justify-between text-xs"><span className="text-[#8B9D8A]">{t('اسم المستفيد', 'Beneficiary')}</span><span className="font-bold text-[#3A5A50]">The Higher Academy of Symbols and Code</span></div>
                           </div>
                         </div>
                       )}

@@ -197,50 +197,77 @@ export default function LibraryHome() {
                 <p className="text-[#5A7A70]">{t('جاري إضافة موارد جديدة للمكتبة.', 'New resources are being added to the library.')}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
                 {filteredResources.map((res: any, i: number) => (
-                  <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                  <motion.div key={i} initial={{ opacity: 0, x: isRTL ? 20 : -20 }} animate={{ opacity: 1, x: 0 }}
                     onClick={() => navigate(`/library/${res.slug}`)}
-                    className="bg-white rounded-3xl border border-[rgba(6,43,36,0.08)] overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col group">
-                    {/* Header Image Area */}
-                    <div className="aspect-[4/5] w-full relative overflow-hidden bg-[#062B24] group-hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-all">
-                      {res.thumbnail ? (
-                        <img src={res.thumbnail} alt={isRTL ? res.title_ar : res.title_en} className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105" />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center relative">
-                          <GeometricBackground strokeOpacity={0.1} />
-                          <BookOpen size={48} className="text-[#C9A24A] mb-4" />
-                          <div className="text-[#C9A24A] text-xs font-bold uppercase tracking-wider line-clamp-3">
-                            {isRTL ? res.title_ar : res.title_en}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Premium Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 opacity-80 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
+                    className="relative bg-white rounded-3xl overflow-hidden flex flex-col sm:flex-row group transition-all duration-500 cursor-pointer"
+                    style={{ border: '1px solid rgba(201,162,74,0.15)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 20px 50px rgba(201,162,74,0.15)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.borderColor = 'rgba(201,162,74,0.4)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(201,162,74,0.15)'; }}
+                  >
+                    {/* Header Image Area with "3D Floating Book" look */}
+                    <div className={`relative w-full sm:w-[45%] lg:w-[42%] p-3 sm:p-5 bg-gradient-to-br from-[#F8F4EA] to-white flex items-center justify-center shrink-0 border-b sm:border-b-0 ${isRTL ? 'sm:border-l' : 'sm:border-r'} border-[rgba(201,162,74,0.15)]`}>
+                      {/* Decorative inner glow */}
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-[#C9A24A] opacity-0 group-hover:opacity-15 blur-3xl transition-opacity duration-700 pointer-events-none" />
 
-                      {res.isFeatured && (
-                        <div className="absolute top-3 left-3 bg-[#C9A24A] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">
-                          {t('مميز', 'Featured')}
-                        </div>
-                      )}
-                      {!hasAccess && (
-                        <div className="absolute top-3 right-3 bg-white/10 backdrop-blur-md text-[#F87171] p-1.5 rounded-full shadow-sm border border-white/10">
-                          <Lock size={14} />
-                        </div>
-                      )}
+                      <div className="w-[85%] sm:w-[95%] aspect-[4/5] relative rounded-r-xl rounded-l-md overflow-hidden shadow-[-8px_12px_25px_rgba(6,43,36,0.25)] group-hover:shadow-[-12px_20px_35px_rgba(201,162,74,0.35)] transition-all duration-500 group-hover:scale-[1.03] group-hover:-rotate-1 group-hover:-translate-y-1">
+                        {/* Book Spine Overlay */}
+                        <div className={`absolute top-0 bottom-0 ${isRTL ? 'right-0 bg-gradient-to-l' : 'left-0 bg-gradient-to-r'} from-black/60 to-transparent w-6 z-20 pointer-events-none`} />
+                        <div className={`absolute top-0 bottom-0 ${isRTL ? 'right-[2px]' : 'left-[2px]'} bg-white/20 w-px z-20 pointer-events-none mix-blend-overlay`} />
+
+                        {res.thumbnail ? (
+                          <img src={res.thumbnail} alt={isRTL ? res.title_ar : res.title_en} className="absolute inset-0 w-full h-full object-cover z-10" />
+                        ) : (
+                          <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-3 text-center bg-[#062B24] z-10">
+                            <GeometricBackground strokeOpacity={0.1} />
+                            <BookOpen size={40} className="text-[#C9A24A] mb-3 relative z-10" />
+                            <div className="text-[#C9A24A] text-[11px] font-bold uppercase tracking-wider line-clamp-3 relative z-10 leading-relaxed">
+                              {isRTL ? res.title_ar : res.title_en}
+                            </div>
+                          </div>
+                        )}
+                        {/* Lighting effect */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/20 opacity-70 group-hover:opacity-40 transition-opacity duration-500 z-20 pointer-events-none" />
+                        
+                        {/* Badges (Moved inside book cover) */}
+                        {res.isFeatured && (
+                          <div className="absolute top-3 left-3 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-full z-30 shadow-lg border border-[#C9A24A]/30 backdrop-blur-md"
+                               style={{ background: 'linear-gradient(135deg, rgba(201,162,74,0.9), rgba(240,217,138,0.9))', color: '#062B24' }}>
+                            {t('مميز', 'Featured')}
+                          </div>
+                        )}
+                        {!hasAccess && (
+                          <div className="absolute top-3 right-3 bg-[#062B24]/90 backdrop-blur-md text-[#F87171] p-1.5 rounded-full shadow-lg z-30 border border-white/20">
+                            <Lock size={14} />
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="p-5 flex-1 flex flex-col">
-                      <div className="text-[10px] font-bold text-[#C9A24A] uppercase tracking-wider mb-2">{res.category}</div>
-                      <h3 className="text-[#062B24] font-bold text-sm leading-snug mb-2 line-clamp-2 group-hover:text-[#C9A24A] transition-colors">
+
+                    <div className="p-6 sm:p-8 flex-1 flex flex-col relative z-10 bg-white justify-center min-w-0">
+                      <div className={`flex items-center gap-3 mb-4 opacity-80 ${isRTL ? 'justify-start' : 'justify-start'}`}>
+                        <span className="text-[9px] font-black text-[#C9A24A] uppercase tracking-[0.25em]">{res.category}</span>
+                        <div className={`h-[1px] flex-1 ${isRTL ? 'bg-gradient-to-l' : 'bg-gradient-to-r'} from-[#C9A24A]/40 to-transparent`} />
+                      </div>
+                      
+                      <h3 className={`text-[#062B24] font-bold text-xl md:text-2xl leading-snug mb-3 group-hover:text-[#C9A24A] transition-colors truncate text-${isRTL ? 'right' : 'left'}`}
+                          style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
                         {isRTL ? res.title_ar : res.title_en}
                       </h3>
-                      <p className="text-[#8B9D8A] text-xs mb-4 line-clamp-2">{isRTL ? res.description_ar : res.description_en}</p>
+                      <p className={`text-[#5A7A70] text-xs leading-relaxed line-clamp-3 mb-6 text-${isRTL ? 'right' : 'left'}`}>
+                        {isRTL ? res.description_ar : res.description_en}
+                      </p>
                       
-                      <div className="mt-auto pt-4 border-t border-[rgba(6,43,36,0.06)] flex items-center justify-between text-[#5A7A70] text-[11px] font-medium">
-                        <span>{res.author}</span>
-                        <div className="flex items-center gap-1 bg-[#F8F4EA] px-2 py-1 rounded">
-                          <Download size={10} /> {res.downloadSize || 'PDF'}
+                      <div className="mt-auto pt-5 flex items-center justify-between gap-2 text-[11px] font-semibold border-t border-[rgba(201,162,74,0.15)]">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-7 h-7 shrink-0 rounded-full bg-[#F8F4EA] flex items-center justify-center text-[#C9A24A] border border-[rgba(201,162,74,0.2)]">
+                            <BookOpen size={12} />
+                          </div>
+                          <span className="text-[#8B9D8A] uppercase tracking-wider truncate">{res.author}</span>
+                        </div>
+                        <div className="flex items-center shrink-0 gap-1.5 text-[#C9A24A] bg-[#F8F4EA] px-3 py-1.5 rounded-full border border-[rgba(201,162,74,0.2)] whitespace-nowrap">
+                          <Download size={14} className="shrink-0" /> {res.downloadSize || 'PDF'}
                         </div>
                       </div>
                     </div>

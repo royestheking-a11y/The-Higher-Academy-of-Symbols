@@ -39,6 +39,11 @@ router.get('/:slug', async (req, res) => {
   try {
     const resource = await LibraryResource.findOne({ slug: req.params.slug, status: 'published' });
     if (!resource) return res.status(404).json({ message: 'Resource not found' });
+    
+    // Increment view count dynamically
+    resource.views = (resource.views || 1000) + 1;
+    await resource.save();
+
     res.json(resource);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -100,7 +100,7 @@ export default function AdminLogin() {
             <h1 className="text-[#F0D98A] font-bold text-xl mb-1 relative z-10" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif' }}>
               {t('بوابة المديرين', 'Admin Portal')}
             </h1>
-            <p className="text-[#8B9D8A] text-xs relative z-10">{t('الأكاديمية العليا للرموز والشفرات — دخول المشرفين', 'The Higher Academy of Symbols and Codes — Administrators Only')}</p>
+            <p className="text-[#8B9D8A] text-xs relative z-10">{t('الأكاديمية العليا للرموز والشفرة — دخول المشرفين', 'The Higher Academy of Symbols and Code — Administrators Only')}</p>
 
             {/* Warning badge */}
             <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs relative z-10" style={{ background: 'rgba(201,162,74,0.15)', border: '1px solid rgba(201,162,74,0.3)', color: BRAND.gold }}>
@@ -183,10 +183,10 @@ export default function AdminLogin() {
                 {loading ? (
                   <div className="w-5 h-5 rounded-full border-2 border-[#062B24] border-t-transparent animate-spin" />
                 ) : (
-                  <>
+                  <span className="flex items-center justify-center gap-2">
                     <ShieldCheck size={16} />
-                    {t('دخول المشرف', 'Admin Sign In')}
-                  </>
+                    <span>{t('دخول المشرف', 'Admin Sign In')}</span>
+                  </span>
                 )}
               </button>
             </form>

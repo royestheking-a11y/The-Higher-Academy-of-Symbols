@@ -45,7 +45,9 @@ router.post('/', async (req, res) => {
 // GET user orders (Protected)
 router.get('/myorders', protect, async (req, res) => {
   try {
-    const orders = await StoreOrder.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    const orders = await StoreOrder.find({ userId: req.user.id })
+      .populate('items.bookId')
+      .sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
