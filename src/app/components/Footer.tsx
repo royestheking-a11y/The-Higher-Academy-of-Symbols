@@ -48,7 +48,7 @@ export function Footer() {
               </div>
               <div>
                 <div className="text-[#F0D98A] text-base font-bold leading-tight">
-                  {t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}
+                  {t('الأكاديمية العليا للرموز والشيفرة', 'The Higher Academy of Symbols and Code')}
                 </div>
               </div>
             </div>
@@ -167,7 +167,7 @@ export function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[#4A6B60] text-xs text-center">
             {t(
-              `© 2026 الأكاديمية العليا للرموز والشفرة. جميع الحقوق محفوظة.`,
+              `© 2026 الأكاديمية العليا للرموز والشيفرة. جميع الحقوق محفوظة.`,
               `© 2026 The Higher Academy of Symbols and Code. All rights reserved.`
             )}
           </p>

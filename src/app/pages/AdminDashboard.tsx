@@ -444,7 +444,7 @@ export default function AdminDashboard() {
             <img src="/symbolacademy.png" alt="The Higher Academy of Symbols and Code" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
           <div>
-            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}</div>
+            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرموز والشيفرة', 'The Higher Academy of Symbols and Code')}</div>
             <div className="text-white/80 text-[10px]">{t('لوحة الإدارة', 'Admin Panel')}</div>
           </div>
         </Link>
@@ -632,7 +632,7 @@ export default function AdminDashboard() {
                 <h1 className="text-[#062B24] font-bold" style={{ fontFamily: isRTL ? 'Amiri, sans-serif' : 'Cormorant Garamond, serif', fontSize: 'clamp(1.4rem,3vw,1.8rem)' }}>
                   {t('لوحة التحكم الرئيسية', 'Main Dashboard')}
                 </h1>
-                <p className="text-[#5A7A70] text-sm mt-1">{t('مرحباً بك في لوحة إدارة الأكاديمية العليا للرموز والشفرة', 'Welcome to The Higher Academy of Symbols and Code admin panel')}</p>
+                <p className="text-[#5A7A70] text-sm mt-1">{t('مرحباً بك في لوحة إدارة الأكاديمية العليا للرموز والشيفرة', 'Welcome to The Higher Academy of Symbols and Code admin panel')}</p>
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                 {loading ? (

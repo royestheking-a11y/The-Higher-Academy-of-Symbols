@@ -139,7 +139,7 @@ export default function Register() {
               {t('مرحباً بك', 'Welcome')}
             </h1>
             <p className="text-[#8B9D8A] text-sm md:text-base relative z-10 max-w-xs mx-auto">
-              {t('انضم إلى الأكاديمية العليا للرموز والشفرة', 'Join The Higher Academy of Symbols and Code')}
+              {t('انضم إلى الأكاديمية العليا للرموز والشيفرة', 'Join The Higher Academy of Symbols and Code')}
             </p>
           </div>
 

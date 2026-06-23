@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 // Singleton pattern — only one settings document ever exists
 const settingsSchema = new mongoose.Schema({
-  siteName_ar:          { type: String, default: 'الأكاديمية العليا للرموز والشفرة' },
+  siteName_ar:          { type: String, default: 'الأكاديمية العليا للرموز والشيفرة' },
   siteName_en:          { type: String, default: 'The Higher Academy of Symbols and Code' },
   tagline_ar:           { type: String },
   tagline_en:           { type: String },

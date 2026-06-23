@@ -86,7 +86,7 @@ export function Navbar() {
             </div>
             <div className="leading-tight max-w-[150px]">
               <div className="text-[#F0D98A] font-bold tracking-wide leading-tight" style={{ fontFamily: isRTL ? 'Tajawal, sans-serif' : 'Inter, sans-serif', fontSize: isRTL ? '12px' : '10.5px' }}>
-                {t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}
+                {t('الأكاديمية العليا للرموز والشيفرة', 'The Higher Academy of Symbols and Code')}
               </div>
             </div>
           </Link>

@@ -114,7 +114,7 @@ export default function Login() {
               {t('مرحباً بعودتك', 'Welcome Back')}
             </h1>
             <p className="text-[#8B9D8A] text-sm md:text-base relative z-10 max-w-xs mx-auto">
-              {t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}
+              {t('الأكاديمية العليا للرموز والشيفرة', 'The Higher Academy of Symbols and Code')}
             </p>
           </div>
 

@@ -428,7 +428,7 @@ function AboutPreview() {
               {t('من نحن', 'About Us')}
             </div>
             <h2 className="text-[#062B24] mb-4" style={{ fontFamily: isRTL ? 'Amiri, Tajawal, sans-serif' : 'Cormorant Garamond, Inter, sans-serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: '700', lineHeight: '1.25' }}>
-              {t('الأكاديمية العليا للرموز والشفرة', 'The Higher Academy of Symbols and Code')}
+              {t('الأكاديمية العليا للرموز والشيفرة', 'The Higher Academy of Symbols and Code')}
             </h2>
             <p className="text-[#3A5A50] text-base leading-relaxed mb-6">
               {t(settings?.aboutText_ar ?? '', settings?.aboutText_en ?? '')}
@@ -819,7 +819,7 @@ function FounderSection() {
               <Quote size={28} className="text-[#C9A24A] mb-3 opacity-60" />
               <p className="text-[#3A5A50] text-base leading-relaxed italic" style={{ fontFamily: isRTL ? 'Amiri, serif' : 'Cormorant Garamond, serif' }}>
                 {t(
-                  'الأكاديمية العليا للرموز والشفرة — حيث تتحول العلامات إلى معرفة منهجية راسخة.',
+                  'الأكاديمية العليا للرموز والشيفرة — حيث تتحول العلامات إلى معرفة منهجية راسخة.',
                   'The Higher Academy of Symbols and Code — where signs become structured, enduring knowledge.'
                 )}
               </p>
