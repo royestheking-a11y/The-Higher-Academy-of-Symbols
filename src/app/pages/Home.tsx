@@ -4,7 +4,7 @@ import {
   BookOpen, Star, Eye, Lock, ScrollText, FileText, Compass, PenLine,
   MessageSquare, Pen, ArrowRight, ArrowLeft, GraduationCap, Users, Award,
   Globe, FlaskConical, ChevronRight, ChevronLeft, Clock, BarChart3, Play,
-  Quote, CheckCircle2, Target
+  Quote, CheckCircle2, Target, ExternalLink
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
@@ -827,10 +827,23 @@ function FounderSection() {
             <p className="text-[#3A5A50] text-sm leading-relaxed mb-6">
               {t(settings?.founderBio_ar ?? '', settings?.founderBio_en ?? '')}
             </p>
-            <PremiumBtn href="/about#founder" variant="gold">
-              {t('رسالة المؤسِّسة', "Founder's Message")}
-              <GoldArrow isRTL={isRTL} />
-            </PremiumBtn>
+            <div className="flex flex-wrap gap-4 mt-6">
+              <PremiumBtn href="/about#founder" variant="gold">
+                {t('رسالة المؤسِّسة', "Founder's Message")}
+                <GoldArrow isRTL={isRTL} />
+              </PremiumBtn>
+              
+              <a 
+                href={settings?.founderWebsite || 'https://drfatimafadelalissawi.vercel.app/'}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-bold transition-all hover:scale-105"
+                style={{ background: 'transparent', color: BRAND.deep, border: `1.5px solid ${BRAND.deep}` }}
+              >
+                {t('الموقع الشخصي', 'Personal Website')}
+                <ExternalLink size={16} />
+              </a>
+            </div>
           </motion.div>
         </div>
       </div>

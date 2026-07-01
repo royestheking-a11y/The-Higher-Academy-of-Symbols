@@ -1,5 +1,6 @@
-import { CheckCircle2, Target, Eye, Heart, Lightbulb, Shield, Star, Award, BookOpen, Globe } from 'lucide-react';
+import { CheckCircle2, Target, Eye, Heart, Lightbulb, Shield, Star, Award, BookOpen, Globe, ArrowRight, ExternalLink } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { GeometricBackground } from '../components/GeometricBackground';
@@ -246,6 +247,16 @@ export default function About() {
               <p className="text-[#3A5A50] text-sm leading-relaxed italic" style={{ fontFamily: isRTL ? 'Amiri, serif' : 'Cormorant Garamond, serif' }}>
                 {t('"الأكاديمية العليا للرموز والشيفرة ليست مجرد مؤسسة تعليمية، بل هي مشروع حضاري يهدف إلى إعادة الاعتبار للتراث العلمي العربي في مجال الرمزية والتشفير."', '"The Higher Academy of Symbols and Code is not just an educational institution, but a civilizational project aimed at restoring recognition of the Arab scientific heritage in the field of symbolism and cryptography."')}
               </p>
+              <a 
+                href={settings?.founderWebsite || 'https://drfatimafadelalissawi.vercel.app/'}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105"
+                style={{ background: 'transparent', color: BRAND.deep, border: `1.5px solid ${BRAND.deep}` }}
+              >
+                {t('زيارة الموقع الشخصي', 'Visit Founder Website')}
+                <ExternalLink size={16} />
+              </a>
             </motion.div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, Library, Check, X, Save } from 'lucide-react';
 import { GeometricBackground } from '../../components/GeometricBackground';
+import { FileUpload } from '../../components/FileUpload';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
@@ -250,14 +251,22 @@ export default function AdminLibrary() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-bold text-[#062B24] mb-2">{t('رابط الملف الأساسي', 'Main File URL')}</label>
-                    <input type="text" name="fileUrl" value={formData.fileUrl} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} required />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#062B24] mb-2">{t('صورة الغلاف (رابط)', 'Thumbnail URL')}</label>
-                    <input type="text" name="thumbnail" value={formData.thumbnail} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} />
-                  </div>
+                  <FileUpload 
+                    label={t('رابط الملف الأساسي', 'Main File (PDF)')} 
+                    accept="application/pdf" 
+                    token={token} 
+                    currentUrl={formData.fileUrl} 
+                    folder="symbols_academy/library"
+                    onUploadComplete={(url) => setFormData({ ...formData, fileUrl: url })} 
+                  />
+                  <FileUpload 
+                    label={t('صورة الغلاف', 'Thumbnail Image')} 
+                    accept="image/*" 
+                    token={token} 
+                    currentUrl={formData.thumbnail} 
+                    folder="symbols_academy/library"
+                    onUploadComplete={(url) => setFormData({ ...formData, thumbnail: url })} 
+                  />
                   <div>
                     <label className="block text-sm font-bold text-[#062B24] mb-2">{t('الحالة', 'Status')}</label>
                     <select name="status" value={formData.status} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }}>

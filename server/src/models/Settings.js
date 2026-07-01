@@ -34,6 +34,7 @@ const settingsSchema = new mongoose.Schema({
   founderBio_ar:        { type: String },
   founderBio_en:        { type: String },
   founderImage:         { type: String, default: '' },   // Cloudinary URL
+  founderWebsite:       { type: String, default: 'https://drfatimafadelalissawi.vercel.app/' },
   logoUrl:              { type: String, default: '' },   // Cloudinary URL
 }, { timestamps: true });
 

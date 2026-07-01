@@ -1686,6 +1686,13 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+                <div className="p-5 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)' }}>
+                  <label className="block text-[#3A5A50] text-xs font-semibold mb-3 uppercase tracking-wide">{t('موقع المؤسِّسة', 'Founder Website')}</label>
+                  <input disabled={!editingSettings} value={(settingsForm as any).founderWebsite || ''}
+                    onChange={e => setSettingsForm({ ...settingsForm, founderWebsite: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl text-xs text-[#1E1E1E] outline-none"
+                    style={{ background: editingSettings ? '#F8F4EA' : 'rgba(6,43,36,0.03)', border: '1.5px solid rgba(6,43,36,0.1)', fontFamily: 'system-ui' }} />
+                </div>
               </div>
             </motion.div>
           )}

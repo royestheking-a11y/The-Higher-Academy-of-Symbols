@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, Store, Check, X, Save } from 'lucide-react';
 import { GeometricBackground } from '../../components/GeometricBackground';
+import { FileUpload } from '../../components/FileUpload';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
@@ -236,14 +237,22 @@ export default function AdminBooks() {
                     <label className="block text-sm font-bold text-[#062B24] mb-2">ISBN</label>
                     <input type="text" name="isbn" value={formData.isbn} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} />
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#062B24] mb-2">{t('صورة الغلاف (رابط)', 'Cover Image URL')}</label>
-                    <input type="text" name="coverImage" value={formData.coverImage} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#062B24] mb-2">{t('رابط PDF التجريبي', 'PDF Preview URL')}</label>
-                    <input type="text" name="pdfPreview" value={formData.pdfPreview} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} />
-                  </div>
+                  <FileUpload 
+                    label={t('صورة الغلاف', 'Cover Image')} 
+                    accept="image/*" 
+                    token={token} 
+                    currentUrl={formData.coverImage} 
+                    folder="symbols_academy/store"
+                    onUploadComplete={(url) => setFormData({ ...formData, coverImage: url })} 
+                  />
+                  <FileUpload 
+                    label={t('ملف PDF التجريبي', 'PDF Preview/Book File')} 
+                    accept="application/pdf" 
+                    token={token} 
+                    currentUrl={formData.pdfPreview} 
+                    folder="symbols_academy/store"
+                    onUploadComplete={(url) => setFormData({ ...formData, pdfPreview: url })} 
+                  />
                   <div className="flex gap-6 items-center pt-4">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleChange} className="w-5 h-5 accent-[#C9A24A]" />
