@@ -27,6 +27,22 @@ const BRAND = { deep: '#062B24', mid: '#0B3A31', gold: '#C9A24A', goldLight: '#F
 // ─────────────────────────────────────────────────────────────────────────────
 // Rich Text Editor
 // ─────────────────────────────────────────────────────────────────────────────
+const EditorSep = () => <div className="w-px self-stretch mx-0.5" style={{ background: 'rgba(6,43,36,0.15)' }} />;
+const EditorTB = ({ title, icon: Icon, cmd, val, exec }: { title: string; icon: any; cmd: string; val?: string; exec: (cmd: string, val?: string) => void }) => (
+  <button type="button" title={title} onMouseDown={e => { e.preventDefault(); exec(cmd, val); }}
+    className="w-7 h-7 flex items-center justify-center rounded transition-colors hover:bg-[rgba(6,43,36,0.1)]"
+    style={{ color: '#3A5A50' }}>
+    <Icon size={13} />
+  </button>
+);
+const EditorTBText = ({ title, label, cmd, val, exec }: { title: string; label: string; cmd: string; val: string; exec: (cmd: string, val?: string) => void }) => (
+  <button type="button" title={title} onMouseDown={e => { e.preventDefault(); exec(cmd, val); }}
+    className="h-7 px-2 text-xs font-bold rounded transition-colors hover:bg-[rgba(6,43,36,0.1)]"
+    style={{ color: '#3A5A50' }}>
+    {label}
+  </button>
+);
+
 function RichTextEditor({ initialValue, onChange, dir = 'auto', minHeight = 220 }: {
   initialValue: string;
   onChange: (v: string) => void;
@@ -44,47 +60,31 @@ function RichTextEditor({ initialValue, onChange, dir = 'auto', minHeight = 220 
     if (ref.current) onChange(ref.current.innerHTML);
   };
 
-  const Sep = () => <div className="w-px self-stretch mx-0.5" style={{ background: 'rgba(6,43,36,0.15)' }} />;
-  const TB = ({ title, icon: Icon, cmd, val }: { title: string; icon: any; cmd: string; val?: string }) => (
-    <button type="button" title={title} onMouseDown={e => { e.preventDefault(); exec(cmd, val); }}
-      className="w-7 h-7 flex items-center justify-center rounded transition-colors hover:bg-[rgba(6,43,36,0.1)]"
-      style={{ color: '#3A5A50' }}>
-      <Icon size={13} />
-    </button>
-  );
-  const TBText = ({ title, label, cmd, val }: { title: string; label: string; cmd: string; val: string }) => (
-    <button type="button" title={title} onMouseDown={e => { e.preventDefault(); exec(cmd, val); }}
-      className="h-7 px-2 text-xs font-bold rounded transition-colors hover:bg-[rgba(6,43,36,0.1)]"
-      style={{ color: '#3A5A50' }}>
-      {label}
-    </button>
-  );
-
   return (
     <div className="rounded-xl overflow-hidden" style={{ border: '1.5px solid rgba(6,43,36,0.18)' }}>
       {/* Toolbar row 1 */}
       <div className="flex flex-wrap items-center gap-0.5 px-2 py-1.5" style={{ background: 'rgba(6,43,36,0.04)', borderBottom: '1px solid rgba(6,43,36,0.1)' }}>
-        <TB title="Undo" icon={RotateCcw} cmd="undo" />
-        <TB title="Redo" icon={RotateCw} cmd="redo" />
-        <Sep />
-        <TB title="Bold" icon={Bold} cmd="bold" />
-        <TB title="Italic" icon={Italic} cmd="italic" />
-        <TB title="Underline" icon={Underline} cmd="underline" />
-        <TB title="Strikethrough" icon={Strikethrough} cmd="strikeThrough" />
-        <Sep />
-        <TBText title="Heading 2" label="H2" cmd="formatBlock" val="h2" />
-        <TBText title="Heading 3" label="H3" cmd="formatBlock" val="h3" />
-        <TBText title="Paragraph" label="P" cmd="formatBlock" val="p" />
-        <Sep />
-        <TB title="Bullet List" icon={List} cmd="insertUnorderedList" />
-        <TB title="Numbered List" icon={ListOrdered} cmd="insertOrderedList" />
-        <Sep />
-        <TB title="Align Left" icon={AlignLeft} cmd="justifyLeft" />
-        <TB title="Align Center" icon={AlignCenter} cmd="justifyCenter" />
-        <TB title="Align Right" icon={AlignRight} cmd="justifyRight" />
-        <Sep />
-        <TB title="Blockquote" icon={Quote} cmd="formatBlock" val="blockquote" />
-        <TB title="Horizontal Rule" icon={Minus} cmd="insertHorizontalRule" />
+        <EditorTB title="Undo" icon={RotateCcw} cmd="undo" exec={exec} />
+        <EditorTB title="Redo" icon={RotateCw} cmd="redo" exec={exec} />
+        <EditorSep />
+        <EditorTB title="Bold" icon={Bold} cmd="bold" exec={exec} />
+        <EditorTB title="Italic" icon={Italic} cmd="italic" exec={exec} />
+        <EditorTB title="Underline" icon={Underline} cmd="underline" exec={exec} />
+        <EditorTB title="Strikethrough" icon={Strikethrough} cmd="strikeThrough" exec={exec} />
+        <EditorSep />
+        <EditorTBText title="Heading 2" label="H2" cmd="formatBlock" val="h2" exec={exec} />
+        <EditorTBText title="Heading 3" label="H3" cmd="formatBlock" val="h3" exec={exec} />
+        <EditorTBText title="Paragraph" label="P" cmd="formatBlock" val="p" exec={exec} />
+        <EditorSep />
+        <EditorTB title="Bullet List" icon={List} cmd="insertUnorderedList" exec={exec} />
+        <EditorTB title="Numbered List" icon={ListOrdered} cmd="insertOrderedList" exec={exec} />
+        <EditorSep />
+        <EditorTB title="Align Left" icon={AlignLeft} cmd="justifyLeft" exec={exec} />
+        <EditorTB title="Align Center" icon={AlignCenter} cmd="justifyCenter" exec={exec} />
+        <EditorTB title="Align Right" icon={AlignRight} cmd="justifyRight" exec={exec} />
+        <EditorSep />
+        <EditorTB title="Blockquote" icon={Quote} cmd="formatBlock" val="blockquote" exec={exec} />
+        <EditorTB title="Horizontal Rule" icon={Minus} cmd="insertHorizontalRule" exec={exec} />
         <button type="button" title="Insert Link"
           onMouseDown={e => { e.preventDefault(); const url = window.prompt('Enter URL:'); if (url) exec('createLink', url); }}
           className="w-7 h-7 flex items-center justify-center rounded transition-colors hover:bg-[rgba(6,43,36,0.1)]"
@@ -112,6 +112,101 @@ function RichTextEditor({ initialValue, onChange, dir = 'auto', minHeight = 220 
 const tableCls = 'w-full text-sm';
 const thCls = 'px-4 py-3 text-xs font-semibold uppercase tracking-wide text-start';
 const tdCls = 'px-4 py-3 text-xs';
+
+const ActionBtn = ({ onClick, color, icon: Icon }: any) => (
+  <button onClick={onClick} className="p-1.5 rounded-lg transition-all hover:scale-110" style={{ background: `${color}18`, color }}>
+    <Icon size={13} />
+  </button>
+);
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const { t } = useLanguage();
+  const map: Record<string, any> = {
+    approved:  { bg: 'rgba(74,139,122,0.15)',  color: '#4A8B7A',  ar: 'موافق',     en: 'Approved' },
+    pending:   { bg: 'rgba(216,183,91,0.15)',  color: '#D8B75B',  ar: 'انتظار',    en: 'Pending' },
+    rejected:  { bg: 'rgba(212,24,61,0.12)',   color: '#D4183D',  ar: 'مرفوض',    en: 'Rejected' },
+    new:       { bg: 'rgba(201,162,74,0.15)',  color: '#C9A24A',  ar: 'جديد',      en: 'New' },
+    replied:   { bg: 'rgba(74,139,122,0.15)',  color: '#4A8B7A',  ar: 'مُرَد عليه', en: 'Replied' },
+    published: { bg: 'rgba(74,139,122,0.15)',  color: '#4A8B7A',  ar: 'منشور',    en: 'Published' },
+    draft:     { bg: 'rgba(216,183,91,0.15)',  color: '#D8B75B',  ar: 'مسودة',    en: 'Draft' },
+    active:    { bg: 'rgba(74,139,122,0.15)',  color: '#4A8B7A',  ar: 'نشط',      en: 'Active' },
+    inactive:  { bg: 'rgba(139,157,138,0.15)', color: '#8B9D8A',  ar: 'غير نشط',  en: 'Inactive' },
+  };
+  const s = map[status] || map.pending;
+  return <span className="px-2.5 py-1 rounded-full text-xs" style={{ background: s.bg, color: s.color }}>{t(s.ar, s.en)}</span>;
+};
+
+const TableWrap = ({ children }: { children: React.ReactNode }) => (
+  <div className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
+    <div className="overflow-x-auto"><table className={tableCls}>{children}</table></div>
+  </div>
+);
+
+const THead = ({ cols }: { cols: string[] }) => (
+  <thead><tr className="relative overflow-hidden" style={{ background: BRAND.deep }}>
+    {cols.map((c, i) => <th key={i} className={`${thCls} relative z-10`} style={{ color: '#C9A24A' }}>{c}</th>)}
+    <div className="absolute inset-0 pointer-events-none">
+      <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.6} tileSize={40} />
+    </div>
+  </tr></thead>
+);
+
+const InputField = ({ label, value, onChange, dir = 'auto', type = 'text', disabled = false }: any) => {
+  const { fontFamily } = useLanguage();
+  return (
+    <div>
+      <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{label}</label>
+      <input type={type} value={value} onChange={e => onChange(e.target.value)} disabled={disabled} dir={dir}
+        className="w-full px-3.5 py-2.5 rounded-xl text-sm text-[#1E1E1E] outline-none transition-all"
+        style={{ background: disabled ? 'rgba(6,43,36,0.03)' : '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', fontFamily }}
+        onFocus={e => !disabled && (e.target.style.borderColor = '#C9A24A')}
+        onBlur={e => (e.target.style.borderColor = 'rgba(6,43,36,0.12)')}
+      />
+    </div>
+  );
+};
+
+const FormCard = ({ title, onClose, children, onSave }: { title: string; onClose: () => void; children: React.ReactNode; onSave: () => void }) => {
+  const { t } = useLanguage();
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+      <div className="flex items-center justify-between px-6 py-4 relative overflow-hidden" style={{ background: BRAND.deep }}>
+        <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
+        <span className="text-[#F0D98A] font-semibold text-sm relative z-10">{title}</span>
+        <button onClick={onClose} className="text-[#8B9D8A] hover:text-[#F0D98A] transition-colors relative z-10"><X size={16} /></button>
+      </div>
+      <div className="p-6 space-y-4">{children}</div>
+      <div className="px-6 pb-6 flex gap-3">
+        <button onClick={onSave} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
+          style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 3px 0 #8B6B20' }}>
+          <Save size={14} /> {t('حفظ', 'Save')}
+        </button>
+        <button onClick={onClose} className="px-5 py-2.5 rounded-xl text-sm transition-all"
+          style={{ background: 'rgba(212,24,61,0.08)', color: '#D4183D' }}>
+          {t('إلغاء', 'Cancel')}
+        </button>
+      </div>
+    </motion.div>
+  );
+};
+
+const Modal = ({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) => (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+      className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col" style={{ background: BRAND.ivory }}>
+      <div className="px-8 py-5 flex items-center justify-between border-b relative overflow-hidden" style={{ background: BRAND.deep, borderColor: 'rgba(201,162,74,0.2)' }}>
+        <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
+        <h3 className="text-[#F0D98A] font-bold text-lg relative z-10">{title}</h3>
+        <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#8B9D8A] hover:text-[#F0D98A] transition-colors relative z-10" style={{ background: 'rgba(255,255,255,0.05)' }}>
+          <X size={18} />
+        </button>
+      </div>
+      <div className="p-8 overflow-y-auto">{children}</div>
+    </motion.div>
+  </div>
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main Component
@@ -291,93 +386,6 @@ export default function AdminDashboard() {
     { icon: MessageSquare,  label_ar: 'رسائل جديدة',        label_en: 'New Messages',   value: (contactMessages as any[]).filter((m: any) => m.status === 'new').length, color: '#F0D98A', bg: 'rgba(240,217,138,0.1)' },
   ];
 
-  const ActionBtn = ({ onClick, color, icon: Icon }: any) => (
-    <button onClick={onClick} className="p-1.5 rounded-lg transition-all hover:scale-110" style={{ background: `${color}18`, color }}>
-      <Icon size={13} />
-    </button>
-  );
-
-  const StatusBadge = ({ status }: { status: string }) => {
-    const map: Record<string, any> = {
-      approved:  { bg: 'rgba(74,139,122,0.15)',  color: '#4A8B7A',  ar: 'موافق',     en: 'Approved' },
-      pending:   { bg: 'rgba(216,183,91,0.15)',  color: '#D8B75B',  ar: 'انتظار',    en: 'Pending' },
-      rejected:  { bg: 'rgba(212,24,61,0.12)',   color: '#D4183D',  ar: 'مرفوض',    en: 'Rejected' },
-      new:       { bg: 'rgba(201,162,74,0.15)',  color: '#C9A24A',  ar: 'جديد',      en: 'New' },
-      replied:   { bg: 'rgba(74,139,122,0.15)',  color: '#4A8B7A',  ar: 'مُرَد عليه', en: 'Replied' },
-      published: { bg: 'rgba(74,139,122,0.15)',  color: '#4A8B7A',  ar: 'منشور',    en: 'Published' },
-      draft:     { bg: 'rgba(216,183,91,0.15)',  color: '#D8B75B',  ar: 'مسودة',    en: 'Draft' },
-      active:    { bg: 'rgba(74,139,122,0.15)',  color: '#4A8B7A',  ar: 'نشط',      en: 'Active' },
-      inactive:  { bg: 'rgba(139,157,138,0.15)', color: '#8B9D8A',  ar: 'غير نشط',  en: 'Inactive' },
-    };
-    const s = map[status] || map.pending;
-    return <span className="px-2.5 py-1 rounded-full text-xs" style={{ background: s.bg, color: s.color }}>{t(s.ar, s.en)}</span>;
-  };
-
-  const TableWrap = ({ children }: { children: React.ReactNode }) => (
-    <div className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
-      <div className="overflow-x-auto"><table className={tableCls}>{children}</table></div>
-    </div>
-  );
-
-  const THead = ({ cols }: { cols: string[] }) => (
-    <thead><tr className="relative overflow-hidden" style={{ background: BRAND.deep }}>
-      {cols.map((c, i) => <th key={i} className={`${thCls} relative z-10`} style={{ color: '#C9A24A' }}>{c}</th>)}
-      <div className="absolute inset-0 pointer-events-none">
-        <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.6} tileSize={40} />
-      </div>
-    </tr></thead>
-  );
-
-  const InputField = ({ label, value, onChange, dir = 'auto', type = 'text', disabled = false }: any) => (
-    <div>
-      <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{label}</label>
-      <input type={type} value={value} onChange={e => onChange(e.target.value)} disabled={disabled} dir={dir}
-        className="w-full px-3.5 py-2.5 rounded-xl text-sm text-[#1E1E1E] outline-none transition-all"
-        style={{ background: disabled ? 'rgba(6,43,36,0.03)' : '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', fontFamily }}
-        onFocus={e => !disabled && (e.target.style.borderColor = '#C9A24A')}
-        onBlur={e => (e.target.style.borderColor = 'rgba(6,43,36,0.12)')}
-      />
-    </div>
-  );
-
-  const FormCard = ({ title, onClose, children, onSave }: { title: string; onClose: () => void; children: React.ReactNode; onSave: () => void }) => (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl overflow-hidden" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
-      <div className="flex items-center justify-between px-6 py-4 relative overflow-hidden" style={{ background: BRAND.deep }}>
-        <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
-        <span className="text-[#F0D98A] font-semibold text-sm relative z-10">{title}</span>
-        <button onClick={onClose} className="text-[#8B9D8A] hover:text-[#F0D98A] transition-colors relative z-10"><X size={16} /></button>
-      </div>
-      <div className="p-6 space-y-4">{children}</div>
-      <div className="px-6 pb-6 flex gap-3">
-        <button onClick={onSave} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
-          style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 3px 0 #8B6B20' }}>
-          <Save size={14} /> {t('حفظ', 'Save')}
-        </button>
-        <button onClick={onClose} className="px-5 py-2.5 rounded-xl text-sm transition-all"
-          style={{ background: 'rgba(212,24,61,0.08)', color: '#D4183D' }}>
-          {t('إلغاء', 'Cancel')}
-        </button>
-      </div>
-    </motion.div>
-  );
-
-  const Modal = ({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) => (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col" style={{ background: BRAND.ivory }}>
-        <div className="px-8 py-5 flex items-center justify-between border-b relative overflow-hidden" style={{ background: BRAND.deep, borderColor: 'rgba(201,162,74,0.2)' }}>
-          <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
-          <h3 className="text-[#F0D98A] font-bold text-lg relative z-10">{title}</h3>
-          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#8B9D8A] hover:text-[#F0D98A] transition-colors relative z-10" style={{ background: 'rgba(255,255,255,0.05)' }}>
-            <X size={18} />
-          </button>
-        </div>
-        <div className="p-8 overflow-y-auto">{children}</div>
-      </motion.div>
-    </div>
-  );
 
   // ── Save helpers ─────────────────────────────────────────────────────────
   const saveArticle = (status: string) => {
