@@ -56,8 +56,10 @@ interface DataContextType {
   deleteTestimonial: (id: string) => Promise<void>;
   addContactMessage: (m: any) => Promise<void>;
   updateContactMessage: (id: string, d: any) => Promise<void>;
+  deleteContactMessage: (id: string) => Promise<void>;
   addEnrollment: (e: any) => Promise<void>;
   updateEnrollment: (id: string, d: any) => Promise<void>;
+  deleteEnrollment: (id: string) => Promise<void>;
   updateUser: (id: string, d: any) => Promise<void>;
   deleteUser: (id: string) => Promise<void>;
   addSupervisor: (s: any) => Promise<void>;
@@ -245,6 +247,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       refreshData();
   };
   const updateContactMessage = (id: string, d: any) => updateItem('/contact', id, d, setContactState);
+  const deleteContactMessage = (id: string) => deleteItem('/contact', id, setContactState);
 
   // Enrollments
   const addEnrollment = async (e: any) => {
@@ -255,6 +258,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     }
   };
   const updateEnrollment = (id: string, d: any) => updateItem('/enrollments', id, d, setEnrollmentsState);
+  const deleteEnrollment = (id: string) => deleteItem('/enrollments', id, setEnrollmentsState);
 
   // Users
   const updateUser = (id: string, d: any) => updateItem('/users', id, d, setUsersState);
@@ -299,8 +303,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       addLecture, updateLecture, deleteLecture,
       addArticle, updateArticle, deleteArticle,
       addTestimonial, updateTestimonial, deleteTestimonial,
-      addContactMessage, updateContactMessage,
-      addEnrollment, updateEnrollment,
+      addContactMessage, updateContactMessage, deleteContactMessage,
+      addEnrollment, updateEnrollment, deleteEnrollment,
       updateUser, deleteUser,
       addSupervisor, updateSupervisor, deleteSupervisor,
       addTeacher, updateTeacher, deleteTeacher,

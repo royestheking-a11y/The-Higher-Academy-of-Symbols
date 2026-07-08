@@ -35,4 +35,12 @@ router.patch('/:id', protect, adminOnly, async (req, res) => {
   } catch (err) { res.status(400).json({ message: err.message }); }
 });
 
+router.delete('/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const msg = await ContactMessage.findByIdAndDelete(req.params.id);
+    if (!msg) return res.status(404).json({ message: 'Not found' });
+    res.json({ message: 'Deleted successfully' });
+  } catch (err) { res.status(400).json({ message: err.message }); }
+});
+
 export default router;

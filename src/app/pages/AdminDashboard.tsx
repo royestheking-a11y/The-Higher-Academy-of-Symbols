@@ -219,7 +219,7 @@ export default function AdminDashboard() {
     settings, supervisors, teachers, packages, subscriptions,
     updateSettings, addLecture, updateLecture, deleteLecture,
     addArticle, updateArticle, deleteArticle, 
-    updateEnrollment, updateContactMessage, deleteUser,
+    updateEnrollment, updateContactMessage, deleteEnrollment, deleteContactMessage, deleteUser,
     addSupervisor, updateSupervisor, deleteSupervisor,
     addTeacher, updateTeacher, deleteTeacher,
     addPackage, updatePackage, deletePackage,
@@ -1282,7 +1282,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <TableWrap>
-                <THead cols={['#', t('المستخدم', 'User'), t('المحاضرة', 'Course'), t('المبلغ', 'Amount'), t('المعاملة', 'Transaction'), t('التاريخ', 'Date'), t('الحالة', 'Status')]} />
+                <THead cols={['#', t('المستخدم', 'User'), t('المحاضرة', 'Course'), t('المبلغ', 'Amount'), t('المعاملة', 'Transaction'), t('التاريخ', 'Date'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                 <tbody>
                   {(enrollments as any[]).map((enr: any, i: number) => {
                     const userIdStr = typeof enr.userId === 'object' ? (enr.userId?._id || enr.userId?.id) : enr.userId;
@@ -1298,10 +1298,13 @@ export default function AdminDashboard() {
                         <td className={`${tdCls} text-[#8B9D8A]`}>{enr.transactionId || '-'}</td>
                         <td className={`${tdCls} text-[#8B9D8A]`}>{new Date(enr.createdAt).toLocaleDateString(t('ar-SA', 'en-US'))}</td>
                         <td className={tdCls}><StatusBadge status={enr.paymentStatus === 'paid' ? 'approved' : enr.paymentStatus} /></td>
+                        <td className={tdCls}>
+                          <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteEnrollment(enr.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                        </td>
                       </tr>
                     );
                   })}
-                  {enrollments.length === 0 && <tr><td colSpan={7} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد مدفوعات.', 'No payments.')}</td></tr>}
+                  {enrollments.length === 0 && <tr><td colSpan={8} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد مدفوعات.', 'No payments.')}</td></tr>}
                 </tbody>
               </TableWrap>
             </motion.div>
@@ -1452,6 +1455,7 @@ export default function AdminDashboard() {
                                 title={progressVal === 100 ? t('إلغاء التميز يدوياً', 'Reset Course Completion') : t('إكمال الدورة يدوياً', 'Force Complete Course')}
                               />
                             )}
+                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteEnrollment(enr.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
                           </div>
                         </td>
                       </tr>
@@ -1546,6 +1550,11 @@ export default function AdminDashboard() {
                           {t('الرد عبر واتساب', 'Reply via WhatsApp')}
                         </a>
                       )}
+                      <button onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteContactMessage(msg.id); toast.success(t('تم الحذف', 'Deleted')); } }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
+                        style={{ background: 'rgba(212,24,61,0.1)', color: '#D4183D', border: '1px solid rgba(212,24,61,0.3)' }}>
+                        <Trash2 size={12} /> {t('حذف', 'Delete')}
+                      </button>
                     </div>
                   </div>
                 ))}
