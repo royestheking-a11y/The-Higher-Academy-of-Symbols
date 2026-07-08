@@ -6,10 +6,12 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
 
+let cachedBooks: any[] | null = null;
+
 export default function AdminBooks() {
   const { t, isRTL } = useLanguage();
   const { token } = useAuth();
-  const [books, setBooks] = useState<any[]>([]);
+  const [books, setBooks] = useState<any[]>(cachedBooks || []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBook, setEditingBook] = useState<any>(null);
@@ -36,7 +38,10 @@ export default function AdminBooks() {
     const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
     fetch(baseUrl ? `${baseUrl}/api/books` : '/api/books')
       .then(r => r.ok ? r.json() : [])
-      .then(data => setBooks(data))
+      .then(data => {
+        cachedBooks = data;
+        setBooks(data);
+      })
       .catch(err => console.error(err));
   };
 

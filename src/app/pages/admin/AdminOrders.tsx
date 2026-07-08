@@ -5,10 +5,12 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
 
+let cachedOrders: any[] | null = null;
+
 export default function AdminOrders() {
   const { t, isRTL } = useLanguage();
   const { token } = useAuth();
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>(cachedOrders || []);
   
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -21,7 +23,10 @@ export default function AdminOrders() {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(r => r.ok ? r.json() : [])
-      .then(data => setOrders(data))
+      .then(data => {
+        cachedOrders = data;
+        setOrders(data);
+      })
       .catch(err => console.error(err));
   };
 

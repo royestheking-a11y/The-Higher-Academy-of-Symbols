@@ -6,10 +6,12 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
 
+let cachedResources: any[] | null = null;
+
 export default function AdminLibrary() {
   const { t, isRTL } = useLanguage();
   const { token } = useAuth();
-  const [resources, setResources] = useState<any[]>([]);
+  const [resources, setResources] = useState<any[]>(cachedResources || []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingResource, setEditingResource] = useState<any>(null);
@@ -36,7 +38,10 @@ export default function AdminLibrary() {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(r => r.ok ? r.json() : [])
-      .then(data => setResources(data))
+      .then(data => {
+        cachedResources = data;
+        setResources(data);
+      })
       .catch(err => console.error(err));
   };
 
