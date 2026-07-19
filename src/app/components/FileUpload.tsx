@@ -24,8 +24,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({ label, accept, token, on
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 100 * 1024 * 1024) {
-      toast.error(t('حجم الملف كبير جداً (الحد الأقصى 100 ميجابايت)', 'File is too large (Max 100MB)'));
+    if (file.size > 40 * 1024 * 1024) {
+      toast.error(t('حجم الملف كبير جداً (الحد الأقصى 40 ميجابايت)', 'File is too large (Max 40MB)'));
       return;
     }
 
@@ -131,7 +131,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ label, accept, token, on
             {t('انقر لاختيار ملف', 'Click to choose file')}
           </p>
           <p className="text-xs text-[#8B9D8A] mt-1">
-            {accept.includes('pdf') ? 'PDF (Max 100MB)' : 'Images (Max 100MB)'}
+            {accept.includes('pdf') ? 'PDF (Max 40MB)' : 'Images (Max 40MB)'}
           </p>
         </div>
       )}

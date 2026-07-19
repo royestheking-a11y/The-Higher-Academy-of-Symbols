@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import {
   LayoutDashboard, BookOpen, Award, CreditCard, MessageSquare,
   User, LogOut, Clock, CheckCircle2, Play, Star, ChevronRight,
@@ -22,7 +22,8 @@ export default function StudentDashboard() {
   const { currentUser, logout } = useAuth();
   const { lectures, enrollments, notifications, markNotificationAsRead, clearAllNotifications, updateEnrollment, loading } = useData();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const { tab } = useParams<{ tab?: string }>();
+  const activeTab = tab || 'overview';
   const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -199,7 +200,7 @@ export default function StudentDashboard() {
           return (
             <button
               key={item.id}
-              onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
+              onClick={() => { navigate(`/dashboard/${item.id}`); setSidebarOpen(false); }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm mb-1 transition-all text-start ${activeTab === item.id ? 'text-[#F0D98A]' : 'text-[#8B9D8A] hover:text-[#E8DDC7]'}`}
               style={{ background: activeTab === item.id ? 'rgba(201,162,74,0.15)' : 'transparent' }}
             >
@@ -437,9 +438,14 @@ export default function StudentDashboard() {
               <div className="p-6 rounded-2xl mb-6" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
                 <div className="flex items-center justify-between mb-5">
                   <h2 className="text-[#062B24] font-semibold text-base">{t('محاضراتي الحالية', 'My Current Lectures')}</h2>
-                  <button onClick={() => setActiveTab('courses')} className="text-[#C9A24A] text-xs hover:underline">{t('عرض الكل', 'View All')}</button>
+                  <button onClick={() => navigate('/dashboard/courses')} className="text-[#C9A24A] text-xs hover:underline">{t('عرض الكل', 'View All')}</button>
                 </div>
-                {myCourses.length === 0 ? (
+                {loading ? (
+                  <div className="space-y-3">
+                    <Skeleton.Base className="h-24 w-full rounded-2xl" />
+                    <Skeleton.Base className="h-24 w-full rounded-2xl" />
+                  </div>
+                ) : myCourses.length === 0 ? (
                   <div className="text-center py-10">
                     <BookOpen size={40} className="text-[#C9A24A] mx-auto mb-3 opacity-40" />
                     <p className="text-[#5A7A70] text-sm">{t('لم تسجّل في أي محاضرة بعد.', "You haven't enrolled in any lectures yet.")}</p>
@@ -477,7 +483,7 @@ export default function StudentDashboard() {
                 {[
                   { icon: BookOpen, label_ar: 'استكشف المحاضرات', label_en: 'Explore Lectures', to: '/lectures', color: '#C9A24A' },
                   { icon: MessageSquare, label_ar: 'تواصل معنا', label_en: 'Contact Support', to: '/contact', color: '#7BBFAD' },
-                  { icon: Award, label_ar: 'شهاداتي', label_en: 'My Certificates', action: () => setActiveTab('certificates'), color: '#D8B75B' },
+                  { icon: Award, label_ar: 'شهاداتي', label_en: 'My Certificates', action: () => navigate('/dashboard/certificates'), color: '#D8B75B' },
                 ].map((action, i) => {
                   const IconComp = action.icon;
                   const content = (
@@ -507,7 +513,7 @@ export default function StudentDashboard() {
                     <Skeleton.Base key={i} theme="light" className="h-28 w-full rounded-2xl" />
                   ))}
                 </div>
-              ) : myCourses.length === 0 ? (
+              ) : !loading && myCourses.length === 0 ? (
                 <div className="text-center py-20 p-8 rounded-2xl" style={{ background: 'white' }}>
                   <BookOpen size={48} className="text-[#C9A24A] mx-auto mb-4 opacity-40" />
                   <p className="text-[#5A7A70] mb-4">{t('لا توجد محاضرات مسجلة.', 'No enrolled lectures.')}</p>
@@ -680,7 +686,7 @@ export default function StudentDashboard() {
                   Array.from({ length: 2 }).map((_, i) => (
                     <Skeleton.Base key={i} theme="light" className="h-44 w-full rounded-2xl" />
                   ))
-                ) : myCourses.filter((c: any) => getProgressPercent(c) === 100).length === 0 ? (
+                ) : !loading && myCourses.filter((c: any) => getProgressPercent(c) === 100).length === 0 ? (
                   <div className="col-span-2 text-center py-16 rounded-2xl" style={{ background: 'white' }}>
                     <Award size={48} className="text-[#C9A24A] mx-auto mb-4 opacity-40" />
                     <p className="text-[#5A7A70]">{t('لا توجد شهادات صادرة بعد. أكمل محاضرة بنسبة 100% للحصول على شهادتك.', 'No certificates issued yet. Complete a lecture to 100% to get your certificate.')}</p>
@@ -852,7 +858,16 @@ export default function StudentDashboard() {
                           </tr>
                         );
                       })}
-                      {myEnrollments.length === 0 && (
+                      {loading ? (
+                        Array.from({ length: 3 }).map((_, i) => (
+                          <tr key={i} style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
+                            <td className="px-5 py-4"><Skeleton.Base className="h-4 w-full rounded" /></td>
+                            <td className="px-5 py-4"><Skeleton.Base className="h-4 w-full rounded" /></td>
+                            <td className="px-5 py-4"><Skeleton.Base className="h-4 w-full rounded" /></td>
+                            <td className="px-5 py-4"><Skeleton.Base className="h-4 w-full rounded" /></td>
+                          </tr>
+                        ))
+                      ) : !loading && myEnrollments.length === 0 && (
                         <tr><td colSpan={4} className="px-5 py-12 text-center text-[#5A7A70] text-sm">{t('لا توجد مدفوعات.', 'No payments.')}</td></tr>
                       )}
                     </tbody>

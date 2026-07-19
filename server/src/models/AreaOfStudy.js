@@ -8,6 +8,8 @@ const areaSchema = new mongoose.Schema({
   description_ar: { type: String },
   description_en: { type: String },
   image:          { type: String, default: '' },   // Cloudinary URL
+  whatYouWillLearn_ar: [{ type: String }],
+  whatYouWillLearn_en: [{ type: String }],
   order:          { type: Number, default: 0 },
   status:         { type: String, enum: ['published', 'draft'], default: 'published' },
 }, { timestamps: true });

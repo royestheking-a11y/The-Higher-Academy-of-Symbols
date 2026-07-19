@@ -72,9 +72,20 @@ export default function ArticleDetail() {
             <span className="text-[#C9A24A] line-clamp-1 max-w-[200px]">{t(article.title_ar, article.title_en)}</span>
           </nav>
 
-          {/* Category Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5 text-xs" style={{ background: 'rgba(201,162,74,0.15)', border: '1px solid rgba(201,162,74,0.35)', color: BRAND.gold }}>
-            {t(article.category_ar, article.category_en)}
+          {/* Category & Type Badges */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs" style={{ background: 'rgba(201,162,74,0.15)', border: '1px solid rgba(201,162,74,0.35)', color: BRAND.gold }}>
+              {t(article.category_ar, article.category_en)}
+            </div>
+            {article.type && (
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs" style={{ background: 'rgba(123, 191, 173, 0.15)', border: '1px solid rgba(123, 191, 173, 0.35)', color: '#7BBFAD' }}>
+                {article.type === 'general' ? t('عام', 'General') :
+                 article.type === 'research' ? t('بحثي', 'Research') :
+                 article.type === 'academic' ? t('أكاديمي', 'Academic') :
+                 article.type === 'news' ? t('أخبار', 'News') :
+                 article.type}
+              </div>
+            )}
           </div>
 
           {/* Title */}

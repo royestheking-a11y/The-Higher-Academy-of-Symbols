@@ -11,6 +11,7 @@ export default function AdminOrders() {
   const { t, isRTL } = useLanguage();
   const { token } = useAuth();
   const [orders, setOrders] = useState<any[]>(cachedOrders || []);
+  const [loading, setLoading] = useState(!cachedOrders);
   
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -26,8 +27,12 @@ export default function AdminOrders() {
       .then(data => {
         cachedOrders = data;
         setOrders(data);
+        setLoading(false);
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -114,7 +119,15 @@ export default function AdminOrders() {
               </div>
             </thead>
             <tbody>
-              {orders.length === 0 ? (
+              {loading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <tr key={i} style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
+                    {Array.from({ length: 6 }).map((_, j) => (
+                      <td key={j} className="px-5 py-4"><div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div></td>
+                    ))}
+                  </tr>
+                ))
+              ) : !loading && orders.length === 0 ? (
                 <tr><td colSpan={6} className="px-5 py-8 text-center text-[#8B9D8A]">{t('لا توجد طلبات', 'No orders found')}</td></tr>
               ) : orders.map(o => (
                 <tr key={o._id} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>

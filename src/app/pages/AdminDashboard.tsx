@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import {
   LayoutDashboard, BookOpen, Newspaper, Users, CreditCard, MessageSquare,
   Star, Settings, LogOut, Plus, Pencil, Trash2, Eye, EyeOff, Check, X,
@@ -21,8 +21,21 @@ import AdminOrders from './admin/AdminOrders';
 import { toast } from 'sonner';
 import { GeometricBackground } from '../components/GeometricBackground';
 import { Skeleton } from '../components/Skeleton';
+import { FileUpload } from '../components/FileUpload';
 
 const BRAND = { deep: '#062B24', mid: '#0B3A31', gold: '#C9A24A', goldLight: '#F0D98A', ivory: '#F8F4EA', sand: '#E8DDC7' };
+
+const TableSkeleton = ({ cols }: { cols: number }) => (
+  <>
+    {Array.from({ length: 3 }).map((_, i) => (
+      <tr key={i} style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
+        {Array.from({ length: cols }).map((_, j) => (
+          <td key={j} className="px-5 py-4"><Skeleton.Base className="h-4 w-full rounded" /></td>
+        ))}
+      </tr>
+    ))}
+  </>
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Rich Text Editor
@@ -214,6 +227,10 @@ const Modal = ({ title, onClose, children }: { title: string; onClose: () => voi
 export default function AdminDashboard() {
   const { t, isRTL, fontFamily } = useLanguage();
   const { currentUser, logout, isAdmin } = useAuth();
+  
+  const getToken = () => {
+    try { return localStorage.getItem('sa_token') || ''; } catch { return ''; }
+  };
   const {
     lectures, articles, areasOfStudy, users, enrollments, contactMessages, testimonials,
     settings, supervisors, teachers, packages, subscriptions,
@@ -230,7 +247,8 @@ export default function AdminDashboard() {
   } = useData();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab]       = useState('overview');
+  const { tab } = useParams<{ tab?: string }>();
+  const activeTab = tab || 'overview';
   const [sidebarOpen, setSidebarOpen]   = useState(false);
   const [notifOpen, setNotifOpen]       = useState(false);
   const [messageFilter, setMessageFilter] = useState('all');
@@ -245,6 +263,7 @@ export default function AdminDashboard() {
     author_ar: 'د. فاطمة فاضل العيساوي', author_en: 'Dr. Fatima Fadel Al-Issawi',
     category_ar: '', category_en: '',
     tags: '', readTime: 5, featured: false, status: 'draft', date: new Date().toISOString().slice(0, 10),
+    image: '',
   };
   const [articleView, setArticleView]     = useState<'list' | 'form'>('list');
   const [editingArticle, setEditingArticle] = useState<any>(null);
@@ -256,14 +275,17 @@ export default function AdminDashboard() {
     title_ar: '', title_en: '', slug: '', type: 'general',
     price: 0, lessonsCount: 0, duration: '',
     description_ar: '', description_en: '',
-    featured: false, status: 'draft',
+    featured: false, status: 'draft', pdfUrl: '',
+    lecturer_ar: '', lecturer_en: '', category: '', category_ar: '', category_en: '',
+    level_ar: '', level_en: '', language_ar: '', language_en: '',
+    certificate: false, thumbnail: '',
   };
   const [lectureView, setLectureView]     = useState<'list' | 'form'>('list');
   const [editingLecture, setEditingLecture] = useState<any>(null);
   const [lectureForm, setLectureForm]     = useState<any>(defaultLectureForm);
 
   // Area form
-  const defaultAreaForm = { name_ar: '', name_en: '', description_ar: '', description_en: '', order: 1, status: 'published' };
+  const defaultAreaForm = { name_ar: '', name_en: '', slug: '', icon: 'Star', image: '', description_ar: '', description_en: '', whatYouWillLearn_ar: '', whatYouWillLearn_en: '', order: 1, status: 'published' };
   const [areaView, setAreaView]     = useState<'list' | 'form'>('list');
   const [editingArea, setEditingArea] = useState<any>(null);
   const [areaForm, setAreaForm]     = useState<any>(defaultAreaForm);
@@ -350,7 +372,7 @@ export default function AdminDashboard() {
         { id: 'packages',      icon: Package,      label_ar: 'الباقات',       label_en: 'Packages' },
         { id: 'subscriptions', icon: CalendarDays, label_ar: 'الاشتراكات',    label_en: 'Subscriptions' },
         { id: 'payments',      icon: Wallet,       label_ar: 'المدفوعات',     label_en: 'Payments' },
-        { id: 'enrollments',   icon: CreditCard,   label_ar: 'التسجيلات',     label_en: 'Enrollments' },
+        { id: 'enrollments',   icon: CreditCard,   label_ar: 'تسجيلات الطلاب',     label_en: 'Enrollments' },
       ],
     },
     {
@@ -382,7 +404,7 @@ export default function AdminDashboard() {
     { icon: BookOpen,       label_ar: 'المحاضرات',          label_en: 'Lectures',       value: lectures.length,     color: '#7BBFAD', bg: 'rgba(123,191,173,0.1)' },
     { icon: Newspaper,      label_ar: 'المقالات',           label_en: 'Articles',       value: articles.length,     color: '#D8B75B', bg: 'rgba(216,183,91,0.1)' },
     { icon: CreditCard,     label_ar: 'الإيرادات',          label_en: 'Revenue',        value: `$${(enrollments as any[]).reduce((s: number, e: any) => s + (e.amount || 0), 0)}`, color: '#4A8B7A', bg: 'rgba(74,139,122,0.1)' },
-    { icon: GraduationCap,  label_ar: 'التسجيلات',          label_en: 'Enrollments',    value: enrollments.length,  color: '#C9A24A', bg: 'rgba(201,162,74,0.1)' },
+    { icon: GraduationCap,  label_ar: 'تسجيلات الطلاب',          label_en: 'Enrollments',    value: enrollments.length,  color: '#C9A24A', bg: 'rgba(201,162,74,0.1)' },
     { icon: MessageSquare,  label_ar: 'رسائل جديدة',        label_en: 'New Messages',   value: (contactMessages as any[]).filter((m: any) => m.status === 'new').length, color: '#F0D98A', bg: 'rgba(240,217,138,0.1)' },
   ];
 
@@ -426,8 +448,13 @@ export default function AdminDashboard() {
 
   const saveArea = () => {
     if (!areaForm.name_ar && !areaForm.name_en) { toast.error(t('يرجى إدخال اسم المجال', 'Please enter area name')); return; }
-    if (editingArea) { updateAreaOfStudy(editingArea.id, areaForm); toast.success(t('تم التحديث', 'Updated')); }
-    else { addAreaOfStudy(areaForm); toast.success(t('تمت الإضافة', 'Added')); }
+    
+    const payload = { ...areaForm };
+    if (typeof payload.whatYouWillLearn_ar === 'string') payload.whatYouWillLearn_ar = payload.whatYouWillLearn_ar.split('\n').map((s: string) => s.trim()).filter(Boolean);
+    if (typeof payload.whatYouWillLearn_en === 'string') payload.whatYouWillLearn_en = payload.whatYouWillLearn_en.split('\n').map((s: string) => s.trim()).filter(Boolean);
+    
+    if (editingArea) { updateAreaOfStudy(editingArea.id, payload); toast.success(t('تم التحديث', 'Updated')); }
+    else { addAreaOfStudy(payload); toast.success(t('تمت الإضافة', 'Added')); }
     setAreaView('list'); setEditingArea(null); setAreaForm(defaultAreaForm);
   };
 
@@ -478,7 +505,7 @@ export default function AdminDashboard() {
               const newMsgCount = item.id === 'messages' ? (contactMessages as any[]).filter((m: any) => m.status === 'new').length : 0;
               const isActive = activeTab === item.id;
               return (
-                <button key={item.id} onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
+                <button key={item.id} onClick={() => { navigate(`/admin/${item.id}`); setSidebarOpen(false); }}
                   className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs mb-0.5 transition-all text-start ${isActive ? 'text-[#F0D98A] font-bold' : 'text-white/80 hover:text-white'}`}
                   style={{ background: isActive ? 'rgba(201,162,74,0.15)' : 'transparent' }}>
                   <IconComp size={13} className={isActive ? 'text-[#C9A24A]' : ''} />
@@ -594,7 +621,7 @@ export default function AdminDashboard() {
                                 if (n.link) {
                                   if (n.link.startsWith('/admin')) {
                                     const tab = n.link.split('/').pop();
-                                    if (tab) setActiveTab(tab);
+                                    if (tab) navigate(`/admin/${tab}`);
                                   } else {
                                     navigate(n.link);
                                   }
@@ -694,7 +721,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between px-5 py-4 relative overflow-hidden" style={{ background: BRAND.deep }}>
                   <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.12} strokeWidth={0.6} tileSize={50} />
                   <span className="text-[#F0D98A] text-sm font-semibold relative z-10">{t('أحدث الرسائل', 'Recent Messages')}</span>
-                  <button onClick={() => setActiveTab('messages')} className="text-[#C9A24A] text-xs hover:underline relative z-10">{t('عرض الكل', 'View All')}</button>
+                  <button onClick={() => navigate('/admin/messages')} className="text-[#C9A24A] text-xs hover:underline relative z-10">{t('عرض الكل', 'View All')}</button>
                 </div>
                 <div className="overflow-x-auto">
                   <table className={tableCls}>
@@ -767,7 +794,7 @@ export default function AdminDashboard() {
                 <TableWrap>
                   <THead cols={['#', t('الاسم', 'Name'), t('البريد', 'Email'), t('تاريخ الإنشاء', 'Created'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                   <tbody>
-                    {(supervisors as any[]).map((s: any, i: number) => (
+                    {loading ? <TableSkeleton cols={6} /> : (supervisors as any[]).map((s: any, i: number) => (
                       <tr key={i} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                         <td className={`${tdCls} text-[#8B9D8A]`}>{s.serialNo || i + 1}</td>
                         <td className={`${tdCls} text-[#062B24] font-medium`}>{isRTL ? (s.name_ar || s.name) : (s.name || s.name_ar)}</td>
@@ -782,7 +809,7 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
-                    {supervisors.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا يوجد مشرفون.', 'No supervisors.')}</td></tr>}
+                    {!loading && supervisors.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا يوجد مشرفون.', 'No supervisors.')}</td></tr>}
                   </tbody>
                 </TableWrap>
               )}
@@ -833,7 +860,7 @@ export default function AdminDashboard() {
                 <TableWrap>
                   <THead cols={['#', t('الاسم', 'Name'), t('البريد', 'Email'), t('التخصص', 'Specialty'), t('تاريخ الإنشاء', 'Created'), t('الإجراءات', 'Actions')]} />
                   <tbody>
-                    {(teachers as any[]).map((tc: any, i: number) => (
+                    {loading ? <TableSkeleton cols={6} /> : (teachers as any[]).map((tc: any, i: number) => (
                       <tr key={i} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                         <td className={`${tdCls} text-[#8B9D8A]`}>{tc.serialNo || i + 1}</td>
                         <td className={`${tdCls} text-[#062B24] font-medium`}>{isRTL ? (tc.name_ar || tc.name) : (tc.name || tc.name_ar)}</td>
@@ -848,7 +875,7 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
-                    {teachers.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا يوجد أساتذة.', 'No teachers.')}</td></tr>}
+                    {!loading && teachers.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا يوجد أساتذة.', 'No teachers.')}</td></tr>}
                   </tbody>
                 </TableWrap>
               )}
@@ -877,6 +904,15 @@ export default function AdminDashboard() {
                     <InputField label={t('العنوان (انجليزي) *', 'Title (English) *')} value={lectureForm.title_en} onChange={(v: string) => setLectureForm({ ...lectureForm, title_en: v })} />
                     <InputField label={t('المعرف (Slug)', 'Slug')} value={lectureForm.slug} onChange={(v: string) => setLectureForm({ ...lectureForm, slug: v })} />
                     <InputField label={t('السعر ($)', 'Price ($)')} value={String(lectureForm.price)} onChange={(v: string) => setLectureForm({ ...lectureForm, price: Number(v) })} type="number" />
+                    <InputField label={t('المحاضر (عربي)', 'Lecturer (Arabic)')} value={lectureForm.lecturer_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, lecturer_ar: v })} dir="rtl" />
+                    <InputField label={t('المحاضر (انجليزي)', 'Lecturer (English)')} value={lectureForm.lecturer_en} onChange={(v: string) => setLectureForm({ ...lectureForm, lecturer_en: v })} />
+                    <InputField label={t('التصنيف المعرف', 'Category Slug')} value={lectureForm.category} onChange={(v: string) => setLectureForm({ ...lectureForm, category: v })} />
+                    <InputField label={t('التصنيف (عربي)', 'Category (Arabic)')} value={lectureForm.category_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, category_ar: v })} dir="rtl" />
+                    <InputField label={t('التصنيف (انجليزي)', 'Category (English)')} value={lectureForm.category_en} onChange={(v: string) => setLectureForm({ ...lectureForm, category_en: v })} />
+                    <InputField label={t('اللغة (عربي)', 'Language (Arabic)')} value={lectureForm.language_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, language_ar: v })} dir="rtl" />
+                    <InputField label={t('اللغة (انجليزي)', 'Language (English)')} value={lectureForm.language_en} onChange={(v: string) => setLectureForm({ ...lectureForm, language_en: v })} />
+                    <InputField label={t('المستوى (عربي)', 'Level (Arabic)')} value={lectureForm.level_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, level_ar: v })} dir="rtl" />
+                    <InputField label={t('المستوى (انجليزي)', 'Level (English)')} value={lectureForm.level_en} onChange={(v: string) => setLectureForm({ ...lectureForm, level_en: v })} />
                     <InputField label={t('عدد الدروس', 'Lessons Count')} value={String(lectureForm.lessonsCount)} onChange={(v: string) => setLectureForm({ ...lectureForm, lessonsCount: Number(v) })} type="number" />
                     <InputField label={t('المدة (مثلاً: 20 ساعة / 10 جلسات)', 'Duration (e.g. 20h / 10 sessions)')} value={lectureForm.duration} onChange={(v: string) => setLectureForm({ ...lectureForm, duration: v })} />
                   </div>
@@ -884,6 +920,29 @@ export default function AdminDashboard() {
                     <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الوصف (عربي)', 'Description (Arabic)')}</label>
                     <textarea value={lectureForm.description_ar} onChange={e => setLectureForm({ ...lectureForm, description_ar: e.target.value })} rows={3} dir="rtl"
                       className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
+                  </div>
+                  <div>
+                    <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الوصف (انجليزي)', 'Description (English)')}</label>
+                    <textarea value={lectureForm.description_en} onChange={e => setLectureForm({ ...lectureForm, description_en: e.target.value })} rows={3}
+                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FileUpload 
+                      label={t('ملف المحاضرة PDF', 'Lecture PDF File')} 
+                      accept=".pdf" 
+                      token={getToken()} 
+                      folder="symbols_academy/lectures"
+                      currentUrl={lectureForm.pdfUrl} 
+                      onUploadComplete={(url: string) => setLectureForm({ ...lectureForm, pdfUrl: url })} 
+                    />
+                    <FileUpload 
+                      label={t('صورة الغلاف', 'Thumbnail')} 
+                      accept="image/*" 
+                      token={getToken()} 
+                      folder="symbols_academy/lectures"
+                      currentUrl={lectureForm.thumbnail} 
+                      onUploadComplete={(url: string) => setLectureForm({ ...lectureForm, thumbnail: url })} 
+                    />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -894,10 +953,14 @@ export default function AdminDashboard() {
                         <option value="draft">{t('مسودة', 'Draft')}</option>
                       </select>
                     </div>
-                    <div className="flex items-end pb-3">
+                    <div className="flex items-end pb-3 gap-6">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" checked={lectureForm.featured} onChange={e => setLectureForm({ ...lectureForm, featured: e.target.checked })} />
                         <span className="text-[#3A5A50] text-xs font-medium">{t('محاضرة مميزة', 'Featured Lecture')}</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={lectureForm.certificate} onChange={e => setLectureForm({ ...lectureForm, certificate: e.target.checked })} />
+                        <span className="text-[#3A5A50] text-xs font-medium">{t('تمنح شهادة', 'Offers Certificate')}</span>
                       </label>
                     </div>
                   </div>
@@ -906,7 +969,7 @@ export default function AdminDashboard() {
                 <TableWrap>
                   <THead cols={['#', t('العنوان', 'Title'), t('السعر', 'Price'), t('الساعات', 'Hours'), t('الجلسات', 'Sessions'), t('التسجيلات', 'Enrolled'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                   <tbody>
-                    {(lectures as any[]).map((lec: any, i: number) => (
+                    {loading ? <TableSkeleton cols={8} /> : (lectures as any[]).map((lec: any, i: number) => (
                       <tr key={i} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                         <td className={`${tdCls} text-[#8B9D8A]`}>{i + 1}</td>
                         <td className={`${tdCls} text-[#062B24] font-medium max-w-[180px]`}><div className="truncate">{t(lec.title_ar, lec.title_en)}</div></td>
@@ -924,6 +987,7 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
+                    {!loading && lectures.length === 0 && <tr><td colSpan={8} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد محاضرات.', 'No lectures.')}</td></tr>}
                   </tbody>
                 </TableWrap>
               )}
@@ -946,7 +1010,7 @@ export default function AdminDashboard() {
                   <TableWrap>
                     <THead cols={['#', t('العنوان', 'Title'), t('الكاتب', 'Author'), t('التاريخ', 'Date'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                     <tbody>
-                      {(articles as any[]).map((art: any, i: number) => (
+                      {loading ? <TableSkeleton cols={6} /> : (articles as any[]).map((art: any, i: number) => (
                         <tr key={i} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                           <td className={`${tdCls} text-[#8B9D8A]`}>{i + 1}</td>
                           <td className={`${tdCls} text-[#062B24] font-medium max-w-[220px]`}><div className="truncate">{t(art.title_ar, art.title_en)}</div></td>
@@ -966,6 +1030,7 @@ export default function AdminDashboard() {
                           </td>
                         </tr>
                       ))}
+                      {!loading && articles.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد مقالات.', 'No articles.')}</td></tr>}
                     </tbody>
                   </TableWrap>
                 </>
@@ -1081,6 +1146,14 @@ export default function AdminDashboard() {
 
                       <div className="p-5 rounded-2xl space-y-3" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)' }}>
                         <h3 className="text-[#062B24] font-semibold text-sm border-b border-[rgba(6,43,36,0.08)] pb-3">{t('الإعدادات', 'Settings')}</h3>
+                        <FileUpload 
+                          label={t('صورة المقالة', 'Article Image')} 
+                          accept="image/*" 
+                          token={getToken()} 
+                          folder="symbols_academy/articles"
+                          currentUrl={articleForm.image} 
+                          onUploadComplete={(url: string) => setArticleForm({ ...articleForm, image: url })} 
+                        />
                         <InputField label={t('تاريخ النشر', 'Publish Date')} value={articleForm.date} onChange={(v: string) => setArticleForm({ ...articleForm, date: v })} type="date" />
                         <InputField label={t('وقت القراءة (دقيقة)', 'Read Time (min)')} value={String(articleForm.readTime)} onChange={(v: string) => setArticleForm({ ...articleForm, readTime: Number(v) })} type="number" />
                         <div>
@@ -1126,6 +1199,8 @@ export default function AdminDashboard() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField label={t('الاسم (عربي) *', 'Name (Arabic) *')} value={areaForm.name_ar} onChange={(v: string) => setAreaForm({ ...areaForm, name_ar: v })} dir="rtl" />
                     <InputField label={t('الاسم (انجليزي) *', 'Name (English) *')} value={areaForm.name_en} onChange={(v: string) => setAreaForm({ ...areaForm, name_en: v })} />
+                    <InputField label={t('المعرف (Slug) *', 'Slug *')} value={areaForm.slug} onChange={(v: string) => setAreaForm({ ...areaForm, slug: v })} />
+                    <InputField label={t('الأيقونة', 'Icon')} value={areaForm.icon} onChange={(v: string) => setAreaForm({ ...areaForm, icon: v })} />
                     <InputField label={t('الترتيب', 'Order')} value={String(areaForm.order)} onChange={(v: string) => setAreaForm({ ...areaForm, order: Number(v) })} type="number" />
                     <div>
                       <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الحالة', 'Status')}</label>
@@ -1135,6 +1210,16 @@ export default function AdminDashboard() {
                         <option value="draft">{t('مسودة', 'Draft')}</option>
                       </select>
                     </div>
+                  </div>
+                  <div className="mt-4 mb-4">
+                    <FileUpload 
+                      label={t('صورة المجال', 'Area Image')} 
+                      accept="image/*" 
+                      token={getToken()} 
+                      folder="symbols_academy/areas"
+                      currentUrl={areaForm.image} 
+                      onUploadComplete={(url: string) => setAreaForm({ ...areaForm, image: url })} 
+                    />
                   </div>
                   <div>
                     <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الوصف (عربي)', 'Description (Arabic)')}</label>
@@ -1146,12 +1231,22 @@ export default function AdminDashboard() {
                     <textarea value={areaForm.description_en} onChange={e => setAreaForm({ ...areaForm, description_en: e.target.value })} rows={3}
                       className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
                   </div>
+                  <div>
+                    <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t("ماذا ستتعلم (عربي) - كل عنصر في سطر", "What You'll Learn (Arabic) - One per line")}</label>
+                    <textarea value={areaForm.whatYouWillLearn_ar} onChange={e => setAreaForm({ ...areaForm, whatYouWillLearn_ar: e.target.value })} rows={4} dir="rtl"
+                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} placeholder={t('الأسس النظرية للمجال\nالتطبيقات العملية والحديثة', '...')} />
+                  </div>
+                  <div>
+                    <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t("ماذا ستتعلم (انجليزي) - كل عنصر في سطر", "What You'll Learn (English) - One per line")}</label>
+                    <textarea value={areaForm.whatYouWillLearn_en} onChange={e => setAreaForm({ ...areaForm, whatYouWillLearn_en: e.target.value })} rows={4} dir="ltr"
+                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} placeholder={t('Theoretical foundations\nPractical applications', '...')} />
+                  </div>
                 </FormCard>
               ) : (
                 <TableWrap>
                   <THead cols={['#', t('الاسم', 'Name'), t('الوصف', 'Description'), t('الترتيب', 'Order'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                   <tbody>
-                    {(areasOfStudy as any[]).map((area: any, i: number) => (
+                    {loading ? <TableSkeleton cols={6} /> : (areasOfStudy as any[]).map((area: any, i: number) => (
                       <tr key={i} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                         <td className={`${tdCls} text-[#8B9D8A]`}>{i + 1}</td>
                         <td className={`${tdCls} text-[#062B24] font-medium`}>{t(area.name_ar, area.name_en)}</td>
@@ -1160,13 +1255,14 @@ export default function AdminDashboard() {
                         <td className={tdCls}><StatusBadge status={area.status} /></td>
                         <td className={tdCls}>
                           <div className="flex items-center gap-1.5">
-                            <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => { setEditingArea(area); setAreaForm({ ...area }); setAreaView('form'); }} />
+                            <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => { setEditingArea(area); setAreaForm({ ...area, whatYouWillLearn_ar: Array.isArray(area.whatYouWillLearn_ar) ? area.whatYouWillLearn_ar.join('\n') : '', whatYouWillLearn_en: Array.isArray(area.whatYouWillLearn_en) ? area.whatYouWillLearn_en.join('\n') : '' }); setAreaView('form'); }} />
                             <ActionBtn icon={area.status === 'published' ? EyeOff : Eye} color="#7BBFAD" onClick={() => { updateAreaOfStudy(area.id, { status: area.status === 'published' ? 'draft' : 'published' }); toast.success(t('تم التحديث', 'Updated')); }} />
                             <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteAreaOfStudy(area.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
                           </div>
                         </td>
                       </tr>
                     ))}
+                    {!loading && areasOfStudy.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد مجالات.', 'No areas.')}</td></tr>}
                   </tbody>
                 </TableWrap>
               )}
@@ -1211,7 +1307,7 @@ export default function AdminDashboard() {
                 <TableWrap>
                   <THead cols={['#', t('الاسم', 'Name'), t('السعر', 'Price'), t('المدة (أيام)', 'Duration (days)'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                   <tbody>
-                    {(packages as any[]).map((pkg: any, i: number) => (
+                    {loading ? <TableSkeleton cols={6} /> : (packages as any[]).map((pkg: any, i: number) => (
                       <tr key={i} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                         <td className={`${tdCls} text-[#8B9D8A]`}>{pkg.serialNo || i + 1}</td>
                         <td className={`${tdCls} text-[#062B24] font-medium`}>{t(pkg.name_ar, pkg.name_en)}</td>
@@ -1226,7 +1322,7 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
-                    {packages.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد باقات.', 'No packages.')}</td></tr>}
+                    {!loading && packages.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد باقات.', 'No packages.')}</td></tr>}
                   </tbody>
                 </TableWrap>
               )}
@@ -1239,7 +1335,12 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[#062B24] font-bold text-lg">{t('إدارة الاشتراكات', 'Subscriptions Management')}</h2>
               </div>
-              {subscriptions.length === 0 ? (
+              {loading ? (
+                <TableWrap>
+                  <THead cols={['#', t('المستخدم', 'User'), t('الباقة', 'Package'), t('تاريخ البداية', 'Start'), t('تاريخ الانتهاء', 'End'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
+                  <tbody><TableSkeleton cols={7} /></tbody>
+                </TableWrap>
+              ) : subscriptions.length === 0 ? (
                 <div className="text-center py-20 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)' }}>
                   <CalendarDays size={44} className="text-[#C9A24A] mx-auto mb-3 opacity-40" />
                   <p className="text-[#5A7A70] font-medium mb-1">{t('لا توجد اشتراكات حتى الآن', 'No subscriptions yet')}</p>
@@ -1284,7 +1385,7 @@ export default function AdminDashboard() {
               <TableWrap>
                 <THead cols={['#', t('المستخدم', 'User'), t('المحاضرة', 'Course'), t('المبلغ', 'Amount'), t('المعاملة', 'Transaction'), t('التاريخ', 'Date'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                 <tbody>
-                  {(enrollments as any[]).map((enr: any, i: number) => {
+                  {loading ? <TableSkeleton cols={8} /> : (enrollments as any[]).map((enr: any, i: number) => {
                     const userIdStr = typeof enr.userId === 'object' ? (enr.userId?._id || enr.userId?.id) : enr.userId;
                     const courseIdStr = typeof enr.courseId === 'object' ? (enr.courseId?._id || enr.courseId?.id) : enr.courseId;
                     const u = typeof enr.userId === 'object' && enr.userId?.name ? enr.userId : (users as any[]).find((us: any) => us.id === userIdStr || us._id === userIdStr);
@@ -1304,7 +1405,7 @@ export default function AdminDashboard() {
                       </tr>
                     );
                   })}
-                  {enrollments.length === 0 && <tr><td colSpan={8} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد مدفوعات.', 'No payments.')}</td></tr>}
+                  {!loading && enrollments.length === 0 && <tr><td colSpan={8} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد مدفوعات.', 'No payments.')}</td></tr>}
                 </tbody>
               </TableWrap>
             </motion.div>
@@ -1317,7 +1418,7 @@ export default function AdminDashboard() {
               <TableWrap>
                 <THead cols={['#', t('الاسم', 'Name'), t('البريد', 'Email'), t('الدور', 'Role'), t('الدولة', 'Country'), t('الإجراءات', 'Actions')]} />
                 <tbody>
-                  {(users as any[]).map((user: any, i: number) => (
+                  {loading ? <TableSkeleton cols={6} /> : (users as any[]).map((user: any, i: number) => (
                     <tr key={i} className="hover:bg-[rgba(6,43,36,0.02)]" style={{ borderBottom: '1px solid rgba(6,43,36,0.06)' }}>
                       <td className={`${tdCls} text-[#8B9D8A]`}>{i + 1}</td>
                       <td className={`${tdCls} text-[#062B24] font-medium`}>{user.name}</td>
@@ -1337,6 +1438,7 @@ export default function AdminDashboard() {
                       </td>
                     </tr>
                   ))}
+                  {!loading && users.length === 0 && <tr><td colSpan={6} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا يوجد مستخدمين.', 'No users.')}</td></tr>}
                 </tbody>
               </TableWrap>
             </motion.div>
@@ -1345,11 +1447,11 @@ export default function AdminDashboard() {
           {/* ── ENROLLMENTS ──────────────────────────────────────────────── */}
           {activeTab === 'enrollments' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <h2 className="text-[#062B24] font-bold text-lg mb-6">{t('إدارة التسجيلات', 'Enrollment Management')}</h2>
+              <h2 className="text-[#062B24] font-bold text-lg mb-6">{t('تسجيلات الطلاب', 'Student Enrollments')}</h2>
               <TableWrap>
                 <THead cols={[t('المستخدم', 'User'), t('المحاضرة', 'Lecture'), t('التقدم', 'Progress'), t('المبلغ', 'Amount'), t('طريقة الدفع', 'Payment'), t('الحالة', 'Status'), t('الإجراءات', 'Actions')]} />
                 <tbody>
-                  {(enrollments as any[]).map((enr: any, i: number) => {
+                  {loading ? <TableSkeleton cols={7} /> : (enrollments as any[]).map((enr: any, i: number) => {
                     const userIdStr = typeof enr.userId === 'object' ? (enr.userId?._id || enr.userId?.id) : enr.userId;
                     const courseIdStr = typeof enr.courseId === 'object' ? (enr.courseId?._id || enr.courseId?.id) : enr.courseId;
                     const u = (users as any[]).find((us: any) => us.id === userIdStr || us._id === userIdStr);
@@ -1461,7 +1563,7 @@ export default function AdminDashboard() {
                       </tr>
                     );
                   })}
-                  {enrollments.length === 0 && <tr><td colSpan={7} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد تسجيلات.', 'No enrollments.')}</td></tr>}
+                  {!loading && enrollments.length === 0 && <tr><td colSpan={7} className="px-5 py-10 text-center text-[#5A7A70] text-sm">{t('لا توجد تسجيلات.', 'No enrollments.')}</td></tr>}
                 </tbody>
               </TableWrap>
             </motion.div>

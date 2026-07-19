@@ -46,6 +46,7 @@ const lectureSchema = new mongoose.Schema({
   reviews:           { type: Number, default: 0 },
   thumbnail:         { type: String, default: '' },   // Cloudinary URL
   previewVideo:      { type: String, default: '' },   // Cloudinary URL
+  pdfUrl:            { type: String, default: '' },   // Cloudinary URL
   whatYouLearn_ar:   [{ type: String }],
   whatYouLearn_en:   [{ type: String }],
   requirements_ar:   [{ type: String }],

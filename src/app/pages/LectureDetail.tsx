@@ -213,6 +213,21 @@ export default function LectureDetail() {
                     );
                   })}
 
+                  {lecture.pdfUrl && (
+                    <a
+                      href={lecture.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3.5 rounded-2xl text-sm font-medium text-center flex items-center justify-center gap-2 transition-all mt-4"
+                      style={{ background: 'rgba(201,162,74,0.15)', color: BRAND.gold, border: '1px solid rgba(201,162,74,0.3)' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,162,74,0.25)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,162,74,0.15)'; }}
+                    >
+                      <BookOpen size={15} />
+                      {t('تنزيل المحاضرة (PDF)', 'Download Lecture (PDF)')}
+                    </a>
+                  )}
+
                   <Link
                     to={currentUser ? `/checkout/${lecture.slug}` : "/register"}
                     className="w-full py-4 rounded-2xl text-sm font-semibold text-center block mt-4 transition-all"

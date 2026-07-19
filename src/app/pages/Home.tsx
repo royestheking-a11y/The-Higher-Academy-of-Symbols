@@ -559,7 +559,7 @@ function StudyAreasSection() {
               <Skeleton.Card key={i} theme="light" />
             ))
           ) : (
-            ((areasOfStudy as any[]) || []).slice(0, 8).map((area: any, i: number) => {
+            ((areasOfStudy as any[]) || []).map((area: any, i: number) => {
               const IconComp = AREA_ICONS[area.icon] || Star;
               return (
                 <motion.div

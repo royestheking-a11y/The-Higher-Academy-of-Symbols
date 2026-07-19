@@ -97,6 +97,11 @@ export function AreaDetail() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        {area.image && (
+          <div className="mb-10 rounded-2xl overflow-hidden aspect-[21/9] bg-white border border-[rgba(6,43,36,0.1)] shadow-sm">
+            <img src={area.image} alt={t(area.name_ar, area.name_en)} className="w-full h-full object-cover" />
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="p-8 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.1)' }}>
@@ -118,35 +123,46 @@ export function AreaDetail() {
               </div>
             )}
           </div>
-
-          <div>
-            <div className="p-6 rounded-2xl sticky top-24" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.1)' }}>
-              <h3 className="text-[#062B24] font-semibold mb-4 text-sm">{t('ماذا ستتعلم؟', "What You'll Learn")}</h3>
-              <ul className="space-y-3 text-[#3A5A50] text-xs">
-                {[
-                  t('الأسس النظرية للمجال', 'Theoretical foundations of the field'),
-                  t('التطبيقات العملية والحديثة', 'Practical and modern applications'),
-                  t('المناهج البحثية المتخصصة', 'Specialized research methodologies'),
-                  t('تحليل النصوص والرموز', 'Analyzing texts and symbols'),
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <Star size={12} className="text-[#C9A24A] mt-0.5 shrink-0" fill="#C9A24A" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6">
-                <Link
-                  to="/lectures"
-                  className="w-full py-3 rounded-xl text-sm font-semibold text-center flex items-center justify-center gap-2"
-                  style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 3px 0 #8B6B20' }}
-                >
-                  <BookOpen size={15} />
-                  {t('استكشف المحاضرات', 'Explore Lectures')}
-                </Link>
+          {((isRTL ? area.whatYouWillLearn_ar : area.whatYouWillLearn_en)?.length > 0) ? (
+            <div>
+              <div className="p-6 rounded-2xl sticky top-24" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.1)' }}>
+                <h3 className="text-[#062B24] font-semibold mb-4 text-sm">{t('ماذا ستتعلم؟', "What You'll Learn")}</h3>
+                <ul className="space-y-3 text-[#3A5A50] text-xs">
+                  {(isRTL ? area.whatYouWillLearn_ar : area.whatYouWillLearn_en).map((item: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <Star size={12} className="text-[#C9A24A] mt-0.5 shrink-0" fill="#C9A24A" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6">
+                  <Link
+                    to="/lectures"
+                    className="w-full py-3 rounded-xl text-sm font-semibold text-center flex items-center justify-center gap-2"
+                    style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 3px 0 #8B6B20' }}
+                  >
+                    <BookOpen size={15} />
+                    {t('استكشف المحاضرات', 'Explore Lectures')}
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div>
+              <div className="p-6 rounded-2xl sticky top-24" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.1)' }}>
+                <div className="mt-2">
+                  <Link
+                    to="/lectures"
+                    className="w-full py-3 rounded-xl text-sm font-semibold text-center flex items-center justify-center gap-2"
+                    style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', color: BRAND.deep, boxShadow: '0 3px 0 #8B6B20' }}
+                  >
+                    <BookOpen size={15} />
+                    {t('استكشف المحاضرات', 'Explore Lectures')}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

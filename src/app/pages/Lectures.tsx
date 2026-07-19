@@ -22,22 +22,24 @@ function PhoenixIcon() {
 
 export default function Lectures() {
   const { t, isRTL, fontFamily } = useLanguage();
-  const { lectures, loading } = useData();
+  const { lectures, areasOfStudy, loading } = useData();
   const { currentUser } = useAuth();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [showFilters, setShowFilters] = useState(false);
 
-  const categories = [
-    { value: 'all', label_ar: 'الكل', label_en: 'All' },
-    { value: 'interpretation', label_ar: 'التأويل', label_en: 'Interpretation' },
-    { value: 'semiotics', label_ar: 'السيميائيات', label_en: 'Semiotics' },
-    { value: 'cryptography', label_ar: 'التشفير', label_en: 'Cryptography' },
-    { value: 'shorthand', label_ar: 'الاختزال', label_en: 'Shorthand' },
-    { value: 'semantics', label_ar: 'الدلالة', label_en: 'Semantics' },
-    { value: 'research', label_ar: 'البحث', label_en: 'Research' },
-  ];
+  const categories = useMemo(() => {
+    const cats = [{ value: 'all', label_ar: 'الكل', label_en: 'All' }];
+    if (areasOfStudy) {
+      (areasOfStudy as any[]).forEach((area: any) => {
+        if (area.status === 'published') {
+          cats.push({ value: area.slug, label_ar: area.name_ar, label_en: area.name_en });
+        }
+      });
+    }
+    return cats;
+  }, [areasOfStudy]);
 
   const sortOptions = [
     { value: 'newest', label_ar: 'الأحدث', label_en: 'Newest' },
@@ -47,8 +49,13 @@ export default function Lectures() {
     { value: 'rating', label_ar: 'الأعلى تقييماً', label_en: 'Highest Rated' },
   ];
 
+  const publishedLectures = useMemo(() => [...(lectures as any[])].filter((l: any) => l.status === 'published'), [lectures]);
+  
+  const featured = useMemo(() => publishedLectures.find((l: any) => l.featured), [publishedLectures]);
+  const rest = useMemo(() => publishedLectures.filter((l: any) => !l.featured || l !== featured), [publishedLectures, featured]);
+
   const filtered = useMemo(() => {
-    let result = [...(lectures as any[])].filter((l: any) => l.status === 'published');
+    let result = rest;
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter((l: any) =>
@@ -63,7 +70,7 @@ export default function Lectures() {
     else if (sortBy === 'popular') result.sort((a: any, b: any) => b.enrolled - a.enrolled);
     else if (sortBy === 'rating') result.sort((a: any, b: any) => b.rating - a.rating);
     return result;
-  }, [lectures, search, category, sortBy, t]);
+  }, [rest, search, category, sortBy, t]);
 
   return (
     <div style={{ background: BRAND.ivory, fontFamily, minHeight: '100vh' }}>
@@ -149,6 +156,72 @@ export default function Lectures() {
             </button>
           ))}
         </div>
+
+        {/* Featured Lecture */}
+        {featured && !search && category === 'all' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-10"
+          >
+            <div className="text-[#C9A24A] text-xs uppercase tracking-widest mb-4">{t('محاضرة مميزة', 'Featured Lecture')}</div>
+            <Link
+              to={`/lectures/${featured.slug}`}
+              className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-3xl overflow-hidden group transition-all"
+              style={{ background: 'white', border: '1px solid rgba(6,43,36,0.12)', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(6,43,36,0.15)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
+            >
+              <div className="h-60 md:h-auto relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${BRAND.deep}, ${BRAND.mid})` }}>
+                {featured.thumbnail ? (
+                  <img src={featured.thumbnail} alt={t(featured.title_ar, featured.title_en)} className="w-full h-full object-cover" />
+                ) : (
+                  <>
+                    <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.15} strokeWidth={0.7} tileSize={60} />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-20 scale-150"><PhoenixIcon /></div>
+                  </>
+                )}
+                <div className="absolute top-4 start-4 px-3 py-1 rounded-full text-xs" style={{ background: 'rgba(201,162,74,0.2)', color: '#F0D98A', backdropFilter: 'blur(4px)' }}>
+                  {t(featured.category_ar, featured.category_en) || t('محاضرة', 'Lecture')}
+                </div>
+                <div className="absolute inset-0 flex items-end p-6 bg-gradient-to-t from-[rgba(6,43,36,0.8)] to-transparent">
+                  <span className="text-[#C9A24A] text-xs flex items-center gap-1 font-bold">
+                    <Star size={14} fill="#C9A24A" className="text-[#C9A24A]" /> {t('مميز', 'Featured')}
+                  </span>
+                </div>
+              </div>
+              <div className="p-8 flex flex-col justify-center relative">
+                <div className="absolute top-0 end-0 opacity-5 pointer-events-none transform -translate-y-1/2 translate-x-1/4">
+                  <BookOpen size={120} />
+                </div>
+                <div className="flex items-center gap-4 mb-4 text-[#8B9D8A] text-sm">
+                  <div className="flex items-center gap-1.5"><Clock size={14} /> {featured.duration}</div>
+                  <div className="flex items-center gap-1.5"><GraduationCap size={14} /> {featured.lessonsCount} {t('دروس', 'lessons')}</div>
+                </div>
+                <h3 className="text-[#062B24] font-bold mb-3 group-hover:text-[#C9A24A] transition-colors" style={{ fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)' }}>
+                  {t(featured.title_ar, featured.title_en)}
+                </h3>
+                <p className="text-[#5A7A70] text-sm leading-relaxed mb-6 line-clamp-2">
+                  {t(featured.description_ar, featured.description_en)}
+                </p>
+                <div className="flex items-center justify-between mt-auto">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(201,162,74,0.1)' }}>
+                      <Users size={18} className="text-[#C9A24A]" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-[#8B9D8A]">{t('المحاضر', 'Lecturer')}</div>
+                      <div className="text-sm font-semibold text-[#062B24]">{t(featured.lecturer_ar, featured.lecturer_en) || t('الأكاديمية', 'Academy')}</div>
+                    </div>
+                  </div>
+                  <div className="text-[#C9A24A] font-bold text-lg">
+                    {featured.price > 0 ? `$${featured.price}` : t('مجاني', 'Free')}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        )}
 
         {/* Results count */}
         <div className="flex items-center justify-between mb-6">
