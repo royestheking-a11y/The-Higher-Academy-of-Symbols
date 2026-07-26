@@ -171,20 +171,18 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // Process sequentially to completely bypass Render's strict HTTP/2 limit,
-    // but run it in the background so the UI renders INSTANTLY!
+    // Process sequentially to completely bypass Render's strict HTTP/2 limit
     const processInBackground = async () => {
       for (const task of fetchTasks) {
         await task();
         // 50ms micro-pause to let the browser breathe and prevent stream clustering
         await new Promise(r => setTimeout(r, 50));
       }
+      // Once all data has successfully streamed in, remove the beautiful Skeletons
+      setLoading(false);
     };
     
     processInBackground();
-
-    // Unlock the UI instantly! The data will progressively stream into the tables.
-    setLoading(false);
   }, [currentUser]);
 
   useEffect(() => {
