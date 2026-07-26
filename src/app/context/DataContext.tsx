@@ -171,12 +171,19 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // Process in chunks of 4 to balance blazing fast speed vs Render HTTP/2 limits
-    for (let i = 0; i < fetchTasks.length; i += 4) {
-      const chunk = fetchTasks.slice(i, i + 4);
-      await Promise.allSettled(chunk.map(task => task()));
-    }
+    // Process sequentially to completely bypass Render's strict HTTP/2 limit,
+    // but run it in the background so the UI renders INSTANTLY!
+    const processInBackground = async () => {
+      for (const task of fetchTasks) {
+        await task();
+        // 50ms micro-pause to let the browser breathe and prevent stream clustering
+        await new Promise(r => setTimeout(r, 50));
+      }
+    };
+    
+    processInBackground();
 
+    // Unlock the UI instantly! The data will progressively stream into the tables.
     setLoading(false);
   }, [currentUser]);
 
