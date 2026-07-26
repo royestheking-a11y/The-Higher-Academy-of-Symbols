@@ -2,17 +2,17 @@ import mongoose from 'mongoose';
 
 const libraryResourceSchema = new mongoose.Schema({
   title_ar: { type: String, required: true },
-  title_en: { type: String, required: true },
+  title_en: { type: String, required: false },
   slug: { type: String, required: true, unique: true },
   description_ar: { type: String, required: true },
-  description_en: { type: String, required: true },
+  description_en: { type: String, required: false },
   category: { type: String, required: true },
   author: { type: String, required: true },
   fileUrl: { type: String, required: true },
   thumbnail: { type: String },
   isDownloadable: { type: Boolean, default: false },
   isFeatured: { type: Boolean, default: false },
-  status: { type: String, enum: ['published', 'draft', 'archived'], default: 'published' },
+  status: { type: String, enum: ['published', 'draft', 'archived'], default: 'published' , index: true },
   downloadSize: { type: String }, // e.g., '2.5 MB'
   fileType: { type: String, default: 'PDF' },
   views: { type: Number, default: () => Math.floor(Math.random() * 500) + 1000 },

@@ -18,7 +18,7 @@ const uploadToCloudinary = (buffer, options) => {
 };
 
 // POST /api/upload — universal media upload
-router.post('/', protect, upload.single('file'), async (req, res) => {
+router.post('/', protect, upload.single('file'), async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ message: 'No file provided' });
 

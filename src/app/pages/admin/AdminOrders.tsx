@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useConfirm } from '../../hooks/useConfirm';
 import { ShoppingCart, Eye, PackageCheck, X, Save, Trash2, Box, Truck } from 'lucide-react';
 import { GeometricBackground } from '../../components/GeometricBackground';
 import { useLanguage } from '../../context/LanguageContext';
@@ -8,6 +9,7 @@ import { toast } from 'sonner';
 let cachedOrders: any[] | null = null;
 
 export default function AdminOrders() {
+  const { confirm: confirmAction, ConfirmDialog } = useConfirm();
   const { t, isRTL } = useLanguage();
   const { token } = useAuth();
   const [orders, setOrders] = useState<any[]>(cachedOrders || []);
@@ -78,22 +80,23 @@ export default function AdminOrders() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t('هل أنت متأكد من حذف هذا الطلب نهائياً؟', 'Are you sure you want to permanently delete this order?'))) return;
-    try {
-      const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
-      const res = await fetch(`${baseUrl}/api/orders/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        toast.success(t('تم حذف الطلب', 'Order deleted'));
-        setOrders(orders.filter(o => o._id !== id));
-      } else {
-        toast.error(t('فشل في حذف الطلب', 'Failed to delete order'));
+    confirmAction('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد من حذف هذا الطلب نهائياً؟', 'Are you sure you want to permanently delete this order?', async () => {
+      try {
+        const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+        const res = await fetch(`${baseUrl}/api/orders/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          toast.success(t('تم حذف الطلب', 'Order deleted'));
+          setOrders(orders.filter(o => o._id !== id));
+        } else {
+          toast.error(t('فشل في حذف الطلب', 'Failed to delete order'));
+        }
+      } catch (err) {
+        toast.error(t('حدث خطأ', 'Error occurred'));
       }
-    } catch (err) {
-      toast.error(t('حدث خطأ', 'Error occurred'));
-    }
+    });
   };
 
   return (
@@ -273,6 +276,7 @@ className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all f
           </div>
         </div>
       )}
+      <ConfirmDialog />
     </div>
   );
 }

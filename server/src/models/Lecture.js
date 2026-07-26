@@ -22,7 +22,7 @@ const faqSchema = new mongoose.Schema({
 
 const lectureSchema = new mongoose.Schema({
   title_ar:          { type: String, required: true },
-  title_en:          { type: String, required: true },
+  title_en:          { type: String, required: false },
   slug:              { type: String, required: true, unique: true },
   description_ar:    { type: String },
   description_en:    { type: String },
@@ -40,7 +40,7 @@ const lectureSchema = new mongoose.Schema({
   language_en:       { type: String },
   certificate:       { type: Boolean, default: false },
   featured:          { type: Boolean, default: false },
-  status:            { type: String, enum: ['published', 'draft', 'archived'], default: 'draft' },
+  status:            { type: String, enum: ['published', 'draft', 'archived'], default: 'draft' , index: true },
   enrolled:          { type: Number, default: 0 },
   rating:            { type: Number, default: 0 },
   reviews:           { type: Number, default: 0 },

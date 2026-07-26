@@ -80,6 +80,10 @@ export default function StudentDashboard() {
   };
 
   const handleProfileSave = async () => {
+    if (!profileForm.name.trim() || !profileForm.nameAr.trim()) {
+      toast.error(t('يرجى كتابة الاسم باللغتين', 'Please fill in your name in both languages'));
+      return;
+    }
     const result = await updateProfile(profileForm);
     if (result.success) {
       toast.success(t('تم تحديث الملف الشخصي بنجاح', 'Profile updated successfully'));

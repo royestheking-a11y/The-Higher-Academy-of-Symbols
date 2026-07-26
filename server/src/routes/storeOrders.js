@@ -10,7 +10,7 @@ const generateOrderNumber = () => {
 };
 
 // CREATE new order (Public/Student)
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   try {
     const { customerDetails, items, totalAmount } = req.body;
     
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
 });
 
 // GET user orders (Protected)
-router.get('/myorders', protect, async (req, res) => {
+router.get('/myorders', protect, async (req, res, next) => {
   try {
     const orders = await StoreOrder.find({ userId: req.user.id })
       .populate('items.bookId')
@@ -55,7 +55,7 @@ router.get('/myorders', protect, async (req, res) => {
 });
 
 // GET all orders (Admin)
-router.get('/', protect, admin, async (req, res) => {
+router.get('/', protect, admin, async (req, res, next) => {
   try {
     const orders = await StoreOrder.find().populate('userId', 'name email').sort({ createdAt: -1 });
     res.json(orders);
@@ -65,7 +65,7 @@ router.get('/', protect, admin, async (req, res) => {
 });
 
 // GET single order by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const order = await StoreOrder.findById(req.params.id).populate('userId', 'name email').populate('items.bookId');
     if (!order) return res.status(404).json({ message: 'Order not found' });
@@ -76,7 +76,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE order status (Admin)
-router.put('/:id/status', protect, admin, async (req, res) => {
+router.put('/:id/status', protect, admin, async (req, res, next) => {
   try {
     const { paymentStatus, shippingStatus, trackingNumber } = req.body;
     const order = await StoreOrder.findById(req.params.id);
@@ -95,7 +95,7 @@ router.put('/:id/status', protect, admin, async (req, res) => {
 });
 
 // DELETE order (Admin)
-router.delete('/:id', protect, admin, async (req, res) => {
+router.delete('/:id', protect, admin, async (req, res, next) => {
   try {
     const order = await StoreOrder.findByIdAndDelete(req.params.id);
     if (!order) return res.status(404).json({ message: 'Order not found' });

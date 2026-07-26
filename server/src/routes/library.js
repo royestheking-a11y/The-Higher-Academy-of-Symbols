@@ -6,7 +6,7 @@ import { protect, adminOnly as admin } from '../middleware/auth.js';
 const router = express.Router();
 
 // GET all published resources (Public/Students)
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const { category, isFeatured, limit } = req.query;
     const query = { status: 'published' };
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET all resources (Admin only)
-router.get('/admin', protect, admin, async (req, res) => {
+router.get('/admin', protect, admin, async (req, res, next) => {
   try {
     const resources = await LibraryResource.find().sort({ createdAt: -1 });
     res.json(resources);
@@ -35,7 +35,7 @@ router.get('/admin', protect, admin, async (req, res) => {
 });
 
 // GET single resource
-router.get('/:slug', async (req, res) => {
+router.get('/:slug', async (req, res, next) => {
   try {
     const resource = await LibraryResource.findOne({ slug: req.params.slug, status: 'published' });
     if (!resource) return res.status(404).json({ message: 'Resource not found' });
@@ -51,7 +51,7 @@ router.get('/:slug', async (req, res) => {
 });
 
 // CREATE resource (Admin)
-router.post('/', protect, admin, async (req, res) => {
+router.post('/', protect, admin, async (req, res, next) => {
   try {
     const resource = new LibraryResource(req.body);
     const createdResource = await resource.save();
@@ -62,9 +62,9 @@ router.post('/', protect, admin, async (req, res) => {
 });
 
 // UPDATE resource (Admin)
-router.put('/:id', protect, admin, async (req, res) => {
+router.put('/:id', protect, admin, async (req, res, next) => {
   try {
-    const resource = await LibraryResource.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const resource = await LibraryResource.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!resource) return res.status(404).json({ message: 'Resource not found' });
     res.json(resource);
   } catch (error) {
@@ -73,7 +73,7 @@ router.put('/:id', protect, admin, async (req, res) => {
 });
 
 // DELETE resource (Admin)
-router.delete('/:id', protect, admin, async (req, res) => {
+router.delete('/:id', protect, admin, async (req, res, next) => {
   try {
     const resource = await LibraryResource.findByIdAndDelete(req.params.id);
     if (!resource) return res.status(404).json({ message: 'Resource not found' });
@@ -84,7 +84,7 @@ router.delete('/:id', protect, admin, async (req, res) => {
 });
 
 // PURCHASE library membership
-router.post('/purchase-membership', protect, async (req, res) => {
+router.post('/purchase-membership', protect, async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: 'User not found' });

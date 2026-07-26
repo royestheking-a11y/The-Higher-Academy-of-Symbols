@@ -18,6 +18,7 @@ import { useData } from '../context/DataContext';
 import AdminLibrary from './admin/AdminLibrary';
 import AdminBooks from './admin/AdminBooks';
 import AdminOrders from './admin/AdminOrders';
+import AdminAnalytics from './admin/AdminAnalytics';
 import { toast } from 'sonner';
 import { GeometricBackground } from '../components/GeometricBackground';
 import { Skeleton } from '../components/Skeleton';
@@ -349,7 +350,10 @@ export default function AdminDashboard() {
   const navGroups = [
     {
       label_ar: 'الرئيسية', label_en: 'Main',
-      items: [{ id: 'overview', icon: LayoutDashboard, label_ar: 'نظرة عامة', label_en: 'Overview' }],
+      items: [
+        { id: 'overview', icon: LayoutDashboard, label_ar: 'نظرة عامة', label_en: 'Overview' },
+        { id: 'analytics', icon: BarChart3, label_ar: 'التحليلات', label_en: 'Analytics' },
+      ],
     },
     {
       label_ar: 'إدارة الكادر', label_en: 'Staff',
@@ -400,19 +404,19 @@ export default function AdminDashboard() {
   const allNavItems = navGroups.flatMap(g => g.items);
 
   const overviewStats = [
-    { icon: Users,          label_ar: 'إجمالي المستخدمين', label_en: 'Total Users',   value: users.length,        color: '#C9A24A', bg: 'rgba(201,162,74,0.1)' },
-    { icon: BookOpen,       label_ar: 'المحاضرات',          label_en: 'Lectures',       value: lectures.length,     color: '#7BBFAD', bg: 'rgba(123,191,173,0.1)' },
-    { icon: Newspaper,      label_ar: 'المقالات',           label_en: 'Articles',       value: articles.length,     color: '#D8B75B', bg: 'rgba(216,183,91,0.1)' },
-    { icon: CreditCard,     label_ar: 'الإيرادات',          label_en: 'Revenue',        value: `$${(enrollments as any[]).reduce((s: number, e: any) => s + (e.amount || 0), 0)}`, color: '#4A8B7A', bg: 'rgba(74,139,122,0.1)' },
-    { icon: GraduationCap,  label_ar: 'تسجيلات الطلاب',          label_en: 'Enrollments',    value: enrollments.length,  color: '#C9A24A', bg: 'rgba(201,162,74,0.1)' },
-    { icon: MessageSquare,  label_ar: 'رسائل جديدة',        label_en: 'New Messages',   value: (contactMessages as any[]).filter((m: any) => m.status === 'new').length, color: '#F0D98A', bg: 'rgba(240,217,138,0.1)' },
+    { icon: Users,          label_ar: 'إجمالي المستخدمين', label_en: 'Total Users',   value: users.length,        color: '#C9A24A', bg: 'linear-gradient(135deg, rgba(201,162,74,0.15) 0%, rgba(201,162,74,0.05) 100%)' },
+    { icon: BookOpen,       label_ar: 'المحاضرات',          label_en: 'Lectures',       value: lectures.length,     color: '#4A8B7A', bg: 'linear-gradient(135deg, rgba(74,139,122,0.15) 0%, rgba(74,139,122,0.05) 100%)' },
+    { icon: Newspaper,      label_ar: 'المقالات',           label_en: 'Articles',       value: articles.length,     color: '#D8B75B', bg: 'linear-gradient(135deg, rgba(216,183,91,0.15) 0%, rgba(216,183,91,0.05) 100%)' },
+    { icon: CreditCard,     label_ar: 'الإيرادات',          label_en: 'Revenue',        value: `$${(enrollments as any[]).reduce((s: number, e: any) => s + (e.amount || 0), 0)}`, color: '#3A5A50', bg: 'linear-gradient(135deg, rgba(58,90,80,0.15) 0%, rgba(58,90,80,0.05) 100%)' },
+    { icon: GraduationCap,  label_ar: 'تسجيلات الطلاب',          label_en: 'Enrollments',    value: enrollments.length,  color: '#C9A24A', bg: 'linear-gradient(135deg, rgba(201,162,74,0.15) 0%, rgba(201,162,74,0.05) 100%)' },
+    { icon: MessageSquare,  label_ar: 'رسائل جديدة',        label_en: 'New Messages',   value: (contactMessages as any[]).filter((m: any) => m.status === 'new').length, color: '#F0D98A', bg: 'linear-gradient(135deg, rgba(240,217,138,0.2) 0%, rgba(240,217,138,0.05) 100%)' },
   ];
 
 
   // ── Save helpers ─────────────────────────────────────────────────────────
   const saveArticle = (status: string) => {
     const form = { ...articleForm, status, tags: typeof articleForm.tags === 'string' ? articleForm.tags.split(',').map((s: string) => s.trim()).filter(Boolean) : articleForm.tags };
-    if (!form.slug && form.title_en) form.slug = form.title_en.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    if (!form.slug && (form.title_en || form.title_ar)) form.slug = (form.title_en || form.title_ar).trim().replace(/\s+/g, '-').replace(/[^\w\-\u0621-\u064A\u0660-\u0669]/g, '');
     if (editingArticle) { updateArticle(editingArticle.id, form); toast.success(t('تم تحديث المقالة', 'Article updated')); }
     else { addArticle({ ...form, image: null }); toast.success(t('تم نشر المقالة', status === 'published' ? 'Article published' : 'Article saved as draft')); }
     setArticleView('list'); setEditingArticle(null); setArticleForm(defaultArticleForm);
@@ -479,13 +483,13 @@ export default function AdminDashboard() {
             <img src="/symbolacademy.png" alt="The Higher Academy of Symbols and Code" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
           <div>
-            <div className="text-[#F0D98A] text-xs font-bold">{t('الأكاديمية العليا للرموز والشيفرة', 'The Higher Academy of Symbols and Code')}</div>
-            <div className="text-white/80 text-[10px]">{t('لوحة الإدارة', 'Admin Panel')}</div>
+            <div className="text-[#F0D98A] text-[11px] font-bold leading-snug line-clamp-2">{t('الأكاديمية العليا للرموز والشيفرة', 'The Higher Academy of Symbols and Code')}</div>
+            <div className="text-white/80 text-[10px] mt-0.5">{t('لوحة الإدارة', 'Admin Panel')}</div>
           </div>
         </Link>
         <div className="flex items-center gap-3 p-3 rounded-2xl" style={{ background: 'rgba(201,162,74,0.08)', border: '1px solid rgba(201,162,74,0.2)' }}>
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #C9A24A, #D8B75B)', boxShadow: '0 2px 0 #8B6B20' }}>
-            <Shield size={16} color="#062B24" />
+            <Shield size={18} color="#062B24" />
           </div>
           <div className="min-w-0">
             <div className="text-[#F0D98A] text-xs font-semibold">{t('المشرف العام', 'Super Admin')}</div>
@@ -496,8 +500,8 @@ export default function AdminDashboard() {
 
       <div className="p-3 flex-1 overflow-y-auto custom-scrollbar min-h-0">
         {navGroups.map(group => (
-          <div key={group.label_en} className="mb-3">
-            <div className="px-3 mb-1 text-white/50 text-[9px] font-bold uppercase tracking-widest">
+          <div key={group.label_en} className="mb-4">
+            <div className="px-3 mb-2 text-white/50 text-xs font-bold uppercase tracking-widest">
               {t(group.label_ar, group.label_en)}
             </div>
             {group.items.map(item => {
@@ -506,11 +510,11 @@ export default function AdminDashboard() {
               const isActive = activeTab === item.id;
               return (
                 <button key={item.id} onClick={() => { navigate(`/admin/${item.id}`); setSidebarOpen(false); }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs mb-0.5 transition-all text-start ${isActive ? 'text-[#F0D98A] font-bold' : 'text-white/80 hover:text-white'}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm mb-1 transition-all text-start ${isActive ? 'text-[#F0D98A] font-bold' : 'text-white/80 hover:text-white'}`}
                   style={{ background: isActive ? 'rgba(201,162,74,0.15)' : 'transparent' }}>
-                  <IconComp size={13} className={isActive ? 'text-[#C9A24A]' : ''} />
+                  <IconComp size={18} className={isActive ? 'text-[#C9A24A]' : ''} />
                   <span className="flex-1">{t(item.label_ar, item.label_en)}</span>
-                  {newMsgCount > 0 && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold" style={{ background: '#C9A24A', color: BRAND.deep }}>{newMsgCount}</span>}
+                  {newMsgCount > 0 && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: '#C9A24A', color: BRAND.deep }}>{newMsgCount}</span>}
                 </button>
               );
             })}
@@ -519,11 +523,11 @@ export default function AdminDashboard() {
       </div>
 
       <div className="p-3" style={{ borderTop: '1px solid rgba(201,162,74,0.15)' }}>
-        <Link to="/" className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-white/80 hover:text-white transition-all">
-          <Home size={13} /> {t('العودة للموقع', 'Back to Site')}
+        <Link to="/" className="w-full flex items-center gap-3.5 px-3 py-3 rounded-xl text-base font-medium text-white/80 hover:text-white transition-all">
+          <Home size={20} /> {t('العودة للموقع', 'Back to Site')}
         </Link>
-        <button onClick={handleLogout} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-white/80 hover:text-white transition-all text-start">
-          <LogOut size={13} /> {t('تسجيل الخروج', 'Logout')}
+        <button onClick={handleLogout} className="w-full flex items-center gap-3.5 px-3 py-3 rounded-xl text-base text-[#FF5252] hover:text-[#FF7676] hover:bg-[#FF5252]/10 transition-all text-start font-bold mt-1">
+          <LogOut size={20} /> {t('تسجيل الخروج', 'Logout')}
         </button>
       </div>
       </div>
@@ -533,7 +537,14 @@ export default function AdminDashboard() {
   const currentNavItem = allNavItems.find(i => i.id === activeTab);
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#F0EDE5', fontFamily }} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen flex relative bg-slate-50" style={{ fontFamily }} dir={isRTL ? 'rtl' : 'ltr'}>
+
+      {/* Dynamic Glassmorphism Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full opacity-40 blur-[120px]" style={{ background: '#C9A24A' }}></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] rounded-full opacity-40 blur-[120px]" style={{ background: '#4A8B7A' }}></div>
+        <div className="absolute top-[30%] left-[50%] w-[30vw] h-[30vw] rounded-full opacity-30 blur-[100px]" style={{ background: '#B87333' }}></div>
+      </div>
 
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-56 shrink-0 h-screen sticky top-0 overflow-hidden"
@@ -658,7 +669,7 @@ export default function AdminDashboard() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 p-5 lg:p-8 overflow-auto">
+        <div className="flex-1 p-5 lg:p-8 overflow-auto relative z-10">
 
           {/* ── OVERVIEW ─────────────────────────────────────────────────── */}
           {activeTab === 'overview' && (
@@ -678,15 +689,25 @@ export default function AdminDashboard() {
                   const IconComp = s.icon;
                   return (
                     <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
-                      className="p-5 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: s.bg }}>
-                          <IconComp size={18} style={{ color: s.color }} />
+                      className="p-6 rounded-[1.5rem] relative overflow-hidden group" style={{ background: 'rgba(255, 255, 255, 0.45)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.7)', borderTop: '1px solid rgba(255,255,255,0.9)', boxShadow: '0 8px 32px rgba(0,0,0,0.05)' }}>
+                      
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center relative transition-transform group-hover:scale-105">
+                          <div className="absolute inset-0 rounded-2xl" style={{ background: s.bg }}></div>
+                          <IconComp size={22} style={{ color: s.color }} className="relative z-10" />
                         </div>
-                        <TrendingUp size={13} className="text-[#8B9D8A]" />
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full shadow-sm" style={{ background: 'rgba(255,255,255,0.6)' }}>
+                          <TrendingUp size={13} style={{ color: s.color }} />
+                          <span className="text-[11px] font-bold" style={{ color: s.color }}>+12%</span>
+                        </div>
                       </div>
-                      <div className="text-[#062B24] font-bold text-2xl">{s.value}</div>
-                      <div className="text-[#8B9D8A] text-xs mt-0.5">{t(s.label_ar, s.label_en)}</div>
+                      
+                      <div>
+                        <div className="text-[#8B9D8A] text-xs font-semibold mb-1">{t(s.label_ar, s.label_en)}</div>
+                        <div className="text-[#062B24] font-black text-3xl">{s.value}</div>
+                      </div>
+                      
+                      <div className="absolute bottom-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: s.color }}></div>
                     </motion.div>
                   );
                 })}
@@ -698,21 +719,22 @@ export default function AdminDashboard() {
                     <Skeleton.Base key={i} theme="light" className="h-16 w-full rounded-2xl" />
                   ))
                 ) : [
-                  { label_ar: 'المشرفون', label_en: 'Supervisors', val: supervisors.length, icon: UserCheck },
-                  { label_ar: 'الأساتذة',  label_en: 'Teachers',    val: teachers.length,    icon: GraduationCap },
-                  { label_ar: 'الباقات',   label_en: 'Packages',    val: packages.length,    icon: Package },
-                  { label_ar: 'مجالات الدراسة', label_en: 'Study Areas', val: areasOfStudy.length, icon: Compass },
+                  { label_ar: 'المشرفون', label_en: 'Supervisors', val: supervisors.length, icon: UserCheck, color: '#C9A24A', bg: 'rgba(201,162,74,0.1)' },
+                  { label_ar: 'الأساتذة',  label_en: 'Teachers',    val: teachers.length,    icon: GraduationCap, color: '#4A8B7A', bg: 'rgba(74,139,122,0.1)' },
+                  { label_ar: 'الباقات',   label_en: 'Packages',    val: packages.length,    icon: Package, color: '#D8B75B', bg: 'rgba(216,183,91,0.1)' },
+                  { label_ar: 'مجالات الدراسة', label_en: 'Study Areas', val: areasOfStudy.length, icon: Compass, color: '#3A5A50', bg: 'rgba(58,90,80,0.1)' },
                 ].map((item, i) => {
                   const IconComp = item.icon;
                   return (
-                    <div key={i} className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)' }}>
-                      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(201,162,74,0.1)' }}>
-                        <IconComp size={16} className="text-[#C9A24A]" />
+                    <div key={i} className="flex items-center gap-4 p-5 rounded-2xl relative overflow-hidden group" style={{ background: 'rgba(255, 255, 255, 0.45)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.7)', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 shadow-sm" style={{ background: 'rgba(255,255,255,0.8)' }}>
+                        <IconComp size={20} style={{ color: item.color }} />
                       </div>
-                      <div>
-                        <div className="text-[#062B24] font-bold text-lg">{item.val}</div>
-                        <div className="text-[#8B9D8A] text-xs">{t(item.label_ar, item.label_en)}</div>
+                      <div className="relative z-10">
+                        <div className="text-[#062B24] font-bold text-xl leading-none mb-1">{item.val}</div>
+                        <div className="text-[#8B9D8A] text-xs font-medium">{t(item.label_ar, item.label_en)}</div>
                       </div>
+                      <div className="absolute -right-4 -top-4 w-16 h-16 rounded-full opacity-[0.03] transition-transform group-hover:scale-150" style={{ background: item.color }}></div>
                     </div>
                   );
                 })}
@@ -753,6 +775,10 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
+          {/* ── ANALYTICS ────────────────────────────────────────────────── */}
+          {activeTab === 'analytics' && <AdminAnalytics />}
+
+
           {/* ── SUPERVISORS ──────────────────────────────────────────────── */}
           {activeTab === 'supervisors' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -774,12 +800,10 @@ export default function AdminDashboard() {
                 <FormCard title={editingSup ? t('تعديل المشرف', 'Edit Supervisor') : t('مشرف جديد', 'New Supervisor')}
                   onClose={() => { setSupView('list'); setEditingSup(null); }} onSave={saveSupervisor}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField label={t('الاسم (انجليزي)', 'Name (English)')} value={supForm.name} onChange={(v: string) => setSupForm({ ...supForm, name: v })} />
                     <InputField label={t('الاسم (عربي)', 'Name (Arabic)')} value={supForm.name_ar} onChange={(v: string) => setSupForm({ ...supForm, name_ar: v })} dir="rtl" />
                     <InputField label={t('البريد الإلكتروني', 'Email')} value={supForm.email} onChange={(v: string) => setSupForm({ ...supForm, email: v })} type="email" />
                     <InputField label={t('رقم الهاتف', 'Phone')} value={supForm.phone} onChange={(v: string) => setSupForm({ ...supForm, phone: v })} />
                     <InputField label={t('التخصص (عربي)', 'Specialty (Arabic)')} value={supForm.specialty_ar} onChange={(v: string) => setSupForm({ ...supForm, specialty_ar: v })} dir="rtl" />
-                    <InputField label={t('التخصص (انجليزي)', 'Specialty (English)')} value={supForm.specialty_en} onChange={(v: string) => setSupForm({ ...supForm, specialty_en: v })} />
                   </div>
                   <div>
                     <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الحالة', 'Status')}</label>
@@ -836,22 +860,15 @@ export default function AdminDashboard() {
                 <FormCard title={editingTeacher ? t('تعديل الأستاذ', 'Edit Teacher') : t('أستاذ جديد', 'New Teacher')}
                   onClose={() => { setTeacherView('list'); setEditingTeacher(null); }} onSave={saveTeacher}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField label={t('الاسم (انجليزي)', 'Name (English)')} value={teacherForm.name} onChange={(v: string) => setTeacherForm({ ...teacherForm, name: v })} />
                     <InputField label={t('الاسم (عربي)', 'Name (Arabic)')} value={teacherForm.name_ar} onChange={(v: string) => setTeacherForm({ ...teacherForm, name_ar: v })} dir="rtl" />
                     <InputField label={t('البريد الإلكتروني', 'Email')} value={teacherForm.email} onChange={(v: string) => setTeacherForm({ ...teacherForm, email: v })} type="email" />
                     <InputField label={t('رقم الهاتف', 'Phone')} value={teacherForm.phone} onChange={(v: string) => setTeacherForm({ ...teacherForm, phone: v })} />
                     <InputField label={t('التخصص (عربي)', 'Specialty (Arabic)')} value={teacherForm.specialty_ar} onChange={(v: string) => setTeacherForm({ ...teacherForm, specialty_ar: v })} dir="rtl" />
-                    <InputField label={t('التخصص (انجليزي)', 'Specialty (English)')} value={teacherForm.specialty_en} onChange={(v: string) => setTeacherForm({ ...teacherForm, specialty_en: v })} />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('السيرة (عربي)', 'Bio (Arabic)')}</label>
                       <textarea value={teacherForm.bio_ar} onChange={e => setTeacherForm({ ...teacherForm, bio_ar: e.target.value })} rows={3} dir="rtl"
-                        className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
-                    </div>
-                    <div>
-                      <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('السيرة (انجليزي)', 'Bio (English)')}</label>
-                      <textarea value={teacherForm.bio_en} onChange={e => setTeacherForm({ ...teacherForm, bio_en: e.target.value })} rows={3}
                         className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
                     </div>
                   </div>
@@ -901,29 +918,19 @@ export default function AdminDashboard() {
                   onClose={() => { setLectureView('list'); setEditingLecture(null); }} onSave={saveLecture}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField label={t('العنوان (عربي) *', 'Title (Arabic) *')} value={lectureForm.title_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, title_ar: v })} dir="rtl" />
-                    <InputField label={t('العنوان (انجليزي) *', 'Title (English) *')} value={lectureForm.title_en} onChange={(v: string) => setLectureForm({ ...lectureForm, title_en: v })} />
                     <InputField label={t('المعرف (Slug)', 'Slug')} value={lectureForm.slug} onChange={(v: string) => setLectureForm({ ...lectureForm, slug: v })} />
                     <InputField label={t('السعر ($)', 'Price ($)')} value={String(lectureForm.price)} onChange={(v: string) => setLectureForm({ ...lectureForm, price: Number(v) })} type="number" />
                     <InputField label={t('المحاضر (عربي)', 'Lecturer (Arabic)')} value={lectureForm.lecturer_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, lecturer_ar: v })} dir="rtl" />
-                    <InputField label={t('المحاضر (انجليزي)', 'Lecturer (English)')} value={lectureForm.lecturer_en} onChange={(v: string) => setLectureForm({ ...lectureForm, lecturer_en: v })} />
                     <InputField label={t('التصنيف المعرف', 'Category Slug')} value={lectureForm.category} onChange={(v: string) => setLectureForm({ ...lectureForm, category: v })} />
                     <InputField label={t('التصنيف (عربي)', 'Category (Arabic)')} value={lectureForm.category_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, category_ar: v })} dir="rtl" />
-                    <InputField label={t('التصنيف (انجليزي)', 'Category (English)')} value={lectureForm.category_en} onChange={(v: string) => setLectureForm({ ...lectureForm, category_en: v })} />
                     <InputField label={t('اللغة (عربي)', 'Language (Arabic)')} value={lectureForm.language_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, language_ar: v })} dir="rtl" />
-                    <InputField label={t('اللغة (انجليزي)', 'Language (English)')} value={lectureForm.language_en} onChange={(v: string) => setLectureForm({ ...lectureForm, language_en: v })} />
                     <InputField label={t('المستوى (عربي)', 'Level (Arabic)')} value={lectureForm.level_ar} onChange={(v: string) => setLectureForm({ ...lectureForm, level_ar: v })} dir="rtl" />
-                    <InputField label={t('المستوى (انجليزي)', 'Level (English)')} value={lectureForm.level_en} onChange={(v: string) => setLectureForm({ ...lectureForm, level_en: v })} />
                     <InputField label={t('عدد الدروس', 'Lessons Count')} value={String(lectureForm.lessonsCount)} onChange={(v: string) => setLectureForm({ ...lectureForm, lessonsCount: Number(v) })} type="number" />
                     <InputField label={t('المدة (مثلاً: 20 ساعة / 10 جلسات)', 'Duration (e.g. 20h / 10 sessions)')} value={lectureForm.duration} onChange={(v: string) => setLectureForm({ ...lectureForm, duration: v })} />
                   </div>
                   <div>
                     <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الوصف (عربي)', 'Description (Arabic)')}</label>
                     <textarea value={lectureForm.description_ar} onChange={e => setLectureForm({ ...lectureForm, description_ar: e.target.value })} rows={3} dir="rtl"
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
-                  </div>
-                  <div>
-                    <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الوصف (انجليزي)', 'Description (English)')}</label>
-                    <textarea value={lectureForm.description_en} onChange={e => setLectureForm({ ...lectureForm, description_en: e.target.value })} rows={3}
                       className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1054,7 +1061,6 @@ export default function AdminDashboard() {
                         <h3 className="text-[#062B24] font-semibold text-sm border-b border-[rgba(6,43,36,0.08)] pb-3">{t('معلومات المقالة', 'Article Information')}</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <InputField label={t('العنوان (عربي) *', 'Title (Arabic) *')} value={articleForm.title_ar} onChange={(v: string) => setArticleForm({ ...articleForm, title_ar: v })} dir="rtl" />
-                          <InputField label={t('العنوان (انجليزي) *', 'Title (English) *')} value={articleForm.title_en} onChange={(v: string) => setArticleForm({ ...articleForm, title_en: v })} />
                           <InputField label={t('المعرف (Slug)', 'Slug')} value={articleForm.slug} onChange={(v: string) => setArticleForm({ ...articleForm, slug: v })}  />
                           <div>
                             <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('النوع', 'Type')}</label>
@@ -1067,19 +1073,12 @@ export default function AdminDashboard() {
                             </select>
                           </div>
                           <InputField label={t('الكاتب (عربي)', 'Author (Arabic)')} value={articleForm.author_ar} onChange={(v: string) => setArticleForm({ ...articleForm, author_ar: v })} dir="rtl" />
-                          <InputField label={t('الكاتب (انجليزي)', 'Author (English)')} value={articleForm.author_en} onChange={(v: string) => setArticleForm({ ...articleForm, author_en: v })} />
                           <InputField label={t('التصنيف (عربي)', 'Category (Arabic)')} value={articleForm.category_ar} onChange={(v: string) => setArticleForm({ ...articleForm, category_ar: v })} dir="rtl" />
-                          <InputField label={t('التصنيف (انجليزي)', 'Category (English)')} value={articleForm.category_en} onChange={(v: string) => setArticleForm({ ...articleForm, category_en: v })} />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('المقتطف (عربي)', 'Excerpt (Arabic)')}</label>
                             <textarea value={articleForm.excerpt_ar} onChange={e => setArticleForm({ ...articleForm, excerpt_ar: e.target.value })} rows={2} dir="rtl"
-                              className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
-                          </div>
-                          <div>
-                            <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('المقتطف (انجليزي)', 'Excerpt (English)')}</label>
-                            <textarea value={articleForm.excerpt_en} onChange={e => setArticleForm({ ...articleForm, excerpt_en: e.target.value })} rows={2}
                               className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
                           </div>
                         </div>
@@ -1089,35 +1088,15 @@ export default function AdminDashboard() {
                       <div className="p-6 rounded-2xl space-y-4" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)' }}>
                         <div className="flex items-center justify-between border-b border-[rgba(6,43,36,0.08)] pb-3">
                           <h3 className="text-[#062B24] font-semibold text-sm">{t('محتوى المقالة', 'Article Content')}</h3>
-                          <div className="flex items-center gap-1 p-0.5 rounded-xl" style={{ background: 'rgba(6,43,36,0.06)' }}>
-                            <button onClick={() => setArticleLang('ar')} className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-                              style={{ background: articleLang === 'ar' ? 'linear-gradient(135deg, #C9A24A, #D8B75B)' : 'transparent', color: articleLang === 'ar' ? BRAND.deep : '#5A7A70' }}>
-                              عربي
-                            </button>
-                            <button onClick={() => setArticleLang('en')} className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-                              style={{ background: articleLang === 'en' ? 'linear-gradient(135deg, #C9A24A, #D8B75B)' : 'transparent', color: articleLang === 'en' ? BRAND.deep : '#5A7A70' }}>
-                              English
-                            </button>
-                          </div>
                         </div>
 
-                        {articleLang === 'ar' ? (
-                          <RichTextEditor
-                            key={`${editingArticle?.id || 'new'}-ar`}
-                            initialValue={articleForm.content_ar}
-                            onChange={v => setArticleForm((f: any) => ({ ...f, content_ar: v }))}
-                            dir="rtl"
-                            minHeight={280}
-                          />
-                        ) : (
-                          <RichTextEditor
-                            key={`${editingArticle?.id || 'new'}-en`}
-                            initialValue={articleForm.content_en}
-                            onChange={v => setArticleForm((f: any) => ({ ...f, content_en: v }))}
-                            dir="ltr"
-                            minHeight={280}
-                          />
-                        )}
+                        <RichTextEditor
+                          key={`${editingArticle?.id || 'new'}-ar`}
+                          initialValue={articleForm.content_ar}
+                          onChange={v => setArticleForm((f: any) => ({ ...f, content_ar: v }))}
+                          dir="rtl"
+                          minHeight={280}
+                        />
                       </div>
                     </div>
 
@@ -1198,7 +1177,6 @@ export default function AdminDashboard() {
                   onClose={() => { setAreaView('list'); setEditingArea(null); }} onSave={saveArea}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField label={t('الاسم (عربي) *', 'Name (Arabic) *')} value={areaForm.name_ar} onChange={(v: string) => setAreaForm({ ...areaForm, name_ar: v })} dir="rtl" />
-                    <InputField label={t('الاسم (انجليزي) *', 'Name (English) *')} value={areaForm.name_en} onChange={(v: string) => setAreaForm({ ...areaForm, name_en: v })} />
                     <InputField label={t('المعرف (Slug) *', 'Slug *')} value={areaForm.slug} onChange={(v: string) => setAreaForm({ ...areaForm, slug: v })} />
                     <InputField label={t('الأيقونة', 'Icon')} value={areaForm.icon} onChange={(v: string) => setAreaForm({ ...areaForm, icon: v })} />
                     <InputField label={t('الترتيب', 'Order')} value={String(areaForm.order)} onChange={(v: string) => setAreaForm({ ...areaForm, order: Number(v) })} type="number" />
@@ -1227,19 +1205,9 @@ export default function AdminDashboard() {
                       className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
                   </div>
                   <div>
-                    <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الوصف (انجليزي)', 'Description (English)')}</label>
-                    <textarea value={areaForm.description_en} onChange={e => setAreaForm({ ...areaForm, description_en: e.target.value })} rows={3}
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
-                  </div>
-                  <div>
                     <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t("ماذا ستتعلم (عربي) - كل عنصر في سطر", "What You'll Learn (Arabic) - One per line")}</label>
                     <textarea value={areaForm.whatYouWillLearn_ar} onChange={e => setAreaForm({ ...areaForm, whatYouWillLearn_ar: e.target.value })} rows={4} dir="rtl"
                       className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} placeholder={t('الأسس النظرية للمجال\nالتطبيقات العملية والحديثة', '...')} />
-                  </div>
-                  <div>
-                    <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t("ماذا ستتعلم (انجليزي) - كل عنصر في سطر", "What You'll Learn (English) - One per line")}</label>
-                    <textarea value={areaForm.whatYouWillLearn_en} onChange={e => setAreaForm({ ...areaForm, whatYouWillLearn_en: e.target.value })} rows={4} dir="ltr"
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} placeholder={t('Theoretical foundations\nPractical applications', '...')} />
                   </div>
                 </FormCard>
               ) : (
@@ -1290,7 +1258,6 @@ export default function AdminDashboard() {
                   onClose={() => { setPkgView('list'); setEditingPkg(null); }} onSave={savePackage}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField label={t('الاسم (عربي)', 'Name (Arabic)')} value={pkgForm.name_ar} onChange={(v: string) => setPkgForm({ ...pkgForm, name_ar: v })} dir="rtl" />
-                    <InputField label={t('الاسم (انجليزي)', 'Name (English)')} value={pkgForm.name_en} onChange={(v: string) => setPkgForm({ ...pkgForm, name_en: v })} />
                     <InputField label={t('السعر ($)', 'Price ($)')} value={String(pkgForm.price)} onChange={(v: string) => setPkgForm({ ...pkgForm, price: Number(v) })} type="number" />
                     <InputField label={t('المدة (أيام)', 'Duration (days)')} value={String(pkgForm.duration_days)} onChange={(v: string) => setPkgForm({ ...pkgForm, duration_days: Number(v) })} type="number" />
                   </div>
@@ -1693,9 +1660,7 @@ export default function AdminDashboard() {
                   onClose={() => { setTestimonialView('list'); setEditingTestimonial(null); }} onSave={saveTestimonial}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField label={t('الاسم *', 'Name *')} value={testimonialForm.name} onChange={(v: string) => setTestimonialForm({ ...testimonialForm, name: v })} />
-                    <InputField label={t('الاسم (انجليزي)', 'Name (English)')} value={testimonialForm.name_en} onChange={(v: string) => setTestimonialForm({ ...testimonialForm, name_en: v })} />
                     <InputField label={t('الدولة (عربي)', 'Country (Arabic)')} value={testimonialForm.country_ar} onChange={(v: string) => setTestimonialForm({ ...testimonialForm, country_ar: v })} dir="rtl" />
-                    <InputField label={t('الدولة (انجليزي)', 'Country (English)')} value={testimonialForm.country_en} onChange={(v: string) => setTestimonialForm({ ...testimonialForm, country_en: v })} />
                     <InputField label={t('التقييم (1-5)', 'Rating (1-5)')} value={String(testimonialForm.rating)} onChange={(v: string) => setTestimonialForm({ ...testimonialForm, rating: Number(v) })} type="number" />
                     <div>
                       <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الحالة', 'Status')}</label>
@@ -1710,11 +1675,6 @@ export default function AdminDashboard() {
                     <div>
                       <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الرسالة (عربي) *', 'Message (Arabic) *')}</label>
                       <textarea value={testimonialForm.message_ar} onChange={e => setTestimonialForm({ ...testimonialForm, message_ar: e.target.value })} rows={3} dir="rtl"
-                        className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
-                    </div>
-                    <div>
-                      <label className="block text-[#5A7A70] text-xs font-semibold mb-1.5 uppercase tracking-wide">{t('الرسالة (انجليزي)', 'Message (English)')}</label>
-                      <textarea value={testimonialForm.message_en} onChange={e => setTestimonialForm({ ...testimonialForm, message_en: e.target.value })} rows={3}
                         className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none resize-none" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E', fontFamily }} />
                     </div>
                   </div>
@@ -1792,13 +1752,6 @@ export default function AdminDashboard() {
                         <input disabled={!editingSettings} value={(settingsForm as any)[field.key] || ''}
                           onChange={e => setSettingsForm({ ...settingsForm, [field.key]: e.target.value })}
                           dir="rtl"
-                          className="w-full px-3 py-2.5 rounded-xl text-xs text-[#1E1E1E] outline-none"
-                          style={{ background: editingSettings ? '#F8F4EA' : 'rgba(6,43,36,0.03)', border: '1.5px solid rgba(6,43,36,0.1)', fontFamily }} />
-                      </div>
-                      <div>
-                        <label className="text-[#8B9D8A] text-xs mb-1 block">{t('إنجليزي', 'English')}</label>
-                        <input disabled={!editingSettings} value={(settingsForm as any)[field.key2] || ''}
-                          onChange={e => setSettingsForm({ ...settingsForm, [field.key2]: e.target.value })}
                           className="w-full px-3 py-2.5 rounded-xl text-xs text-[#1E1E1E] outline-none"
                           style={{ background: editingSettings ? '#F8F4EA' : 'rgba(6,43,36,0.03)', border: '1.5px solid rgba(6,43,36,0.1)', fontFamily }} />
                       </div>

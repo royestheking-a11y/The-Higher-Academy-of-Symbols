@@ -5,26 +5,26 @@ import { protect, adminOnly } from '../middleware/auth.js';
 const router = express.Router();
 
 // GET all — admin
-router.get('/', protect, adminOnly, async (req, res) => {
+router.get('/', protect, adminOnly, async (req, res, next) => {
   try {
     const enrollments = await Enrollment.find().sort({ createdAt: -1 })
       .populate('userId', 'name email')
       .populate('courseId', 'title_en title_ar slug');
     res.json(enrollments);
-  } catch (err) { res.status(500).json({ message: err.message }); }
+  } catch (err) { next(err); }
 });
 
 // GET my enrollments — student
-router.get('/my', protect, async (req, res) => {
+router.get('/my', protect, async (req, res, next) => {
   try {
     const enrollments = await Enrollment.find({ userId: req.user._id })
       .populate('courseId', 'title_en title_ar slug thumbnail price');
     res.json(enrollments);
-  } catch (err) { res.status(500).json({ message: err.message }); }
+  } catch (err) { next(err); }
 });
 
 // POST — student creates enrollment
-router.post('/', protect, async (req, res) => {
+router.post('/', protect, async (req, res, next) => {
   try {
     const enr = await Enrollment.create({
       ...req.body,
@@ -57,11 +57,11 @@ router.post('/', protect, async (req, res) => {
     });
 
     res.status(201).json(enr);
-  } catch (err) { res.status(400).json({ message: err.message }); }
+  } catch (err) { next(err); }
 });
 
 // PATCH — admin approves/rejects, or student updates progress
-router.patch('/:id', protect, async (req, res) => {
+router.patch('/:id', protect, async (req, res, next) => {
   try {
     const enr = await Enrollment.findById(req.params.id);
     if (!enr) return res.status(404).json({ message: 'Not found' });
@@ -102,15 +102,15 @@ router.patch('/:id', protect, async (req, res) => {
       .populate('userId', 'name email')
       .populate('courseId', 'title_en title_ar slug');
     res.json(populated);
-  } catch (err) { res.status(400).json({ message: err.message }); }
+  } catch (err) { next(err); }
 });
 
-router.delete('/:id', protect, adminOnly, async (req, res) => {
+router.delete('/:id', protect, adminOnly, async (req, res, next) => {
   try {
     const enr = await Enrollment.findByIdAndDelete(req.params.id);
     if (!enr) return res.status(404).json({ message: 'Not found' });
     res.json({ message: 'Deleted successfully' });
-  } catch (err) { res.status(400).json({ message: err.message }); }
+  } catch (err) { next(err); }
 });
 
 export default router;

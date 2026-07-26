@@ -4,6 +4,9 @@ import cors from 'cors';
 import https from 'https';
 import { v2 as cloudinary } from 'cloudinary';
 import { connectDB } from './db.js';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
 
 // Routes
 import authRoutes         from './routes/auth.js';
@@ -24,6 +27,7 @@ import uploadRoutes       from './routes/upload.js';
 import libraryRoutes      from './routes/library.js';
 import bookRoutes         from './routes/books.js';
 import storeOrderRoutes   from './routes/storeOrders.js';
+import { errorHandler }   from './middleware/errorHandler.js';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -45,11 +49,29 @@ app.use(cors({
   }, 
   credentials: true 
 }));
+
+// Security Middlewares
+app.use(helmet());
+app.use(mongoSanitize()); // Prevent NoSQL Injection
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // limit each IP to 200 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // strict limit for auth routes
+});
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Mount Routes
-app.use('/api/auth',          authRoutes);
+app.use('/api/auth',          authLimiter, authRoutes);
 app.use('/api/lectures',      lectureRoutes);
 app.use('/api/articles',      articleRoutes);
 app.use('/api/areas',         areaRoutes);
@@ -70,6 +92,9 @@ app.use('/api/orders',        storeOrderRoutes);
 
 // Health check
 app.get('/api/health', (_, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
+
+// Error Handler
+app.use(errorHandler);
 
 // Start
 const PORT = process.env.PORT || 5000;

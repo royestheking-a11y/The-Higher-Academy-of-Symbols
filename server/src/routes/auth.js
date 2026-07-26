@@ -11,7 +11,7 @@ const router = express.Router();
 const signToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
 // POST /api/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
@@ -23,13 +23,11 @@ router.post('/login', async (req, res) => {
 
     const token = signToken(user._id);
     res.json({ token, user: user.toJSON() });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  } catch (err) { next(err); }
 });
 
 // POST /api/auth/google
-router.post('/google', async (req, res) => {
+router.post('/google', async (req, res, next) => {
   try {
     const { credential } = req.body;
     if (!credential) return res.status(400).json({ message: 'Google credential required' });
@@ -85,13 +83,11 @@ router.post('/google', async (req, res) => {
 
     const token = signToken(user._id);
     res.json({ token, user: user.toJSON() });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  } catch (err) { next(err); }
 });
 
 // POST /api/auth/register
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
   try {
     const { name, name_ar, email, password, phone, country, language } = req.body;
     if (!name || !email || !password) return res.status(400).json({ message: 'Name, email and password required' });
@@ -102,9 +98,7 @@ router.post('/register', async (req, res) => {
     const user = await User.create({ name, name_ar, email, password, phone, country, language, role: 'student', enrolledCourses: [] });
     const token = signToken(user._id);
     res.status(201).json({ token, user: user.toJSON() });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  } catch (err) { next(err); }
 });
 
 // GET /api/auth/me
@@ -113,15 +107,13 @@ router.get('/me', protect, (req, res) => {
 });
 
 // PATCH /api/auth/profile
-router.patch('/profile', protect, async (req, res) => {
+router.patch('/profile', protect, async (req, res, next) => {
   try {
     const allowed = ['name', 'name_ar', 'phone', 'country', 'language', 'avatar'];
     const updates = Object.fromEntries(Object.entries(req.body).filter(([k]) => allowed.includes(k)));
-    const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true });
+    const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true, runValidators: true });
     res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  } catch (err) { next(err); }
 });
 
 export default router;

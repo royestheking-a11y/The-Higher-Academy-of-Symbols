@@ -22,3 +22,30 @@
 .overflow-y-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+/* Google Translate Widget Styling */
+.goog-te-gadget {
+  font-family: inherit !important;
+  color: #F8F4EA !important;
+}
+.goog-te-gadget span {
+  display: none;
+}
+.goog-te-combo {
+  background-color: transparent;
+  color: #F8F4EA;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.goog-te-combo option {
+  background-color: #0B3A31;
+  color: #F8F4EA;
+}
+.skiptranslate iframe {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}

@@ -8,7 +8,7 @@ const contactMessageSchema = new mongoose.Schema({
   subject_en: { type: String },
   message_ar: { type: String },
   message_en: { type: String },
-  status:     { type: String, enum: ['new', 'read', 'replied', 'archived'], default: 'new' },
+  status:     { type: String, enum: ['new', 'read', 'replied', 'archived'], default: 'new' , index: true },
   date:       { type: String, default: () => new Date().toISOString() },
 }, { timestamps: true });
 

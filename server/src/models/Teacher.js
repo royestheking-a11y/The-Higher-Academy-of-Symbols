@@ -11,7 +11,7 @@ const teacherSchema = new mongoose.Schema({
   bio_ar:       { type: String, default: '' },
   bio_en:       { type: String, default: '' },
   avatar:       { type: String, default: '' },   // Cloudinary URL
-  status:       { type: String, enum: ['active', 'inactive'], default: 'active' },
+  status:       { type: String, enum: ['active', 'inactive'], default: 'active' , index: true },
 }, { timestamps: true });
 
 export default mongoose.model('Teacher', teacherSchema);

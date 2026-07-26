@@ -4,6 +4,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { GeometricBackground } from '../components/GeometricBackground';
 import { Skeleton } from '../components/Skeleton';
+import DOMPurify from 'dompurify';
+import { Helmet } from 'react-helmet-async';
 
 const BRAND = { deep: '#062B24', mid: '#0B3A31', gold: '#C9A24A', goldLight: '#F0D98A', ivory: '#F8F4EA' };
 
@@ -39,6 +41,13 @@ export default function ArticleDetail() {
 
   return (
     <div style={{ background: BRAND.ivory, fontFamily, minHeight: '100vh' }}>
+      <Helmet>
+        <title>{t(article.title_ar, article.title_en)} - {t('أكاديمية رموز', 'Symbols Academy')}</title>
+        <meta name="description" content={t(article.excerpt_ar, article.excerpt_en)} />
+        <meta property="og:title" content={t(article.title_ar, article.title_en)} />
+        <meta property="og:description" content={t(article.excerpt_ar, article.excerpt_en)} />
+        {article.image && <meta property="og:image" content={article.image} />}
+      </Helmet>
 
       {/* Hero — full bleed, fixed header overlays top portion of it */}
       <div
@@ -152,7 +161,7 @@ export default function ArticleDetail() {
                 lineHeight: '2',
                 fontSize: '0.95rem',
               }}
-              dangerouslySetInnerHTML={{ __html: t(article.content_ar, article.content_en) }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(t(article.content_ar, article.content_en)) }}
             />
 
             {/* Tags */}

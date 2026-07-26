@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const articleSchema = new mongoose.Schema({
   title_ar:    { type: String, required: true },
-  title_en:    { type: String, required: true },
+  title_en:    { type: String, required: false },
   slug:        { type: String, required: true, unique: true },
   excerpt_ar:  { type: String },
   excerpt_en:  { type: String },
@@ -16,7 +16,7 @@ const articleSchema = new mongoose.Schema({
   date:        { type: String },
   readTime:    { type: Number, default: 5 },
   featured:    { type: Boolean, default: false },
-  status:      { type: String, enum: ['published', 'draft'], default: 'draft' },
+  status:      { type: String, enum: ['published', 'draft'], default: 'draft' , index: true },
   image:       { type: String, default: null },     // Cloudinary URL
   type:        { type: String, default: 'general' },
 }, { timestamps: true });

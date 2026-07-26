@@ -264,15 +264,6 @@ export function Navbar() {
               <Search size={17} />
             </button>
 
-            {/* Language Toggle */}
-            <button
-              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className="px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200"
-              style={{ borderColor: 'rgba(201,162,74,0.5)', color: '#C9A24A', background: 'rgba(201,162,74,0.1)' }}
-            >
-              {language === 'ar' ? 'EN' : 'عر'}
-            </button>
-
             {/* Auth */}
             {currentUser ? (
               <div ref={userRef} className="relative">
@@ -353,13 +344,7 @@ export function Navbar() {
 
           {/* Mobile Controls */}
           <div className="flex lg:hidden items-center gap-2">
-            <button
-              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className="px-2.5 py-1 rounded-full text-xs font-semibold border"
-              style={{ borderColor: 'rgba(201,162,74,0.5)', color: '#C9A24A' }}
-            >
-              {language === 'ar' ? 'EN' : 'عر'}
-            </button>
+
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="w-9 h-9 rounded-full flex items-center justify-center text-[#C9A24A]"

@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router';
 import {
   BookOpen, Star, Eye, Lock, ScrollText, FileText, Compass, PenLine,
@@ -981,9 +982,14 @@ function TestimonialsSection() {
 
 function CTASection() {
   const { t, isRTL, fontFamily } = useLanguage();
+  const { settings } = useData();
 
   return (
     <section className="py-20 relative overflow-hidden" style={{ fontFamily, background: BRAND.ivory }}>
+      <Helmet>
+        <title>{settings?.siteName_ar ? t(settings.siteName_ar, settings.siteName_en || '') : t('أكاديمية رموز', 'Symbols Academy')}</title>
+        <meta name="description" content={settings?.heroDescription_ar ? t(settings.heroDescription_ar, settings.heroDescription_en || '') : ''} />
+      </Helmet>
       <GeometricBackground strokeColor="#C9A24A" strokeOpacity={0.05} strokeWidth={0.55} tileSize={90} />
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6">
         <motion.div

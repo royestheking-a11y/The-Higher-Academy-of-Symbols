@@ -4,16 +4,16 @@ import { protect, adminOnly } from '../middleware/auth.js';
 const router = express.Router();
 
 // GET — public
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     let settings = await Settings.findOne();
     if (!settings) settings = await Settings.create({});
     res.json(settings);
-  } catch (err) { res.status(500).json({ message: err.message }); }
+  } catch (err) { next(err); }
 });
 
 // PATCH — admin
-router.patch('/', protect, adminOnly, async (req, res) => {
+router.patch('/', protect, adminOnly, async (req, res, next) => {
   try {
     let settings = await Settings.findOne();
     if (!settings) {
@@ -23,7 +23,7 @@ router.patch('/', protect, adminOnly, async (req, res) => {
       await settings.save();
     }
     res.json(settings);
-  } catch (err) { res.status(500).json({ message: err.message }); }
+  } catch (err) { next(err); }
 });
 
 export default router;

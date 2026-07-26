@@ -11,7 +11,7 @@ const testimonialSchema = new mongoose.Schema({
   message_ar: { type: String },
   message_en: { type: String },
   avatar:     { type: String, default: '' },   // Cloudinary URL
-  status:     { type: String, enum: ['published', 'draft'], default: 'published' },
+  status:     { type: String, enum: ['published', 'draft'], default: 'published' , index: true },
 }, { timestamps: true });
 
 export default mongoose.model('Testimonial', testimonialSchema);

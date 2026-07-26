@@ -241,10 +241,6 @@ export default function AdminLibrary() {
                     <input type="text" name="title_ar" value={formData.title_ar} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} required />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#062B24] mb-2">{t('العنوان (إنجليزي)', 'Title (English)')}</label>
-                    <input type="text" name="title_en" value={formData.title_en} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} required />
-                  </div>
-                  <div>
                     <label className="block text-sm font-bold text-[#062B24] mb-2">{t('الرابط المختصر', 'Slug (URL)')}</label>
                     <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} required />
                   </div>
@@ -296,10 +292,6 @@ export default function AdminLibrary() {
                   <div>
                     <label className="block text-sm font-bold text-[#062B24] mb-2">{t('الوصف (عربي)', 'Description (Arabic)')}</label>
                     <textarea name="description_ar" value={formData.description_ar} onChange={handleChange} rows={3} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} required />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#062B24] mb-2">{t('الوصف (إنجليزي)', 'Description (English)')}</label>
-                    <textarea name="description_en" value={formData.description_en} onChange={handleChange} rows={3} className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all focus:border-[#C9A24A] focus:ring-1 focus:ring-[#C9A24A]" style={{ background: '#F8F4EA', border: '1.5px solid rgba(6,43,36,0.12)', color: '#1E1E1E' }} required />
                   </div>
                   <div className="flex gap-6 items-center pt-2">
                     <label className="flex items-center gap-2 cursor-pointer">

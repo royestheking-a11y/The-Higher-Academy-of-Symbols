@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { User, AreaOfStudy, Lecture, Article, Testimonial, Enrollment, ContactMessage, Supervisor, Teacher, Package, Subscription, Settings as AppSettings } from '../types';
 
 export interface Notification {
   _id?: string;
@@ -16,71 +17,71 @@ export interface Notification {
 }
 
 interface DataContextType {
-  lectures: any[];
-  articles: any[];
-  areasOfStudy: any[];
-  testimonials: any[];
-  settings: any;
-  enrollments: any[];
-  contactMessages: any[];
-  users: any[];
-  supervisors: any[];
-  teachers: any[];
-  packages: any[];
-  subscriptions: any[];
+  lectures: Lecture[];
+  articles: Article[];
+  areasOfStudy: AreaOfStudy[];
+  testimonials: Testimonial[];
+  settings: AppSettings;
+  enrollments: Enrollment[];
+  contactMessages: ContactMessage[];
+  users: User[];
+  supervisors: Supervisor[];
+  teachers: Teacher[];
+  packages: Package[];
+  subscriptions: Subscription[];
   notifications: Notification[];
   loading: boolean;
   refreshData: () => Promise<void>;
   
-  setLectures: (d: any) => void;
-  setArticles: (d: any) => void;
-  setAreasOfStudy: (d: any) => void;
-  setTestimonials: (d: any) => void;
-  updateSettings: (d: any) => Promise<void>;
-  setEnrollments: (d: any) => void;
-  setContactMessages: (d: any) => void;
-  setUsers: (d: any) => void;
-  setSupervisors: (d: any) => void;
-  setTeachers: (d: any) => void;
-  setPackages: (d: any) => void;
-  setSubscriptions: (d: any) => void;
+  setLectures: (d: Lecture[]) => void;
+  setArticles: (d: Article[]) => void;
+  setAreasOfStudy: (d: AreaOfStudy[]) => void;
+  setTestimonials: (d: Testimonial[]) => void;
+  updateSettings: (d: AppSettings) => Promise<void>;
+  setEnrollments: (d: Enrollment[]) => void;
+  setContactMessages: (d: ContactMessage[]) => void;
+  setUsers: (d: User[]) => void;
+  setSupervisors: (d: Supervisor[]) => void;
+  setTeachers: (d: Teacher[]) => void;
+  setPackages: (d: Package[]) => void;
+  setSubscriptions: (d: Subscription[]) => void;
   
-  addLecture: (l: any) => Promise<void>;
-  updateLecture: (id: string, d: any) => Promise<void>;
-  deleteLecture: (id: string) => Promise<void>;
-  addArticle: (a: any) => Promise<void>;
-  updateArticle: (id: string, d: any) => Promise<void>;
-  deleteArticle: (id: string) => Promise<void>;
-  addTestimonial: (t: any) => Promise<void>;
-  updateTestimonial: (id: string, d: any) => Promise<void>;
-  deleteTestimonial: (id: string) => Promise<void>;
-  addContactMessage: (m: any) => Promise<void>;
-  updateContactMessage: (id: string, d: any) => Promise<void>;
-  deleteContactMessage: (id: string) => Promise<void>;
-  addEnrollment: (e: any) => Promise<void>;
-  updateEnrollment: (id: string, d: any) => Promise<void>;
-  deleteEnrollment: (id: string) => Promise<void>;
-  updateUser: (id: string, d: any) => Promise<void>;
-  deleteUser: (id: string) => Promise<void>;
-  addSupervisor: (s: any) => Promise<void>;
-  updateSupervisor: (id: string, d: any) => Promise<void>;
-  deleteSupervisor: (id: string) => Promise<void>;
-  addTeacher: (t: any) => Promise<void>;
-  updateTeacher: (id: string, d: any) => Promise<void>;
-  deleteTeacher: (id: string) => Promise<void>;
-  addPackage: (p: any) => Promise<void>;
-  updatePackage: (id: string, d: any) => Promise<void>;
-  deletePackage: (id: string) => Promise<void>;
-  addSubscription: (s: any) => Promise<void>;
-  updateSubscription: (id: string, d: any) => Promise<void>;
-  deleteSubscription: (id: string) => Promise<void>;
-  addAreaOfStudy: (a: any) => Promise<void>;
-  updateAreaOfStudy: (id: string, d: any) => Promise<void>;
-  deleteAreaOfStudy: (id: string) => Promise<void>;
+  addLecture: (l: Partial<Lecture>) => Promise<boolean>;
+  updateLecture: (id: string, d: Partial<Lecture>) => Promise<boolean>;
+  deleteLecture: (id: string) => Promise<boolean>;
+  addArticle: (a: Partial<Article>) => Promise<boolean>;
+  updateArticle: (id: string, d: Partial<Article>) => Promise<boolean>;
+  deleteArticle: (id: string) => Promise<boolean>;
+  addTestimonial: (t: Partial<Testimonial>) => Promise<boolean>;
+  updateTestimonial: (id: string, d: Partial<Testimonial>) => Promise<boolean>;
+  deleteTestimonial: (id: string) => Promise<boolean>;
+  addContactMessage: (m: Partial<ContactMessage>) => Promise<boolean>;
+  updateContactMessage: (id: string, d: Partial<ContactMessage>) => Promise<boolean>;
+  deleteContactMessage: (id: string) => Promise<boolean>;
+  addEnrollment: (e: Partial<Enrollment>) => Promise<boolean>;
+  updateEnrollment: (id: string, d: Partial<Enrollment>) => Promise<boolean>;
+  deleteEnrollment: (id: string) => Promise<boolean>;
+  updateUser: (id: string, d: Partial<User>) => Promise<boolean>;
+  deleteUser: (id: string) => Promise<boolean>;
+  addSupervisor: (s: Partial<Supervisor>) => Promise<boolean>;
+  updateSupervisor: (id: string, d: Partial<Supervisor>) => Promise<boolean>;
+  deleteSupervisor: (id: string) => Promise<boolean>;
+  addTeacher: (t: Partial<Teacher>) => Promise<boolean>;
+  updateTeacher: (id: string, d: Partial<Teacher>) => Promise<boolean>;
+  deleteTeacher: (id: string) => Promise<boolean>;
+  addPackage: (p: Partial<Package>) => Promise<boolean>;
+  updatePackage: (id: string, d: Partial<Package>) => Promise<boolean>;
+  deletePackage: (id: string) => Promise<boolean>;
+  addSubscription: (s: Partial<Subscription>) => Promise<boolean>;
+  updateSubscription: (id: string, d: Partial<Subscription>) => Promise<boolean>;
+  deleteSubscription: (id: string) => Promise<boolean>;
+  addAreaOfStudy: (a: Partial<AreaOfStudy>) => Promise<boolean>;
+  updateAreaOfStudy: (id: string, d: Partial<AreaOfStudy>) => Promise<boolean>;
+  deleteAreaOfStudy: (id: string) => Promise<boolean>;
   
-  getFeaturedLectures: () => any[];
-  getPublishedArticles: () => any[];
-  getPublishedTestimonials: () => any[];
+  getFeaturedLectures: () => Lecture[];
+  getPublishedArticles: () => Article[];
+  getPublishedTestimonials: () => Testimonial[];
   addNotification: (n: Omit<Notification, 'id' | 'createdAt' | 'status'>) => Promise<void>;
   markNotificationAsRead: (id: string) => Promise<void>;
   clearAllNotifications: (userId: string | 'admin') => Promise<void>;
@@ -93,18 +94,18 @@ const normId = (arr: any[]) => arr.map(item => ({ ...item, id: item._id || item.
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const { currentUser } = useAuth();
-  const [lectures, setLecturesState] = useState<any[]>([]);
-  const [articles, setArticlesState] = useState<any[]>([]);
-  const [areasOfStudy, setAreasState] = useState<any[]>([]);
-  const [testimonials, setTestimonialsState] = useState<any[]>([]);
-  const [settings, setSettingsState] = useState<any>({});
-  const [enrollments, setEnrollmentsState] = useState<any[]>([]);
-  const [contactMessages, setContactState] = useState<any[]>([]);
-  const [users, setUsersState] = useState<any[]>([]);
-  const [supervisors, setSupervisorsState] = useState<any[]>([]);
-  const [teachers, setTeachersState] = useState<any[]>([]);
-  const [packages, setPackagesState] = useState<any[]>([]);
-  const [subscriptions, setSubscriptionsState] = useState<any[]>([]);
+  const [lectures, setLecturesState] = useState<Lecture[]>([]);
+  const [articles, setArticlesState] = useState<Article[]>([]);
+  const [areasOfStudy, setAreasState] = useState<AreaOfStudy[]>([]);
+  const [testimonials, setTestimonialsState] = useState<Testimonial[]>([]);
+  const [settings, setSettingsState] = useState<AppSettings>({});
+  const [enrollments, setEnrollmentsState] = useState<Enrollment[]>([]);
+  const [contactMessages, setContactState] = useState<ContactMessage[]>([]);
+  const [users, setUsersState] = useState<User[]>([]);
+  const [supervisors, setSupervisorsState] = useState<Supervisor[]>([]);
+  const [teachers, setTeachersState] = useState<Teacher[]>([]);
+  const [packages, setPackagesState] = useState<Package[]>([]);
+  const [subscriptions, setSubscriptionsState] = useState<Subscription[]>([]);
   const [notifications, setNotificationsState] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -213,15 +214,27 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   // Generic CRUD helpers
   const createItem = async (endpoint: string, data: any, setState: React.Dispatch<React.SetStateAction<any[]>>) => {
     const created = await fetchApi(endpoint, 'POST', data);
-    if(created) setState(prev => [...prev, normId([created])[0]]);
+    if(created) {
+      setState(prev => [...prev, normId([created])[0]]);
+      return true;
+    }
+    return false;
   };
   const updateItem = async (endpoint: string, id: string, data: any, setState: React.Dispatch<React.SetStateAction<any[]>>) => {
     const updated = await fetchApi(`${endpoint}/${id}`, 'PATCH', data);
-    if(updated) setState(prev => prev.map(item => item.id === id || item._id === id ? normId([updated])[0] : item));
+    if(updated) {
+      setState(prev => prev.map(item => item.id === id || item._id === id ? normId([updated])[0] : item));
+      return true;
+    }
+    return false;
   };
   const deleteItem = async (endpoint: string, id: string, setState: React.Dispatch<React.SetStateAction<any[]>>) => {
-    await fetchApi(`${endpoint}/${id}`, 'DELETE');
-    setState(prev => prev.filter(item => item.id !== id && item._id !== id));
+    const res = await fetchApi(`${endpoint}/${id}`, 'DELETE');
+    if(res) {
+      setState(prev => prev.filter(item => item.id !== id && item._id !== id));
+      return true;
+    }
+    return false;
   };
 
   // Lectures
@@ -241,10 +254,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   // Contact
   const addContactMessage = async (m: any) => {
-      await fetchApi('/contact', 'POST', m);
-      // Public form submission doesn't need to update state immediately unless we are admin viewing it
-      // But we will fetch if admin. For now, just add to state if it works
-      refreshData();
+      const res = await fetchApi('/contact', 'POST', m);
+      if (res) refreshData();
+      return !!res;
   };
   const updateContactMessage = (id: string, d: any) => updateItem('/contact', id, d, setContactState);
   const deleteContactMessage = (id: string) => deleteItem('/contact', id, setContactState);
@@ -255,7 +267,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     if(created) {
         setEnrollmentsState(prev => [...prev, normId([created])[0]]);
         refreshData(); // To fetch the updated list including notifications
+        return true;
     }
+    return false;
   };
   const updateEnrollment = (id: string, d: any) => updateItem('/enrollments', id, d, setEnrollmentsState);
   const deleteEnrollment = (id: string) => deleteItem('/enrollments', id, setEnrollmentsState);

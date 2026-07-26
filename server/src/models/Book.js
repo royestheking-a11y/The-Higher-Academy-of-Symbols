@@ -2,12 +2,12 @@ import mongoose from 'mongoose';
 
 const bookSchema = new mongoose.Schema({
   title_ar: { type: String, required: true },
-  title_en: { type: String, required: true },
+  title_en: { type: String, required: false },
   slug: { type: String, required: true, unique: true },
   author: { type: String, required: true },
   isbn: { type: String },
   description_ar: { type: String, required: true },
-  description_en: { type: String, required: true },
+  description_en: { type: String, required: false },
   price: { type: Number, required: true },
   salePrice: { type: Number },
   stock: { type: Number, default: 0 },

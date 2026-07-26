@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   language:         { type: String, enum: ['ar', 'en'], default: 'ar' },
   enrolledCourses:  [{ type: String }],
   avatar:           { type: String, default: '' },
-  status:           { type: String, enum: ['active', 'inactive', 'banned'], default: 'active' },
+  status:           { type: String, enum: ['active', 'inactive', 'banned'], default: 'active' , index: true },
   googleId:         { type: String, unique: true, sparse: true },
   hasLibraryAccess: { type: Boolean, default: false },
 }, { timestamps: true });

@@ -5,7 +5,7 @@ import { protect, adminOnly as admin } from '../middleware/auth.js';
 const router = express.Router();
 
 // GET all books (Public)
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const { category, language, isFeatured, limit } = req.query;
     const query = {};
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET single book by slug
-router.get('/:slug', async (req, res) => {
+router.get('/:slug', async (req, res, next) => {
   try {
     const book = await Book.findOne({ slug: req.params.slug });
     if (!book) return res.status(404).json({ message: 'Book not found' });
@@ -36,7 +36,7 @@ router.get('/:slug', async (req, res) => {
 });
 
 // CREATE book (Admin)
-router.post('/', protect, admin, async (req, res) => {
+router.post('/', protect, admin, async (req, res, next) => {
   try {
     const book = new Book(req.body);
     const createdBook = await book.save();
@@ -47,9 +47,9 @@ router.post('/', protect, admin, async (req, res) => {
 });
 
 // UPDATE book (Admin)
-router.put('/:id', protect, admin, async (req, res) => {
+router.put('/:id', protect, admin, async (req, res, next) => {
   try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!book) return res.status(404).json({ message: 'Book not found' });
     res.json(book);
   } catch (error) {
@@ -58,7 +58,7 @@ router.put('/:id', protect, admin, async (req, res) => {
 });
 
 // DELETE book (Admin)
-router.delete('/:id', protect, admin, async (req, res) => {
+router.delete('/:id', protect, admin, async (req, res, next) => {
   try {
     const book = await Book.findByIdAndDelete(req.params.id);
     if (!book) return res.status(404).json({ message: 'Book not found' });

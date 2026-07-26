@@ -109,6 +109,13 @@ export function AreaDetail() {
               <p className="text-[#3A5A50] text-sm leading-relaxed">{t(area.description_ar, area.description_en)}</p>
             </div>
 
+            {(area.whatItMeans_ar || area.whatItMeans_en) && (
+              <div className="p-8 rounded-2xl" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.1)' }}>
+                <h2 className="text-[#062B24] font-semibold mb-4 text-base">{t('ماذا يعني هذا المجال؟', 'What does this field mean?')}</h2>
+                <p className="text-[#3A5A50] text-sm leading-relaxed whitespace-pre-wrap">{t(area.whatItMeans_ar, area.whatItMeans_en)}</p>
+              </div>
+            )}
+
             {relatedLectures.length > 0 && (
               <div>
                 <h2 className="text-[#062B24] font-semibold mb-5 text-base">{t('المحاضرات ذات الصلة', 'Related Lectures')}</h2>
