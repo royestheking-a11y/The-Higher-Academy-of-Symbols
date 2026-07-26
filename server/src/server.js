@@ -65,7 +65,7 @@ app.use(limiter);
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20, // strict limit for auth routes
+  max: 500, // relaxed limit for auth routes to prevent 429s on /api/auth/me and login
 });
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
