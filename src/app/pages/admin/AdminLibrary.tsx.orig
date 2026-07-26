@@ -102,11 +102,6 @@ export default function AdminLibrary() {
         ? `${baseUrl}/api/library/${editingResource._id}`
         : `${baseUrl}/api/library`;
       
-      const payload = { ...formData };
-      if (!payload.slug && (payload.title_en || payload.title_ar)) {
-        payload.slug = (payload.title_en || payload.title_ar).trim().replace(/\s+/g, '-').replace(/[^\w\-\u0621-\u064A\u0660-\u0669]/g, '');
-      }
-
       const res = await fetch(url, {
         method: editingResource ? 'PUT' : 'POST',
         headers: {
