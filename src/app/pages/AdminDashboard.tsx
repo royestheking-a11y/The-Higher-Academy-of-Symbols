@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
+import { useConfirm } from '../hooks/useConfirm';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
 
@@ -75,7 +76,9 @@ function RichTextEditor({ initialValue, onChange, dir = 'auto', minHeight = 220 
   };
 
   return (
-    <div className="rounded-xl overflow-hidden" style={{ border: '1.5px solid rgba(6,43,36,0.18)' }}>
+    <div className=
+      <ConfirmDialog />
+"rounded-xl overflow-hidden" style={{ border: '1.5px solid rgba(6,43,36,0.18)' }}>
       {/* Toolbar row 1 */}
       <div className="flex flex-wrap items-center gap-0.5 px-2 py-1.5" style={{ background: 'rgba(6,43,36,0.04)', borderBottom: '1px solid rgba(6,43,36,0.1)' }}>
         <EditorTB title="Undo" icon={RotateCcw} cmd="undo" exec={exec} />
@@ -849,7 +852,7 @@ export default function AdminDashboard() {
                         <td className={tdCls}>
                           <div className="flex items-center gap-1.5">
                             <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => { setEditingSup(s); setSupForm({ ...s }); setSupView('form'); }} />
-                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteSupervisor(s.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteSupervisor(s.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                           </div>
                         </td>
                       </tr>
@@ -908,7 +911,7 @@ export default function AdminDashboard() {
                         <td className={tdCls}>
                           <div className="flex items-center gap-1.5">
                             <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => { setEditingTeacher(tc); setTeacherForm({ ...tc }); setTeacherView('form'); }} />
-                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteTeacher(tc.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteTeacher(tc.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                           </div>
                         </td>
                       </tr>
@@ -1010,7 +1013,7 @@ export default function AdminDashboard() {
                           <div className="flex items-center gap-1.5">
                             <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => { setEditingLecture(lec); setLectureForm({ ...lec }); setLectureView('form'); }} />
                             <ActionBtn icon={lec.status === 'published' ? EyeOff : Eye} color="#7BBFAD" onClick={() => { updateLecture(lec.id, { status: lec.status === 'published' ? 'draft' : 'published' }); toast.success(t('تم تحديث الحالة', 'Status updated')); }} />
-                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteLecture(lec.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteLecture(lec.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                           </div>
                         </td>
                       </tr>
@@ -1053,7 +1056,7 @@ export default function AdminDashboard() {
                                 setArticleForm({ ...art, tags: Array.isArray(art.tags) ? art.tags.join(', ') : (art.tags || '') });
                                 setArticleView('form');
                               }} />
-                              <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteArticle(art.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                              <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteArticle(art.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                             </div>
                           </td>
                         </tr>
@@ -1246,7 +1249,7 @@ export default function AdminDashboard() {
                           <div className="flex items-center gap-1.5">
                             <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => { setEditingArea(area); setAreaForm({ ...area, whatYouWillLearn_ar: Array.isArray(area.whatYouWillLearn_ar) ? area.whatYouWillLearn_ar.join('\n') : '', whatYouWillLearn_en: Array.isArray(area.whatYouWillLearn_en) ? area.whatYouWillLearn_en.join('\n') : '' }); setAreaView('form'); }} />
                             <ActionBtn icon={area.status === 'published' ? EyeOff : Eye} color="#7BBFAD" onClick={() => { updateAreaOfStudy(area.id, { status: area.status === 'published' ? 'draft' : 'published' }); toast.success(t('تم التحديث', 'Updated')); }} />
-                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteAreaOfStudy(area.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteAreaOfStudy(area.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                           </div>
                         </td>
                       </tr>
@@ -1305,7 +1308,7 @@ export default function AdminDashboard() {
                         <td className={tdCls}>
                           <div className="flex items-center gap-1.5">
                             <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => { setEditingPkg(pkg); setPkgForm({ ...pkg }); setPkgView('form'); }} />
-                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deletePackage(pkg.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deletePackage(pkg.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                           </div>
                         </td>
                       </tr>
@@ -1350,7 +1353,7 @@ export default function AdminDashboard() {
                           <td className={`${tdCls} text-[#8B9D8A]`}>{sub.endDate}</td>
                           <td className={tdCls}><StatusBadge status={sub.status || 'active'} /></td>
                           <td className={tdCls}>
-                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteSubscription(sub.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteSubscription(sub.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                           </td>
                         </tr>
                       );
@@ -1388,7 +1391,7 @@ export default function AdminDashboard() {
                         <td className={`${tdCls} text-[#8B9D8A]`}>{new Date(enr.createdAt).toLocaleDateString(t('ar-SA', 'en-US'))}</td>
                         <td className={tdCls}><StatusBadge status={enr.paymentStatus === 'paid' ? 'approved' : enr.paymentStatus} /></td>
                         <td className={tdCls}>
-                          <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteEnrollment(enr.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                          <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteEnrollment(enr.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                         </td>
                       </tr>
                     );
@@ -1421,7 +1424,7 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-1.5">
                           <ActionBtn icon={Eye} color="#7BBFAD" onClick={() => { setSelectedUser(user); setUserModalOpen(true); }} />
                           <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => toast.info(t('ميزة التعديل قيد التطوير', 'Edit feature in development'))} />
-                          {user.role !== 'admin' && <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteUser(user.id); toast.success(t('تم الحذف', 'Deleted')); } }} />}
+                          {user.role !== 'admin' && <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteUser(user.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />}
                         </div>
                       </td>
                     </tr>
@@ -1545,7 +1548,7 @@ export default function AdminDashboard() {
                                 title={progressVal === 100 ? t('إلغاء التميز يدوياً', 'Reset Course Completion') : t('إكمال الدورة يدوياً', 'Force Complete Course')}
                               />
                             )}
-                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteEnrollment(enr.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                            <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteEnrollment(enr.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                           </div>
                         </td>
                       </tr>
@@ -1640,7 +1643,7 @@ export default function AdminDashboard() {
                           {t('الرد عبر واتساب', 'Reply via WhatsApp')}
                         </a>
                       )}
-                      <button onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteContactMessage(msg.id); toast.success(t('تم الحذف', 'Deleted')); } }}
+                      <button onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteContactMessage(msg.id); toast.success(t('تم الحذف', 'Deleted')); }) }}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
                         style={{ background: 'rgba(212,24,61,0.1)', color: '#D4183D', border: '1px solid rgba(212,24,61,0.3)' }}>
                         <Trash2 size={12} /> {t('حذف', 'Delete')}
@@ -1706,7 +1709,7 @@ export default function AdminDashboard() {
                     <div key={i} className="p-5 rounded-2xl relative group" style={{ background: 'white', border: '1px solid rgba(6,43,36,0.08)' }}>
                       <div className="absolute top-4 end-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <ActionBtn icon={Pencil} color="#C9A24A" onClick={() => { setEditingTestimonial(item); setTestimonialForm({ ...item }); setTestimonialView('form'); }} />
-                        <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { if (confirm(t('هل أنت متأكد؟', 'Are you sure?'))) { deleteTestimonial(item.id); toast.success(t('تم الحذف', 'Deleted')); } }} />
+                        <ActionBtn icon={Trash2} color="#D4183D" onClick={() => { customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد أنك تريد الحذف؟', 'Are you sure you want to delete?', () => { deleteTestimonial(item.id); toast.success(t('تم الحذف', 'Deleted')); }) }} />
                       </div>
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0" style={{ background: 'rgba(201,162,74,0.15)', color: BRAND.gold }}>

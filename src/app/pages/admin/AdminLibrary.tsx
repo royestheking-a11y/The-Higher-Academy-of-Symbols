@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2, Library, Check, X, Save } from 'lucide-react';
 import { GeometricBackground } from '../../components/GeometricBackground';
 import { FileUpload } from '../../components/FileUpload';
 import { useLanguage } from '../../context/LanguageContext';
+import { useConfirm } from '../../hooks/useConfirm';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
 
@@ -132,22 +133,23 @@ export default function AdminLibrary() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t('هل أنت متأكد من الحذف؟', 'Are you sure you want to delete this resource?'))) return;
-    try {
-      const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
-      const res = await fetch(`${baseUrl}/api/library/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        toast.success(t('تم الحذف', 'Resource deleted'));
-        setResources(resources.filter(r => r._id !== id));
-      } else {
-        toast.error(t('فشل الحذف', 'Delete failed'));
+    customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد من الحذف؟', 'Are you sure you want to delete this resource?', async () => {
+      try {
+        const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+        const res = await fetch(`${baseUrl}/api/library/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          toast.success(t('تم الحذف', 'Resource deleted'));
+          setResources(resources.filter(r => r._id !== id));
+        } else {
+          toast.error(t('فشل الحذف', 'Delete failed'));
+        }
+      } catch (err) {
+        toast.error(t('حدث خطأ', 'Error occurred'));
       }
-    } catch (err) {
-      toast.error(t('حدث خطأ', 'Error occurred'));
-    }
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -162,6 +164,7 @@ export default function AdminLibrary() {
 
   return (
     <div className="space-y-6">
+      <ConfirmDialog />
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-[#062B24] font-bold text-lg">{t('المكتبة الرقمية', 'Digital Library')}</h2>
         <button onClick={() => openModal()}

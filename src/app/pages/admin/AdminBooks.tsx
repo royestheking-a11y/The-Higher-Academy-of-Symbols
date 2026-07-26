@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2, Store, Check, X, Save } from 'lucide-react';
 import { GeometricBackground } from '../../components/GeometricBackground';
 import { FileUpload } from '../../components/FileUpload';
 import { useLanguage } from '../../context/LanguageContext';
+import { useConfirm } from '../../hooks/useConfirm';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
 
@@ -137,22 +138,23 @@ export default function AdminBooks() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t('هل أنت متأكد من حذف هذا الكتاب؟', 'Are you sure you want to delete this book?'))) return;
-    try {
-      const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
-      const res = await fetch(`${baseUrl}/api/books/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        toast.success(t('تم حذف الكتاب', 'Book deleted'));
-        setBooks(books.filter(b => b._id !== id));
-      } else {
-        toast.error(t('فشل الحذف', 'Delete failed'));
+    customConfirm('تأكيد الحذف', 'Confirm Delete', 'هل أنت متأكد من حذف هذا الكتاب؟', 'Are you sure you want to delete this book?', async () => {
+      try {
+        const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, '');
+        const res = await fetch(`${baseUrl}/api/books/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          toast.success(t('تم حذف الكتاب', 'Book deleted'));
+          setBooks(books.filter(b => b._id !== id));
+        } else {
+          toast.error(t('فشل الحذف', 'Delete failed'));
+        }
+      } catch (err) {
+        toast.error(t('حدث خطأ', 'Error occurred'));
       }
-    } catch (err) {
-      toast.error(t('حدث خطأ', 'Error occurred'));
-    }
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -169,6 +171,7 @@ export default function AdminBooks() {
 
   return (
     <div className="space-y-6">
+      <ConfirmDialog />
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-[#062B24] font-bold text-lg">{t('إصدارات المتجر', 'Store Books')}</h2>
         <button onClick={() => openModal()}
