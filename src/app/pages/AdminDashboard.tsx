@@ -416,6 +416,9 @@ export default function AdminDashboard() {
   // ── Save helpers ─────────────────────────────────────────────────────────
   const saveArticle = (status: string) => {
     const form = { ...articleForm, status, tags: typeof articleForm.tags === 'string' ? articleForm.tags.split(',').map((s: string) => s.trim()).filter(Boolean) : articleForm.tags };
+    form.title_en = form.title_en || form.title_ar;
+    form.excerpt_en = form.excerpt_en || form.excerpt_ar;
+    form.content_en = form.content_en || form.content_ar;
     if (!form.slug && (form.title_en || form.title_ar)) form.slug = (form.title_en || form.title_ar).trim().replace(/\s+/g, '-').replace(/[^\w\-\u0621-\u064A\u0660-\u0669]/g, '');
     if (editingArticle) { updateArticle(editingArticle.id, form); toast.success(t('تم تحديث المقالة', 'Article updated')); }
     else { addArticle({ ...form, image: null }); toast.success(t('تم نشر المقالة', status === 'published' ? 'Article published' : 'Article saved as draft')); }
@@ -438,8 +441,11 @@ export default function AdminDashboard() {
 
   const savePackage = () => {
     if (!pkgForm.name_ar && !pkgForm.name_en) { toast.error(t('يرجى إدخال اسم الباقة', 'Please enter package name')); return; }
-    if (editingPkg) { updatePackage(editingPkg.id, pkgForm); toast.success(t('تم التحديث', 'Updated')); }
-    else { addPackage(pkgForm); toast.success(t('تمت الإضافة', 'Added')); }
+    const payload = { ...pkgForm };
+    payload.name_en = payload.name_en || payload.name_ar;
+    payload.description_en = payload.description_en || payload.description_ar;
+    if (editingPkg) { updatePackage(editingPkg.id, payload); toast.success(t('تم التحديث', 'Updated')); }
+    else { addPackage(payload); toast.success(t('تمت الإضافة', 'Added')); }
     setPkgView('list'); setEditingPkg(null); setPkgForm(defaultPkgForm);
   };
 
@@ -447,6 +453,12 @@ export default function AdminDashboard() {
     if (!lectureForm.title_ar && !lectureForm.title_en) { toast.error(t('يرجى إدخال عنوان المحاضرة', 'Please enter lecture title')); return; }
     
     const payload = { ...lectureForm };
+    payload.title_en = payload.title_en || payload.title_ar;
+    payload.description_en = payload.description_en || payload.description_ar;
+    payload.whatYouLearn_en = payload.whatYouLearn_en || payload.whatYouLearn_ar;
+    payload.requirements_en = payload.requirements_en || payload.requirements_ar;
+    payload.targetStudents_en = payload.targetStudents_en || payload.targetStudents_ar;
+
     if (!payload.slug && (payload.title_en || payload.title_ar)) payload.slug = (payload.title_en || payload.title_ar).trim().replace(/\s+/g, '-').replace(/[^\w\-\u0621-\u064A\u0660-\u0669]/g, '');
 
     if (editingLecture) { updateLecture(editingLecture.id, payload); toast.success(t('تم التحديث', 'Updated')); }
@@ -458,6 +470,9 @@ export default function AdminDashboard() {
     if (!areaForm.name_ar && !areaForm.name_en) { toast.error(t('يرجى إدخال اسم المجال', 'Please enter area name')); return; }
     
     const payload = { ...areaForm };
+    payload.name_en = payload.name_en || payload.name_ar;
+    payload.description_en = payload.description_en || payload.description_ar;
+
     if (!payload.slug && (payload.name_en || payload.name_ar)) payload.slug = (payload.name_en || payload.name_ar).trim().replace(/\s+/g, '-').replace(/[^\w\-\u0621-\u064A\u0660-\u0669]/g, '');
 
     if (typeof payload.whatYouWillLearn_ar === 'string') payload.whatYouWillLearn_ar = payload.whatYouWillLearn_ar.split('\n').map((s: string) => s.trim()).filter(Boolean);

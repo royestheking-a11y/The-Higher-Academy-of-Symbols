@@ -110,6 +110,9 @@ export default function AdminBooks() {
       if (!payload.slug && (payload.title_en || payload.title_ar)) {
         payload.slug = (payload.title_en || payload.title_ar).trim().replace(/\s+/g, '-').replace(/[^\w\-\u0621-\u064A\u0660-\u0669]/g, '');
       }
+      payload.title_en = payload.title_en || payload.title_ar;
+      payload.author_en = payload.author_en || payload.author_ar;
+      payload.description_en = payload.description_en || payload.description_ar;
 
       const res = await fetch(url, {
         method: editingBook ? 'PUT' : 'POST',
