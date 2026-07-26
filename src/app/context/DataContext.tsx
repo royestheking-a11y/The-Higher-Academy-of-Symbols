@@ -147,26 +147,34 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // Run sequentially to prevent HTTP/2 server refused stream errors on Render
-    await fetchAndSet('/lectures', setLecturesState);
-    await fetchAndSet('/articles', setArticlesState);
-    await fetchAndSet('/areas', setAreasState);
-    await fetchAndSet('/testimonials', setTestimonialsState);
-    await fetchAndSet('/settings', setSettingsState, true);
-    await fetchAndSet('/packages', setPackagesState);
+    // Build array of fetch tasks
+    const fetchTasks = [
+      () => fetchAndSet('/lectures', setLecturesState),
+      () => fetchAndSet('/articles', setArticlesState),
+      () => fetchAndSet('/areas', setAreasState),
+      () => fetchAndSet('/testimonials', setTestimonialsState),
+      () => fetchAndSet('/settings', setSettingsState, true),
+      () => fetchAndSet('/packages', setPackagesState),
+    ];
 
     if (currentUser) {
-      await fetchAndSet('/notifications', setNotificationsState);
+      fetchTasks.push(() => fetchAndSet('/notifications', setNotificationsState));
       if (currentUser.role === 'admin') {
-        await fetchAndSet('/enrollments', setEnrollmentsState);
-        await fetchAndSet('/contact', setContactState);
-        await fetchAndSet('/users', setUsersState);
-        await fetchAndSet('/supervisors', setSupervisorsState);
-        await fetchAndSet('/teachers', setTeachersState);
-        await fetchAndSet('/subscriptions', setSubscriptionsState);
+        fetchTasks.push(() => fetchAndSet('/enrollments', setEnrollmentsState));
+        fetchTasks.push(() => fetchAndSet('/contact', setContactState));
+        fetchTasks.push(() => fetchAndSet('/users', setUsersState));
+        fetchTasks.push(() => fetchAndSet('/supervisors', setSupervisorsState));
+        fetchTasks.push(() => fetchAndSet('/teachers', setTeachersState));
+        fetchTasks.push(() => fetchAndSet('/subscriptions', setSubscriptionsState));
       } else {
-        await fetchAndSet('/enrollments/my', setEnrollmentsState);
+        fetchTasks.push(() => fetchAndSet('/enrollments/my', setEnrollmentsState));
       }
+    }
+
+    // Process in chunks of 4 to balance blazing fast speed vs Render HTTP/2 limits
+    for (let i = 0; i < fetchTasks.length; i += 4) {
+      const chunk = fetchTasks.slice(i, i + 4);
+      await Promise.allSettled(chunk.map(task => task()));
     }
 
     setLoading(false);
