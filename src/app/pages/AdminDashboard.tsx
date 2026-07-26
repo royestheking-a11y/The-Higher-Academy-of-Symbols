@@ -76,9 +76,7 @@ function RichTextEditor({ initialValue, onChange, dir = 'auto', minHeight = 220 
   };
 
   return (
-    <div className=
-      <ConfirmDialog />
-"rounded-xl overflow-hidden" style={{ border: '1.5px solid rgba(6,43,36,0.18)' }}>
+    <div className="rounded-xl overflow-hidden" style={{ border: '1.5px solid rgba(6,43,36,0.18)' }}>
       {/* Toolbar row 1 */}
       <div className="flex flex-wrap items-center gap-0.5 px-2 py-1.5" style={{ background: 'rgba(6,43,36,0.04)', borderBottom: '1px solid rgba(6,43,36,0.1)' }}>
         <EditorTB title="Undo" icon={RotateCcw} cmd="undo" exec={exec} />
@@ -230,6 +228,7 @@ const Modal = ({ title, onClose, children }: { title: string; onClose: () => voi
 // ─────────────────────────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const { t, isRTL, fontFamily } = useLanguage();
+  const { confirm: customConfirm, ConfirmDialog } = useConfirm();
   const { currentUser, logout, isAdmin } = useAuth();
   
   const getToken = () => {
@@ -562,6 +561,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen flex relative bg-slate-50" style={{ fontFamily }} dir={isRTL ? 'rtl' : 'ltr'}>
+      <ConfirmDialog />
 
       {/* Dynamic Glassmorphism Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">

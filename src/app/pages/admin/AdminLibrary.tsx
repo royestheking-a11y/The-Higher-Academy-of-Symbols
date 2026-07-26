@@ -11,6 +11,7 @@ let cachedResources: any[] | null = null;
 
 export default function AdminLibrary() {
   const { t, isRTL } = useLanguage();
+  const { confirm: customConfirm, ConfirmDialog } = useConfirm();
   const { token } = useAuth();
   const [resources, setResources] = useState<any[]>(cachedResources || []);
   const [loading, setLoading] = useState(!cachedResources);

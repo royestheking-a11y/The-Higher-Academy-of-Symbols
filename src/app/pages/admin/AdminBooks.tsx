@@ -11,6 +11,7 @@ let cachedBooks: any[] | null = null;
 
 export default function AdminBooks() {
   const { t, isRTL } = useLanguage();
+  const { confirm: customConfirm, ConfirmDialog } = useConfirm();
   const { token } = useAuth();
   const [books, setBooks] = useState<any[]>(cachedBooks || []);
   const [loading, setLoading] = useState(!cachedBooks);
@@ -112,7 +113,6 @@ export default function AdminBooks() {
         payload.slug = (payload.title_en || payload.title_ar).trim().replace(/\s+/g, '-').replace(/[^\w\-\u0621-\u064A\u0660-\u0669]/g, '');
       }
       payload.title_en = payload.title_en || payload.title_ar;
-      payload.author_en = payload.author_en || payload.author_ar;
       payload.description_en = payload.description_en || payload.description_ar;
 
       const res = await fetch(url, {
