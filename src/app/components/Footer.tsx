@@ -123,10 +123,12 @@ export function Footer() {
                   className="appearance-none bg-[#0B3A31] border border-[rgba(201,162,74,0.25)] text-[#F8F4EA] text-sm rounded-xl py-2.5 ps-9 pe-8 focus:outline-none focus:border-[#C9A24A] transition-colors cursor-pointer w-full max-w-[200px]" 
                   style={{ fontFamily }}
                 >
+                  <option value="ar">🌟 العربية (Arabic) — الافتراضي</option>
+                  <option disabled>──────────────</option>
                   <option value="af">Afrikaans</option>
                   <option value="sq">Albanian</option>
                   <option value="am">Amharic</option>
-                  <option value="ar">Arabic</option>
+
                   <option value="hy">Armenian</option>
                   <option value="az">Azerbaijani</option>
                   <option value="eu">Basque</option>
