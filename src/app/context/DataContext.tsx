@@ -147,39 +147,50 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // Build array of fetch tasks
-    const fetchTasks = [
+    // Priority tasks needed to render the main UI fast
+    const priorityTasks = [
       () => fetchAndSet('/lectures', setLecturesState),
       () => fetchAndSet('/articles', setArticlesState),
       () => fetchAndSet('/areas', setAreasState),
-      () => fetchAndSet('/testimonials', setTestimonialsState),
       () => fetchAndSet('/settings', setSettingsState, true),
+    ];
+
+    // Secondary tasks loaded right after priority tasks
+    const secondaryTasks = [
+      () => fetchAndSet('/testimonials', setTestimonialsState),
       () => fetchAndSet('/packages', setPackagesState),
     ];
 
     if (currentUser) {
-      fetchTasks.push(() => fetchAndSet('/notifications', setNotificationsState));
+      secondaryTasks.push(() => fetchAndSet('/notifications', setNotificationsState));
       if (currentUser.role === 'admin') {
-        fetchTasks.push(() => fetchAndSet('/enrollments', setEnrollmentsState));
-        fetchTasks.push(() => fetchAndSet('/contact', setContactState));
-        fetchTasks.push(() => fetchAndSet('/users', setUsersState));
-        fetchTasks.push(() => fetchAndSet('/supervisors', setSupervisorsState));
-        fetchTasks.push(() => fetchAndSet('/teachers', setTeachersState));
-        fetchTasks.push(() => fetchAndSet('/subscriptions', setSubscriptionsState));
+        secondaryTasks.push(() => fetchAndSet('/users', setUsersState));
+        secondaryTasks.push(() => fetchAndSet('/enrollments', setEnrollmentsState));
+        secondaryTasks.push(() => fetchAndSet('/contact', setContactState));
+        secondaryTasks.push(() => fetchAndSet('/supervisors', setSupervisorsState));
+        secondaryTasks.push(() => fetchAndSet('/teachers', setTeachersState));
+        secondaryTasks.push(() => fetchAndSet('/subscriptions', setSubscriptionsState));
       } else {
-        fetchTasks.push(() => fetchAndSet('/enrollments/my', setEnrollmentsState));
+        secondaryTasks.push(() => fetchAndSet('/enrollments/my', setEnrollmentsState));
       }
     }
 
-    // Process sequentially to completely bypass Render's strict HTTP/2 limit
-    const processInBackground = async () => {
-      for (const task of fetchTasks) {
-        await task();
-        // 50ms micro-pause to let the browser breathe and prevent stream clustering
-        await new Promise(r => setTimeout(r, 50));
+    const runInChunks = async (tasks: (() => Promise<any>)[], chunkSize = 2) => {
+      for (let i = 0; i < tasks.length; i += chunkSize) {
+        const chunk = tasks.slice(i, i + chunkSize);
+        await Promise.allSettled(chunk.map(fn => fn()));
       }
-      // Once all data has successfully streamed in, remove the beautiful Skeletons
+    };
+
+    const processInBackground = async () => {
+      // 1. Fetch core priority data (2 concurrent streams max)
+      await runInChunks(priorityTasks, 2);
+      
+      // 2. Hide Skeletons FAST (under 0.5s) so the user doesn't wait long!
       setLoading(false);
+
+      // 3. Continue fetching secondary data in the background (2 concurrent streams max)
+      await runInChunks(secondaryTasks, 2);
     };
     
     processInBackground();
