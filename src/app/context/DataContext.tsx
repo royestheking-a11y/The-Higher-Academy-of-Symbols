@@ -147,30 +147,28 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    const publicRequests = [
-      fetchAndSet('/lectures', setLecturesState),
-      fetchAndSet('/articles', setArticlesState),
-      fetchAndSet('/areas', setAreasState),
-      fetchAndSet('/testimonials', setTestimonialsState),
-      fetchAndSet('/settings', setSettingsState, true),
-      fetchAndSet('/packages', setPackagesState), // Packages usually public for viewing
-    ];
+    // Run sequentially to prevent HTTP/2 server refused stream errors on Render
+    await fetchAndSet('/lectures', setLecturesState);
+    await fetchAndSet('/articles', setArticlesState);
+    await fetchAndSet('/areas', setAreasState);
+    await fetchAndSet('/testimonials', setTestimonialsState);
+    await fetchAndSet('/settings', setSettingsState, true);
+    await fetchAndSet('/packages', setPackagesState);
 
-    const protectedRequests = currentUser ? [
-      fetchAndSet('/notifications', setNotificationsState),
-      ...(currentUser.role === 'admin' ? [
-        fetchAndSet('/enrollments', setEnrollmentsState),
-        fetchAndSet('/contact', setContactState),
-        fetchAndSet('/users', setUsersState),
-        fetchAndSet('/supervisors', setSupervisorsState),
-        fetchAndSet('/teachers', setTeachersState),
-        fetchAndSet('/subscriptions', setSubscriptionsState),
-      ] : [
-        fetchAndSet('/enrollments/my', setEnrollmentsState)
-      ])
-    ] : [];
+    if (currentUser) {
+      await fetchAndSet('/notifications', setNotificationsState);
+      if (currentUser.role === 'admin') {
+        await fetchAndSet('/enrollments', setEnrollmentsState);
+        await fetchAndSet('/contact', setContactState);
+        await fetchAndSet('/users', setUsersState);
+        await fetchAndSet('/supervisors', setSupervisorsState);
+        await fetchAndSet('/teachers', setTeachersState);
+        await fetchAndSet('/subscriptions', setSubscriptionsState);
+      } else {
+        await fetchAndSet('/enrollments/my', setEnrollmentsState);
+      }
+    }
 
-    await Promise.allSettled([...publicRequests, ...protectedRequests]);
     setLoading(false);
   }, [currentUser]);
 
